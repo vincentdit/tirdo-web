@@ -12,12 +12,23 @@ const columns = [
     ],
   },
   {
+    heading: "Media & More",
+    links: [
+      { title: "News & Announcements", href: "/news" },
+      { title: "Events", href: "/events" },
+      { title: "Gallery", href: "/gallery" },
+      { title: "Publications", href: "/publications" },
+      { title: "T-Hub", href: "/t-hub" },
+    ],
+  },
+  {
     heading: "Quick links",
     links: [
       { title: "Industrial services", href: "/services" },
-      { title: "T-Hub", href: "/t-hub" },
+      { title: "Industrial Information Centre", href: "/industrial-information-centre" },
       { title: "Career opportunities", href: "/careers" },
       { title: "Tenders", href: "/tenders" },
+      { title: "Contact us", href: "/contact" },
     ],
   },
 ];
@@ -25,7 +36,7 @@ const columns = [
 export function Footer() {
   return (
     <footer className="bg-brand-navy text-[#d3e0e9]">
-      <div className="container-tirdo grid gap-8 py-16 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.35fr]">
+      <div className="container-tirdo grid gap-8 py-16 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1.2fr]">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={assets.logo} alt="TIRDO" className="w-[76px] bg-white p-1.5" />

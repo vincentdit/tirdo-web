@@ -50,11 +50,10 @@ export const mainNav: NavItem[] = [
       { title: "Board of Directors", href: "/about/board" },
       { title: "Administration", href: "/about/administration" },
       { title: "Success Stories", href: "/about/success-stories" },
-      { title: "COMSATS Centre", href: "/about/comsats" },
     ],
   },
   {
-    title: "Our Work",
+    title: "Departments",
     href: "/departments",
     columns: [
       {
@@ -81,42 +80,49 @@ export const mainNav: NavItem[] = [
           { title: "Technology Transfer", href: "/departments/technology-transfer" },
         ],
       },
+      {
+        heading: "Finance",
+        items: [{ title: "Finance Department", href: "/departments/finance" }],
+      },
+      {
+        heading: "Human Resource",
+        items: [{ title: "HR & Administration", href: "/departments/human-resources-administration" }],
+      },
+    ],
+  },
+  {
+    title: "COMSATS Center",
+    href: "/about/comsats",
+    children: [
+      { title: "Background", href: "/about/comsats" },
+      { title: "Objectives", href: "/about/comsats" },
+      { title: "Activities", href: "/about/comsats" },
     ],
   },
   {
     title: "Services",
     href: "/services",
     children: [
-      { title: "Contract Research", href: "/services/research" },
+      { title: "Research", href: "/services/research" },
       { title: "Energy Auditing", href: "/services/energy-auditing" },
       { title: "Feasibility Studies", href: "/services/feasibility-studies" },
-      { title: "Consultancy", href: "/services/consultancy" },
-      { title: "Laboratory & Testing", href: "/services/laboratory" },
-      { title: "Training", href: "/services/training" },
+      { title: "Consultancy & Technical Services", href: "/services/consultancy" },
+      { title: "Laboratory Analytical Services", href: "/services/laboratory" },
+      { title: "Training & Skill Development", href: "/services/training" },
     ],
   },
   {
-    title: "Research & Innovation",
-    href: "/projects",
+    title: "T-Hub",
+    href: "/t-hub",
     children: [
-      { title: "Ongoing Projects", href: "/projects" },
-      { title: "T-Hub Innovation", href: "/t-hub" },
-      { title: "Industrial Information Centre", href: "/industrial-information-centre" },
-      { title: "Research Products", href: "/projects#products" },
-      { title: "Publications", href: "/publications" },
+      { title: "About T-Hub", href: "/t-hub" },
+      { title: "T-Hub Services", href: "/t-hub" },
+      { title: "Why T-Hub", href: "/t-hub" },
+      { title: "Portfolio Companies", href: "/t-hub" },
     ],
   },
-  {
-    title: "Media Centre",
-    href: "/news",
-    children: [
-      { title: "News & Announcements", href: "/news" },
-      { title: "Events", href: "/events" },
-      { title: "Gallery", href: "/gallery" },
-      { title: "Documents", href: "/documents" },
-    ],
-  },
-  { title: "Contact Us", href: "/contact" },
+  { title: "Industrial Information Center", href: "/industrial-information-centre" },
+  { title: "Documents", href: "/documents" },
 ];
 
 // Highlighted portal button in the header (gold).

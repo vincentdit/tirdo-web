@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ChevronDown, Search, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown, Search, ArrowRight, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
 import { site, mainNav, portal, assets, type NavItem } from "@/lib/site";
 import { AuthButton } from "@/components/site/auth-button";
 import { cn } from "@/lib/utils";
@@ -15,14 +15,24 @@ export function Header() {
     <header>
       {/* Utility bar */}
       <div className="bg-brand-teal text-white">
-        <div className="container-tirdo flex min-h-[38px] items-center justify-between text-[0.78rem]">
-          <span className="hidden sm:block">United Republic of Tanzania</span>
-          <div className="ml-auto flex items-center gap-2">
-            <a href="https://mail.tirdo.or.tz" target="_blank" rel="noreferrer" className="hidden px-1 hover:text-brand-gold sm:inline">Staff Mail</a>
-            <span className="hidden h-3 w-px bg-white/40 sm:inline-block" />
+        <div className="container-tirdo flex min-h-[38px] items-center justify-between gap-3 text-[0.78rem]">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <a href={site.social.facebook} aria-label="Facebook" target="_blank" rel="noreferrer" className="hover:text-brand-gold"><Facebook className="h-4 w-4" /></a>
+              <a href={site.social.twitter} aria-label="Twitter" target="_blank" rel="noreferrer" className="hover:text-brand-gold"><Twitter className="h-4 w-4" /></a>
+              <a href={site.social.instagram} aria-label="Instagram" target="_blank" rel="noreferrer" className="hover:text-brand-gold"><Instagram className="h-4 w-4" /></a>
+              <a href={site.social.linkedin} aria-label="LinkedIn" target="_blank" rel="noreferrer" className="hidden hover:text-brand-gold sm:inline"><Linkedin className="h-4 w-4" /></a>
+              <a href={site.social.youtube} aria-label="YouTube" target="_blank" rel="noreferrer" className="hidden hover:text-brand-gold sm:inline"><Youtube className="h-4 w-4" /></a>
+            </div>
+            <span className="hidden h-3 w-px bg-white/40 md:inline-block" />
+            <span className="hidden md:block">United Republic of Tanzania</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <a href="mailto:help@tirdo.or.tz" className="hidden px-1 hover:text-brand-gold md:inline">help@tirdo.or.tz</a>
+            <span className="hidden h-3 w-px bg-white/40 md:inline-block" />
             <a href="https://eoffice.gov.go.tz/users/login" target="_blank" rel="noreferrer" className="hidden px-1 hover:text-brand-gold sm:inline">e-Office</a>
             <span className="hidden h-3 w-px bg-white/40 sm:inline-block" />
-            <a href="mailto:help@tirdo.or.tz" className="hidden px-1 hover:text-brand-gold sm:inline">Helpdesk</a>
+            <a href="https://mail.tirdo.or.tz" target="_blank" rel="noreferrer" className="hidden px-1 hover:text-brand-gold sm:inline">Staff Mail</a>
             <span className="hidden h-3 w-px bg-white/40 sm:inline-block" />
             <button className="hidden px-1 hover:text-brand-gold sm:inline">Kiswahili</button>
             <span className="ml-1 rounded-sm border border-white/60 px-1 py-0.5 text-[0.7rem]">EN</span>
@@ -59,10 +69,10 @@ export function Header() {
       <nav className="sticky top-0 z-50 bg-brand-teal shadow-[0_4px_12px_rgba(0,43,58,0.18)]">
         <div className="container-tirdo flex h-[62px] items-center gap-2" onMouseLeave={() => setOpenMenu(null)}>
           {/* mobile brand */}
-          <Link href="/" className="font-bold text-white lg:hidden">TIRDO</Link>
+          <Link href="/" className="font-bold text-white xl:hidden">TIRDO</Link>
 
           {/* desktop nav */}
-          <div className="hidden h-full flex-1 items-stretch lg:flex">
+          <div className="hidden h-full flex-1 items-stretch xl:flex">
             {mainNav.map((item) => (
               <DesktopNavItem
                 key={item.title}
@@ -74,7 +84,7 @@ export function Header() {
           </div>
 
           <div className="ml-auto flex items-center gap-2">
-            <Link href="/search" aria-label="Search" className="hidden h-9 w-9 place-items-center text-white hover:text-brand-gold lg:grid">
+            <Link href="/search" aria-label="Search" className="hidden h-9 w-9 place-items-center text-white hover:text-brand-gold xl:grid">
               <Search className="h-5 w-5" />
             </Link>
             <Link
@@ -84,7 +94,7 @@ export function Header() {
               {portal.title} <ArrowRight className="h-4 w-4" />
             </Link>
             <button
-              className="grid h-9 w-9 place-items-center text-white lg:hidden"
+              className="grid h-9 w-9 place-items-center text-white xl:hidden"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label="Toggle menu"
             >
@@ -95,7 +105,7 @@ export function Header() {
 
         {/* mobile menu */}
         {mobileOpen && (
-          <div className="border-t border-white/10 bg-brand-teal lg:hidden">
+          <div className="border-t border-white/10 bg-brand-teal xl:hidden">
             <nav className="container-tirdo flex flex-col py-2">
               {mainNav.map((item) => (
                 <MobileNavItem key={item.title} item={item} onNavigate={() => setMobileOpen(false)} />
@@ -121,7 +131,7 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
       <Link
         href={item.href}
         className={cn(
-          "relative flex items-center gap-1 px-3.5 text-[0.9rem] text-white transition-colors hover:bg-brand-teal-dark",
+          "relative flex items-center gap-0.5 whitespace-nowrap px-2.5 text-[0.82rem] text-white transition-colors hover:bg-brand-teal-dark",
           open && "bg-brand-teal-dark"
         )}
       >
@@ -133,7 +143,7 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
       {hasMenu && open && (
         <div className={cn(
           "absolute left-0 top-full z-50 rounded-b-lg border-t-2 border-brand-gold bg-white p-4 text-brand-ink shadow-xl",
-          item.columns ? "w-[620px]" : "w-64"
+          item.columns ? (item.columns.length > 3 ? "w-[900px]" : "w-[620px]") : "w-64"
         )}>
           {item.children && (
             <ul className="space-y-1">
@@ -147,7 +157,7 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
             </ul>
           )}
           {item.columns && (
-            <div className="grid grid-cols-3 gap-4">
+            <div className={cn("grid gap-4", item.columns.length > 3 ? "grid-cols-5" : "grid-cols-3")}>
               {item.columns.map((col) => (
                 <div key={col.heading}>
                   <div className="mb-2 border-b pb-1 text-xs font-bold uppercase tracking-wide text-brand-teal">{col.heading}</div>
