@@ -273,7 +273,7 @@ export const departments: Department[] = [
   {
     slug: "human-resources-administration",
     title: "Human Resources & Administration",
-    group: "Corporate Services",
+    group: "Human Resources & Administration",
     blurb: "Human resources, administration and estate services that keep TIRDO running.",
     head: "Mr. Emilian S. Bundala (Director)",
     body: [
@@ -289,7 +289,7 @@ export const departments: Department[] = [
   {
     slug: "finance",
     title: "Finance",
-    group: "Corporate Services",
+    group: "Finance",
     blurb: "Financial management, budgeting, accounting and revenue control.",
     head: "Mr. David J. Kisiwa (Director)",
     body: [
@@ -393,13 +393,6 @@ export const publications: Publication[] = [
   { slug: "financial-statements-2024", title: "TIRDO Financial Statements for the Year Ended 30th June 2024", type: "Financial Report", year: 2024, fileUrl: `${PUB}/GlJkkH6ITUnN4puxePVw9KkYKKFlKWcJdirJ9m08.pdf` },
   { slug: "financial-statements-2023", title: "TIRDO Financial Statements for the Year Ended 30th June 2023", type: "Financial Report", year: 2023, fileUrl: `${PUB}/TIWzfCpIR5FViS8j2huHhAsXcaIcfvxNAQywQ5Px.pdf` },
   { slug: "tirdo-act-1979", title: "The Tanzania Industrial Research and Development Organization Act, 1979", type: "Legislation", year: 1979, fileUrl: `${PUB}/Z00lhvaYrG94XYwS3hDUQBGdMZn6VbTPrcGIWeKr.pdf` },
-];
-
-export const leaders: Leader[] = [
-  { name: "Prof. Mkumbukwa M. A.", role: "Director General" },
-  { name: "Director of Research & Consultancy", role: "Directorate" },
-  { name: "Director of Engineering Development", role: "Directorate" },
-  { name: "Director of Corporate Services", role: "Directorate" },
 ];
 
 // Director General welcome (verbatim from tirdo.or.tz).
@@ -535,6 +528,23 @@ export const topManagement: Leader[] = [
   { name: "Eng. Ramson A. Mwilangali", role: "Director of Engineering Development" },
   { name: "Mr. Humphrey P. Ndossi", role: "Director of Industrial Research" },
   { name: "Mr. David J. Kisiwa", role: "Director of Finance" },
+];
+
+// Management & Administration units reporting directly to the Director General
+// (shown beside the DG in the organization structure — not departments).
+export const managementUnits = [
+  {
+    name: "Internal Auditor",
+    desc: "Provides independent assurance and internal audit of TIRDO's operations, risk management and controls, reporting to the Council/Board.",
+  },
+  {
+    name: "Procurement Unit",
+    desc: "The Procurement Management Unit responsible for all procurement of goods, works and services in line with the Public Procurement Act.",
+  },
+  {
+    name: "Corporate Service & Planning Division",
+    desc: "Coordinates corporate planning, monitoring and evaluation, quality management and cross-cutting corporate services across the organisation.",
+  },
 ];
 
 export const comsatsObjectives = [

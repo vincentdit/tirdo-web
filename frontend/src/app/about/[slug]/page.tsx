@@ -4,7 +4,7 @@ import { PageBanner } from "@/components/site/page-banner";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   board, topManagement, successStories, comsats, comsatsObjectives,
-  comsatsActivities, orgStructure, type Leader,
+  comsatsActivities, orgStructure, managementUnits, type Leader,
 } from "@/lib/content";
 
 const meta: Record<string, { title: string; subtitle: string }> = {
@@ -129,6 +129,21 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
               <p>TIRDO&apos;s top management leads the organisation&apos;s research, engineering, ICT and corporate services, translating the mandate into applied research and technical services for industry.</p>
             </div>
             <LeaderGrid people={topManagement} />
+
+            <div className="container-tirdo mt-12">
+              <h2 className="text-lg font-bold text-primary">Management &amp; Administration Units</h2>
+              <p className="mb-5 text-sm text-muted-foreground">Reporting directly to the Director General.</p>
+              <div className="grid gap-4 sm:grid-cols-3">
+                {managementUnits.map((u) => (
+                  <Card key={u.name}>
+                    <CardContent className="p-5">
+                      <h3 className="mb-1 font-semibold text-primary">{u.name}</h3>
+                      <p className="text-sm text-muted-foreground">{u.desc}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </>
         )}
 

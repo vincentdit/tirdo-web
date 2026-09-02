@@ -82,11 +82,12 @@ export const mainNav: NavItem[] = [
         ],
       },
       {
-        heading: "Corporate Services",
-        items: [
-          { title: "Finance", href: "/departments/finance" },
-          { title: "Human Resources & Administration", href: "/departments/human-resources-administration" },
-        ],
+        heading: "Finance",
+        items: [{ title: "Finance Department", href: "/departments/finance" }],
+      },
+      {
+        heading: "Human Resource",
+        items: [{ title: "HR & Administration", href: "/departments/human-resources-administration" }],
       },
     ],
   },
