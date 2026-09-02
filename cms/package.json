@@ -1,0 +1,33 @@
+{
+  "name": "tirdo-cms",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TIRDO content management (Strapi 5)",
+  "scripts": {
+    "build": "strapi build",
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "strapi": "strapi",
+    "seed": "node ./scripts/seed.js",
+    "reindex": "node ./scripts/reindex.js"
+  },
+  "dependencies": {
+    "@strapi/strapi": "5.5.0",
+    "@strapi/plugin-users-permissions": "5.5.0",
+    "@strapi/plugin-cloud": "5.5.0",
+    "@strapi/provider-upload-aws-s3": "5.5.0",
+    "@opensearch-project/opensearch": "^2.11.0",
+    "pg": "^8.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.0",
+    "styled-components": "^6.1.13"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=22.x.x",
+    "npm": ">=6.0.0"
+  },
+  "strapi": {
+    "uuid": "tirdo-cms-local"
+  }
+}

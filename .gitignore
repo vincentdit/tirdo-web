@@ -1,0 +1,21 @@
+# dependencies
+**/node_modules
+
+# builds
+frontend/.next
+frontend/out
+cms/build
+cms/dist
+cms/.cache
+cms/.strapi
+cms/.tmp
+
+# env & secrets
+.env
+**/.env
+!.env.example
+
+# logs / os
+*.log
+.DS_Store
+Thumbs.db

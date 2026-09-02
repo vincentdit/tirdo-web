@@ -1,0 +1,56 @@
+{
+  "realm": "tirdo",
+  "enabled": true,
+  "displayName": "TIRDO",
+  "displayNameHtml": "<strong>TIRDO</strong> Identity",
+  "loginTheme": "keycloak",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "resetPasswordAllowed": true,
+  "roles": {
+    "realm": [
+      { "name": "tirdo-admin", "description": "Full administrative access" },
+      { "name": "content-editor", "description": "Manage news, publications, projects" },
+      { "name": "staff", "description": "Internal TIRDO staff" },
+      { "name": "public", "description": "Registered public / e-Services user" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "tirdo-web",
+      "name": "TIRDO Public Website",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "rootUrl": "http://localhost",
+      "baseUrl": "/",
+      "redirectUris": ["http://localhost/*", "http://localhost:3000/*"],
+      "webOrigins": ["http://localhost", "+"],
+      "attributes": { "post.logout.redirect.uris": "http://localhost/*" }
+    },
+    {
+      "clientId": "tirdo-cms",
+      "name": "Strapi CMS (confidential)",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "change-me-cms-client-secret",
+      "standardFlowEnabled": true,
+      "serviceAccountsEnabled": true,
+      "redirectUris": ["http://localhost/cms/*"],
+      "webOrigins": ["http://localhost"]
+    }
+  ],
+  "users": [
+    {
+      "username": "tirdo.editor",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Content",
+      "lastName": "Editor",
+      "email": "editor@tirdo.or.tz",
+      "credentials": [{ "type": "password", "value": "editor123", "temporary": true }],
+      "realmRoles": ["content-editor", "staff"]
+    }
+  ]
+}
