@@ -94,65 +94,42 @@
   .eyebrow {
     @apply text-xs font-bold uppercase tracking-[0.15em];
   }
+  /* Org-chart connectors */
+  .org-v {
+    width: 2px;
+    background-color: hsl(var(--primary) / 0.6);
+  }
+  .org-h {
+    height: 2px;
+    background-color: hsl(var(--primary) / 0.6);
+  }
 }
 
-/* -------- Vertical org chart with continuous connector lines -------- */
-.org-tree ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 24px;
+/* Horizontal bus + vertical drops for a row of org-chart nodes (desktop) */
+@media (min-width: 1024px) {
+  .org-row {
+    position: relative;
+  }
+  .org-row > * {
+    position: relative;
+  }
+  .org-row > *::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -20px;
+    height: 20px;
+    width: 2px;
+    transform: translateX(-50%);
+    background-color: hsl(var(--primary) / 0.6);
+  }
+  .org-row::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    height: 2px;
+    left: calc(50% / var(--cols));
+    right: calc(50% / var(--cols));
+    background-color: hsl(var(--primary) / 0.6);
+  }
 }
-.org-tree li {
-  position: relative;
-  padding: 6px 0 0 26px;
-}
-/* horizontal connector from the spine into each node */
-.org-tree li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 22px;
-  width: 26px;
-  height: 2px;
-  background-color: #007e93;
-}
-/* vertical spine down the left of each sibling group */
-.org-tree li::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 2px;
-  height: 22px;
-  background-color: #007e93;
-}
-.org-tree li:not(:last-child)::after {
-  height: 100%;
-}
-/* root node has no incoming connector */
-.org-tree > ul > li {
-  padding-left: 0;
-}
-.org-tree > ul > li::before,
-.org-tree > ul > li::after {
-  display: none;
-}
-.org-tree .node {
-  display: inline-block;
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  line-height: 1.2;
-}
-.org-tree .node small {
-  display: block;
-  font-weight: 400;
-  font-size: 0.65rem;
-  opacity: 0.85;
-}
-.org-tree .node-council { background: #17488e; color: #fff; }
-.org-tree .node-dg      { background: #007e93; color: #fff; }
-.org-tree .node-unit    { background: #f3f7f8; color: #092a45; border: 1px solid rgba(0,126,147,0.35); }
-.org-tree .node-dept    { background: #007e93; color: #fff; }
-.org-tree .node-div     { background: #f3f7f8; color: #092a45; font-weight: 500; font-size: 0.75rem; }

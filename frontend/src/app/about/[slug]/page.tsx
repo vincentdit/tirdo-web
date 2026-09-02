@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { notFound } from "next/navigation";
 import { PageBanner } from "@/components/site/page-banner";
 import { Card, CardContent } from "@/components/ui/card";
@@ -68,32 +69,47 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
           <div className="container-tirdo">
             <p className="mx-auto mb-10 max-w-3xl text-center text-foreground/80">{orgStructure.intro}</p>
 
-            <div className="org-tree overflow-x-auto">
-              <ul>
-                <li>
-                  <span className="node node-council">Council<small>Board of Directors</small></span>
-                  <ul>
-                    <li>
-                      <span className="node node-dg">Director General</span>
-                      <ul>
-                        {orgStructure.units.map((u) => (
-                          <li key={u}><span className="node node-unit">{u}</span></li>
-                        ))}
-                        {orgStructure.departments.map((d) => (
-                          <li key={d.name}>
-                            <span className="node node-dept">{d.name} Dept.<small>Director</small></span>
-                            <ul>
-                              {d.divisions.map((x) => (
-                                <li key={x}><span className="node node-div">{x}</span></li>
-                              ))}
-                            </ul>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
+            <div className="flex flex-col items-center">
+              {/* Council */}
+              <div className="rounded-md bg-brand-blue px-8 py-2.5 text-center text-sm font-bold text-white shadow">
+                Council<div className="text-[10px] font-normal text-white/80">Board of Directors</div>
+              </div>
+              <div className="org-v h-6" />
+
+              {/* Director General with side support units */}
+              <div className="grid items-center gap-3 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
+                <div className="flex flex-col items-center gap-2 lg:items-end">
+                  <span className="rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-xs font-semibold text-brand-ink">Internal Auditor</span>
+                  <span className="rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-xs font-semibold text-brand-ink">Procurement Unit</span>
+                </div>
+                <div className="flex items-center justify-center">
+                  <span className="org-h hidden w-6 lg:block" />
+                  <div className="rounded-md bg-brand-teal px-8 py-2.5 text-sm font-bold text-white shadow">Director General</div>
+                  <span className="org-h hidden w-6 lg:block" />
+                </div>
+                <div className="flex flex-col items-center gap-2 lg:items-start">
+                  <span className="max-w-[12rem] rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-center text-xs font-semibold text-brand-ink">Corporate Service &amp; Planning Division</span>
+                </div>
+              </div>
+
+              <div className="org-v h-6 hidden lg:block" />
+            </div>
+
+            {/* Departments and their divisions */}
+            <div className="org-row mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-0 lg:grid-cols-5" style={{ "--cols": "5" } as CSSProperties}>
+              {orgStructure.departments.map((d) => (
+                <div key={d.name} className="overflow-hidden rounded-lg border bg-card">
+                  <div className="bg-brand-teal px-3 py-2.5 text-center text-xs font-bold leading-tight text-white">
+                    {d.name} Dept.
+                    <div className="text-[10px] font-normal text-white/80">Director</div>
+                  </div>
+                  <ul className="space-y-1.5 p-2">
+                    {d.divisions.map((x) => (
+                      <li key={x} className="rounded bg-brand-pale px-2 py-1.5 text-[11px] leading-snug text-brand-ink">{x}</li>
+                    ))}
                   </ul>
-                </li>
-              </ul>
+                </div>
+              ))}
             </div>
           </div>
         )}
