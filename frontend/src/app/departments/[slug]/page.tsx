@@ -54,6 +54,28 @@ export default function DepartmentPage({ params }: { params: { slug: string } })
           </aside>
         </div>
 
+        {dept.sections && dept.sections.length > 0 && (
+          <div className="container-tirdo mt-12">
+            <h2 className="mb-5 text-xl font-bold text-primary">Divisions &amp; Sections</h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {dept.sections.map((s) => (
+                <div key={s.name} className="rounded-lg border bg-card p-5">
+                  <h3 className="mb-2 font-semibold text-brand-teal">{s.name}</h3>
+                  {s.items && s.items.length > 0 && (
+                    <ul className="space-y-1.5 text-sm text-muted-foreground">
+                      {s.items.map((it) => (
+                        <li key={it} className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" /> {it}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {related.length > 0 && (
           <div className="container-tirdo mt-12">
             <h2 className="mb-5 text-xl font-bold text-primary">Related Projects</h2>

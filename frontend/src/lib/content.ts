@@ -161,6 +161,7 @@ export const services: ServiceItem[] = [
   },
 ];
 
+export type DeptSection = { name: string; items?: string[] };
 export type Department = {
   slug: string;
   title: string;
@@ -168,13 +169,14 @@ export type Department = {
   blurb: string;
   head?: string;
   body: string[];
+  sections?: DeptSection[];
 };
 
 export const departments: Department[] = [
   {
     slug: "environment",
     title: "Environment",
-    group: "Industry & Research",
+    group: "Industrial Research",
     blurb: "Environmental monitoring, pollution control and cleaner production.",
     head: "Ms. Kunda Sikazwe",
     body: [
@@ -185,7 +187,7 @@ export const departments: Department[] = [
   {
     slug: "food-biotechnology",
     title: "Food & Biotechnology",
-    group: "Industry & Research",
+    group: "Industrial Research",
     blurb: "Food processing, preservation, value addition and bioprocess research.",
     body: [
       "The Food and Biotechnology Division comprises food processing, microbiology and biotechnology sections, delivering research, development and analytical services for a rapidly expanding food industry.",
@@ -195,7 +197,7 @@ export const departments: Department[] = [
   {
     slug: "industrial-chemistry",
     title: "Industrial Chemistry",
-    group: "Industry & Research",
+    group: "Industrial Research",
     blurb: "Chemical analysis, formulation and process chemistry for industry.",
     head: "Ms. Jacqueline Mwendwa",
     body: [
@@ -266,6 +268,39 @@ export const departments: Department[] = [
     body: [
       "The Technology Transfer and Pilot Plants Unit bridges research and practical application, ensuring TIRDO's innovations reach industry to solve productivity challenges.",
       "It assesses the commercial potential of research, conducts market analysis, protects intellectual property (patents and trademarks), incubates start-ups from TIRDO innovations, and trains researchers on IP, technology transfer and commercialization.",
+    ],
+  },
+  {
+    slug: "human-resources-administration",
+    title: "Human Resources & Administration",
+    group: "Corporate Services",
+    blurb: "Human resources, administration and estate services that keep TIRDO running.",
+    head: "Mr. Emilian S. Bundala (Director)",
+    body: [
+      "The Human Resources & Administration Department provides the people and support services that enable TIRDO to deliver its mandate — recruitment, staff development and welfare, records and correspondence, transport, security, and the upkeep of TIRDO's buildings and estate.",
+      "It develops and implements human-resource policies and administrative systems, supports performance management and training, and ensures a safe, well-run working environment across the organisation.",
+    ],
+    sections: [
+      { name: "Human Resource Division", items: ["Personnel", "Training"] },
+      { name: "Administration Division", items: ["Office Management", "Transport", "Maintenance", "Security"] },
+      { name: "Estate Division", items: ["Building & Estate Maintenance", "Carpentry"] },
+    ],
+  },
+  {
+    slug: "finance",
+    title: "Finance",
+    group: "Corporate Services",
+    blurb: "Financial management, budgeting, accounting and revenue control.",
+    head: "Mr. David J. Kisiwa (Director)",
+    body: [
+      "The Finance Department is the institutional hub for financial management and advisory services. It coordinates the preparation and implementation of the Corporate Strategic Plan, Annual Budget and financial regulations, and ensures proper accounting and control of revenue and expenditure alongside the preparation of annual financial statements.",
+      "It develops financial systems and procedures, manages organisational cash flow, coordinates with suppliers and tax authorities, and provides technical advice on finance, accounts and business-process optimisation — helping TIRDO operate efficiently and transparently.",
+    ],
+    sections: [
+      { name: "Store Section" },
+      { name: "Pre-Audit Section" },
+      { name: "Costing & Expenditure Section" },
+      { name: "Revenue Section" },
     ],
   },
 ];
