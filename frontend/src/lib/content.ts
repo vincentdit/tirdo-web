@@ -275,7 +275,7 @@ export const departments: Department[] = [
     title: "Human Resources & Administration",
     group: "Human Resources & Administration",
     blurb: "Human resources, administration and estate services that keep TIRDO running.",
-    head: "Mr. Emilian S. Bundala (Director)",
+    head: "Mr. Emilian S. Bundala",
     body: [
       "The Human Resources & Administration Department provides the people and support services that enable TIRDO to deliver its mandate — recruitment, staff development and welfare, records and correspondence, transport, security, and the upkeep of TIRDO's buildings and estate.",
       "It develops and implements human-resource policies and administrative systems, supports performance management and training, and ensures a safe, well-run working environment across the organisation.",
@@ -291,7 +291,7 @@ export const departments: Department[] = [
     title: "Finance",
     group: "Finance",
     blurb: "Financial management, budgeting, accounting and revenue control.",
-    head: "Mr. David J. Kisiwa (Director)",
+    head: "Mr. David J. Kisiwa",
     body: [
       "The Finance Department is the institutional hub for financial management and advisory services. It coordinates the preparation and implementation of the Corporate Strategic Plan, Annual Budget and financial regulations, and ensures proper accounting and control of revenue and expenditure alongside the preparation of annual financial statements.",
       "It develops financial systems and procedures, manages organisational cash flow, coordinates with suppliers and tax authorities, and provides technical advice on finance, accounts and business-process optimisation — helping TIRDO operate efficiently and transparently.",
@@ -494,16 +494,63 @@ export const management: Leader[] = [
   { name: "Ms. Ester Lazaro", role: "Head, Electronics & Instrumentation" },
 ];
 
-export const orgStructure = {
+export type OrgUnit = { name: string; role?: string; head?: string };
+export type OrgDivision = { name: string; role?: string; head?: string; items?: string[] };
+export type OrgDept = { name: string; role: string; director?: string; divisions: OrgDivision[] };
+
+export const orgStructure: { intro: string; units: OrgUnit[]; departments: OrgDept[] } = {
   intro:
-    "TIRDO is governed by the Council (Board of Directors) and led by the Director General. The Director General is supported by the Internal Auditor, the Procurement Unit, the Corporate Service & Planning Division and the Legal Unit, and oversees five departments — each headed by a Director and made up of several divisions.",
-  units: ["Internal Auditor", "Procurement Unit", "Corporate Service & Planning Division", "Legal Unit"],
+    "TIRDO is governed by the Council (Board of Directors) and led by the Director General. The Director General is supported by the Internal Auditor, the Procurement Unit, the Corporate Service & Planning Division and the Legal Unit, and oversees five departments — each headed by a Director and made up of divisions and sections headed by a Head.",
+  // Supporting units beside the DG. `role` renders as the bracketed tag; `head` is the officer's name.
+  units: [
+    { name: "Internal Auditor" },
+    { name: "Procurement Unit" },
+    { name: "Corporate Service & Planning Division", role: "Head" },
+    { name: "Legal Unit" },
+  ],
+  // `role` becomes the bracketed tag, e.g. "(Director)" / "(Head)"; `director`/`head` hold names.
   departments: [
-    { name: "ICT & Technology Development", divisions: ["Information & Communication Technologies", "Electronics & Instrumentation Technologies", "Technology Transfer & Pilot Plants"] },
-    { name: "Industrial Research", divisions: ["Agro-Processing & Industrial Chemistry", "Environmental Technology & Occupational Safety", "Food Processing & Biotechnology"] },
-    { name: "Engineering Development", divisions: ["Engineering Material Technology", "Textile & Leather Technologies", "Energy Technology"] },
-    { name: "Human Resources & Administration", divisions: ["Human Resource — Personnel, Training", "Administration — Office Mgt, Transport, Maintenance, Security", "Estate — Building & Estate Maintenance, Carpentry"] },
-    { name: "Finance", divisions: ["Store Section", "Pre-Audit Section", "Costing & Expenditure Section", "Revenue Section"] },
+    {
+      name: "ICT & Technology Development Dept.", role: "Director", director: "Eng. Vincent J. Maro",
+      divisions: [
+        { name: "Information & Communication Technologies Division", role: "Head" },
+        { name: "Electronics & Instrumentation Technologies Division", role: "Head" },
+        { name: "Technology Transfer & Pilot Plants Division", role: "Head" },
+      ],
+    },
+    {
+      name: "Industrial Research Dept.", role: "Director", director: "Mr. Humphrey P. Ndossi",
+      divisions: [
+        { name: "Agro processing Industrial Chemistry Division", role: "Head" },
+        { name: "Environmental Technology & Occupational Safety Division", role: "Head" },
+        { name: "Food Processing & Biotechnology Division", role: "Head" },
+      ],
+    },
+    {
+      name: "Engineering Development Dept.", role: "Director", director: "Eng. Ramson A. Mwilangali",
+      divisions: [
+        { name: "Engineering Material Technology Division", role: "Head" },
+        { name: "Textile & Leather Technologies Division", role: "Head" },
+        { name: "Energy Technology Division", role: "Head" },
+      ],
+    },
+    {
+      name: "Human Resources & Admin Dept.", role: "Director", director: "Mr. Emilian S. Bundala",
+      divisions: [
+        { name: "Human Resource Division", role: "Head", items: ["Personnel", "Training"] },
+        { name: "Administration Division", role: "Head", items: ["Office Mgt", "Transport", "Maintenance", "Security"] },
+        { name: "Estate Division", role: "Head", items: ["Building & Estate Maintenance", "Carpentry"] },
+      ],
+    },
+    {
+      name: "Finance Dept.", role: "Director", director: "Mr. David J. Kisiwa",
+      divisions: [
+        { name: "Store Section" },
+        { name: "Pre-Audit Section" },
+        { name: "Costing & Expenditure Section" },
+        { name: "Revenue Section" },
+      ],
+    },
   ],
 };
 

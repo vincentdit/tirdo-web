@@ -36,7 +36,7 @@ export default function DepartmentsPage() {
                         <p className="text-sm text-foreground/80">{dept.blurb}</p>
                         {dept.head && (
                           <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-teal">
-                            <User className="h-4 w-4" /> {dept.head}
+                            <User className="h-4 w-4" /> Director: {dept.head}
                           </p>
                         )}
                         <div>

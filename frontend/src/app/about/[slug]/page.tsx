@@ -80,17 +80,23 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
               <div className="grid items-center gap-3 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
                 <div className="flex flex-col items-center gap-2 lg:items-end">
                   {orgStructure.units.slice(0, 2).map((u) => (
-                    <span key={u} className="max-w-[12rem] rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-center text-xs font-semibold text-brand-ink">{u}</span>
+                    <span key={u.name} className="max-w-[13rem] rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-center text-xs font-semibold text-brand-ink">
+                      {u.name}{u.role ? ` (${u.role})` : ""}
+                      {u.head && <span className="block text-[10px] font-normal text-brand-teal">{u.head}</span>}
+                    </span>
                   ))}
                 </div>
                 <div className="flex items-center justify-center">
                   <span className="org-h hidden w-6 lg:block" />
-                  <div className="rounded-md bg-brand-teal px-8 py-2.5 text-sm font-bold text-white shadow">Director General</div>
+                  <div className="rounded-md bg-brand-teal px-8 py-2.5 text-center text-sm font-bold text-white shadow">Director General</div>
                   <span className="org-h hidden w-6 lg:block" />
                 </div>
                 <div className="flex flex-col items-center gap-2 lg:items-start">
                   {orgStructure.units.slice(2).map((u) => (
-                    <span key={u} className="max-w-[12rem] rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-center text-xs font-semibold text-brand-ink">{u}</span>
+                    <span key={u.name} className="max-w-[13rem] rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-center text-xs font-semibold text-brand-ink">
+                      {u.name}{u.role ? ` (${u.role})` : ""}
+                      {u.head && <span className="block text-[10px] font-normal text-brand-teal">{u.head}</span>}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -102,13 +108,21 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
             <div className="org-row mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-0 lg:grid-cols-5" style={{ "--cols": "5" } as CSSProperties}>
               {orgStructure.departments.map((d) => (
                 <div key={d.name} className="overflow-hidden rounded-lg border bg-card">
-                  <div className="bg-brand-teal px-3 py-2.5 text-center text-xs font-bold leading-tight text-white">
-                    {d.name} Dept.
-                    <div className="text-[10px] font-normal text-white/80">Director</div>
+                  <div className="bg-brand-teal px-3 py-2.5 text-center text-[11px] font-bold leading-tight text-white">
+                    {d.name} ({d.role})
+                    {d.director && <div className="text-[10px] font-normal text-white/85">{d.director}</div>}
                   </div>
                   <ul className="space-y-1.5 p-2">
                     {d.divisions.map((x) => (
-                      <li key={x} className="rounded bg-brand-pale px-2 py-1.5 text-[11px] leading-snug text-brand-ink">{x}</li>
+                      <li key={x.name} className="rounded bg-brand-pale px-2 py-1.5 text-[11px] leading-snug text-brand-ink">
+                        <span className="font-medium">{x.name}{x.role ? ` (${x.role})` : ""}</span>
+                        {x.head && <span className="block text-[10px] text-brand-teal">{x.head}</span>}
+                        {x.items && x.items.length > 0 && (
+                          <ul className="mt-1 space-y-0.5 pl-1 text-[10px] text-brand-muted">
+                            {x.items.map((it) => <li key={it}>· {it}</li>)}
+                          </ul>
+                        )}
+                      </li>
                     ))}
                   </ul>
                 </div>

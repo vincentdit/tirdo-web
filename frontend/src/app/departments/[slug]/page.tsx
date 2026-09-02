@@ -38,7 +38,7 @@ export default function DepartmentPage({ params }: { params: { slug: string } })
                     <User className="h-6 w-6" />
                   </span>
                   <div>
-                    <div className="text-xs uppercase tracking-wide text-muted-foreground">Head of Division</div>
+                    <div className="text-xs uppercase tracking-wide text-muted-foreground">{dept.sections ? "Director" : "Head of Division"}</div>
                     <div className="font-semibold text-primary">{dept.head}</div>
                   </div>
                 </div>
