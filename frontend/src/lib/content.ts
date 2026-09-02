@@ -444,7 +444,7 @@ export const board: Leader[] = [
 export const topManagement: Leader[] = [
   { name: "Prof. Mkumbukwa M. A. Mtambo", role: "Director General" },
   { name: "Mr. Emilian S. Bundala", role: "Director of HR & Administration" },
-  { name: "Dr. Masoud M. Masoud", role: "Director of ICT & Technology Transfer" },
+  { name: "Eng. Vincent J. Maro", role: "Director of ICT & Technology Transfer" },
   { name: "Eng. Ramson A. Mwilangali", role: "Director of Engineering Development" },
   { name: "Mr. Humphrey P. Ndossi", role: "Director of Industrial Research" },
   { name: "Mr. David J. Kisiwa", role: "Director of Finance" },
