@@ -29,12 +29,11 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
               <Icon name={svc.icon} className="h-7 w-7" />
             </span>
             <p className="text-lg">{svc.description}</p>
-            <p>
-              TIRDO delivers this service through experienced professionals and well-equipped
-              laboratories, tailored to the needs of manufacturers, SMEs, government institutions and
-              development partners. Engagements range from short advisory assignments to multi-year
-              research and development programmes.
-            </p>
+            {(svc.body ?? [
+              "TIRDO delivers this service through experienced professionals and well-equipped laboratories, tailored to the needs of manufacturers, SMEs, government institutions and development partners.",
+            ]).map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
             <h3 className="pt-2 font-semibold text-primary">What you get</h3>
             <ul className="space-y-2">
               {["Qualified, multidisciplinary expert team", "Accredited laboratory and testing capability", "Actionable technical reports and recommendations", "Confidential, client-focused engagement"].map((f) => (

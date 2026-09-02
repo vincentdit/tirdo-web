@@ -32,7 +32,7 @@ export type Publication = {
   fileUrl?: string;
 };
 
-export type ServiceItem = { slug: string; title: string; description: string; icon: string };
+export type ServiceItem = { slug: string; title: string; description: string; icon: string; body?: string[] };
 export type StatItem = { label: string; value: number; suffix?: string };
 export type Slide = { title: string; subtitle: string; cta: string; href: string; image: string };
 export type Leader = { name: string; role: string; photo?: string };
@@ -99,12 +99,66 @@ export const coreActivities = [
 ];
 
 export const services: ServiceItem[] = [
-  { slug: "research", title: "Research", description: "Applied and contract industrial research for industry, government and development partners.", icon: "FlaskConical" },
-  { slug: "energy-auditing", title: "Energy Auditing", description: "Certified industrial energy audits that cut costs and emissions across plants.", icon: "Zap" },
-  { slug: "feasibility-studies", title: "Feasibility Studies", description: "Technical and economic feasibility for new industrial ventures and expansions.", icon: "ClipboardCheck" },
-  { slug: "consultancy", title: "Consultancy & Technical Services", description: "Expert advisory in engineering, environment, materials and process improvement.", icon: "Users" },
-  { slug: "laboratory", title: "Laboratory Analytical Services", description: "Accredited testing and analysis of materials, food, water, textiles and industrial products.", icon: "TestTube" },
-  { slug: "training", title: "Training & Skill Development", description: "Tailored short courses and capacity building for industry professionals.", icon: "GraduationCap" },
+  {
+    slug: "research",
+    title: "Research",
+    description: "Applied and contract industrial research for industry, government and development partners.",
+    icon: "FlaskConical",
+    body: [
+      "TIRDO provides applied research focused on local material utilization — evaluating, developing and integrating locally available materials into industrial processes. This covers material evaluation to assess suitability for different industries, optimization of material properties for specific applications, and experimentation to test incorporation into existing or new manufacturing processes.",
+      "The organization also researches industrial techniques and technologies to advise government and industry on adopting domestic and foreign approaches within Tanzania's context — bridging scientific knowledge with practical industrial application to strengthen local industries and support economic development.",
+    ],
+  },
+  {
+    slug: "energy-auditing",
+    title: "Energy Auditing",
+    description: "Certified industrial energy audits that cut costs and emissions across plants.",
+    icon: "Zap",
+    body: [
+      "TIRDO delivers energy auditing as a systematic inspection and analysis service that identifies consumption patterns and efficiency opportunities. Its certified auditors follow ASHRAE and ISO standards, backed by state-of-the-art laboratory facilities, serving industries, commercial buildings and households across Tanzania and the East African Community.",
+      "The service helps organisations determine their carbon footprint, set reduction targets and evaluate renewable-energy alternatives. Beyond standard audits, the laboratory performs performance testing on ovens, boilers, solar dryers and cook stoves — helping businesses cut costs and strengthen their environmental, social and governance foundations.",
+    ],
+  },
+  {
+    slug: "feasibility-studies",
+    title: "Feasibility Studies",
+    description: "Technical and economic feasibility for new industrial ventures and expansions.",
+    icon: "ClipboardCheck",
+    body: [
+      "TIRDO conducts comprehensive feasibility studies for establishing new ventures or expanding operations — covering project definition and scope, market-demand analysis, technical evaluation of resources and infrastructure, financial cost projections, and risk identification. It also assesses resource availability for raw materials and labour and performs environmental and social impact assessments.",
+      "By providing thorough pre-project analysis and detailed recommendations on viability, TIRDO helps businesses make well-informed investment decisions, minimise financial risk and optimise resource allocation before significant capital is committed.",
+    ],
+  },
+  {
+    slug: "consultancy",
+    title: "Consultancy & Technical Services",
+    description: "Expert advisory in engineering, environment, materials and process improvement.",
+    icon: "Users",
+    body: [
+      "TIRDO offers comprehensive technical support across sectors: quality assurance using non-destructive testing (NDT) for welded vessels and pipelines, energy-efficiency audits and performance testing, coal materials analysis, food microbiological testing, environmental monitoring, and chemical analytical services for raw materials and industrial products.",
+      "Its clients span manufacturing facilities, commercial centres and households — food producers, chemical processors, environmental consultants and energy-focused enterprises — supported through accredited laboratories. TIRDO also assists industrial establishments during process development and factory set-up as a multidisciplinary technical partner.",
+    ],
+  },
+  {
+    slug: "laboratory",
+    title: "Laboratory Analytical Services",
+    description: "Accredited testing and analysis of materials, food, water, textiles and industrial products.",
+    icon: "TestTube",
+    body: [
+      "TIRDO operates specialised, accredited laboratories across food and microbiology, industrial chemistry, materials, energy and environment. Services include physicochemical and microbiological testing of food and water, heavy-metal and micronutrient analysis, coal quality assessment, and destructive and non-destructive testing of materials.",
+      "Industries, government institutions, SMEs and the public rely on these laboratories for reliable, standards-based results that support quality assurance, regulatory compliance and product development.",
+    ],
+  },
+  {
+    slug: "training",
+    title: "Training & Skill Development",
+    description: "Tailored short courses and capacity building for industry professionals.",
+    icon: "GraduationCap",
+    body: [
+      "TIRDO delivers tailored short courses and capacity-building programmes for industrialists, SMEs and the public — spanning food processing, packaging and safety (GMP, GHP, HACCP), energy efficiency and clean-technology production, non-destructive testing, and leather, spinning and weaving technologies.",
+      "Training combines TIRDO's laboratory capability with field experience, equipping participants with practical skills that improve productivity, quality and safety across Tanzanian industry.",
+    ],
+  },
 ];
 
 export type Department = {

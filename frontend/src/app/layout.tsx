@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   },
   description:
     "TIRDO drives industrialization in Tanzania through applied research, engineering development, ICT and technology transfer.",
+  icons: {
+    icon: "https://www.tirdo.or.tz/static/asset/images/logo.jpg",
+    apple: "https://www.tirdo.or.tz/static/asset/images/logo.jpg",
+  },
   openGraph: {
     title: `${site.name} — ${site.longName}`,
     type: "website",
