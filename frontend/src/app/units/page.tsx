@@ -9,15 +9,15 @@ export default function UnitsPage() {
     <>
       <PageBanner
         title="Supporting Units"
-        subtitle="Units reporting directly to the Director General — Legal, Internal Audit, Procurement and Planning."
+        subtitle="Units reporting directly to the Director General — Internal Auditor, Procurement, Corporate Service & Planning and Legal."
         crumbs={[{ label: "Units" }]}
       />
       <section className="py-14">
         <div className="container-tirdo max-w-4xl space-y-5">
           <p className="text-foreground/80">
-            Alongside its five directorates, TIRDO&apos;s Director General is supported by
-            four units that provide independent assurance, legal, procurement and planning
-            functions across the organisation.
+            Alongside its five departments, TIRDO&apos;s Director General is supported by
+            units that provide independent assurance, procurement, corporate planning and
+            legal functions across the organisation.
           </p>
           <div className="grid gap-5 sm:grid-cols-2">
             {managementUnits.map((u) => (

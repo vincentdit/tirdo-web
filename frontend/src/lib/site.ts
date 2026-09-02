@@ -81,9 +81,44 @@ export const mainNav: NavItem[] = [
           { title: "Technology Transfer", href: "/departments/technology-transfer" },
         ],
       },
+    ],
+  },
+  {
+    title: "Departments",
+    href: "/departments",
+    columns: [
+      {
+        heading: "Industry & Research",
+        items: [
+          { title: "Environment", href: "/departments/environment" },
+          { title: "Food & Biotechnology", href: "/departments/food-biotechnology" },
+          { title: "Industrial Chemistry", href: "/departments/industrial-chemistry" },
+        ],
+      },
+      {
+        heading: "Engineering Development",
+        items: [
+          { title: "Energy", href: "/departments/energy" },
+          { title: "Material Science & Technology", href: "/departments/materials" },
+          { title: "Textile & Leather", href: "/departments/textile-leather" },
+        ],
+      },
+      {
+        heading: "ICT & Technology Development",
+        items: [
+          { title: "ICT", href: "/departments/ict" },
+          { title: "Instrumentation", href: "/departments/instrumentation" },
+          { title: "Technology Transfer", href: "/departments/technology-transfer" },
+        ],
+      },
       {
         heading: "Finance",
-        items: [{ title: "Finance", href: "/departments/finance" }],
+        items: [
+          { title: "Store Section", href: "/departments/finance" },
+          { title: "Pre-Audit Section", href: "/departments/finance" },
+          { title: "Costing & Expenditure Section", href: "/departments/finance" },
+          { title: "Revenue Section", href: "/departments/finance" },
+        ],
       },
       {
         heading: "Human Resource",
@@ -93,16 +128,6 @@ export const mainNav: NavItem[] = [
           { title: "Estate Division", href: "/departments/human-resources-administration" },
         ],
       },
-    ],
-  },
-  {
-    title: "Units",
-    href: "/units",
-    children: [
-      { title: "Legal", href: "/units#legal" },
-      { title: "Internal Audit", href: "/units#internal-audit" },
-      { title: "Procurement", href: "/units#procurement" },
-      { title: "Planning", href: "/units#planning" },
     ],
   },
   {

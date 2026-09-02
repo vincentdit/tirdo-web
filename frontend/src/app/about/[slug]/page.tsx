@@ -80,7 +80,7 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
               <div className="grid items-center gap-3 lg:grid-cols-[1fr_auto_1fr] lg:gap-0">
                 <div className="flex flex-col items-center gap-2 lg:items-end">
                   {orgStructure.units.slice(0, 2).map((u) => (
-                    <span key={u} className="rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-xs font-semibold text-brand-ink">{u} Unit</span>
+                    <span key={u} className="max-w-[12rem] rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-center text-xs font-semibold text-brand-ink">{u}</span>
                   ))}
                 </div>
                 <div className="flex items-center justify-center">
@@ -90,7 +90,7 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
                 </div>
                 <div className="flex flex-col items-center gap-2 lg:items-start">
                   {orgStructure.units.slice(2).map((u) => (
-                    <span key={u} className="rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-xs font-semibold text-brand-ink">{u} Unit</span>
+                    <span key={u} className="max-w-[12rem] rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-center text-xs font-semibold text-brand-ink">{u}</span>
                   ))}
                 </div>
               </div>
@@ -103,16 +103,14 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
               {orgStructure.departments.map((d) => (
                 <div key={d.name} className="overflow-hidden rounded-lg border bg-card">
                   <div className="bg-brand-teal px-3 py-2.5 text-center text-xs font-bold leading-tight text-white">
-                    {d.name}
-                    <div className="text-[10px] font-normal text-white/80">Directorate</div>
+                    {d.name} Dept.
+                    <div className="text-[10px] font-normal text-white/80">Director</div>
                   </div>
-                  {d.divisions.length > 0 && (
-                    <ul className="space-y-1.5 p-2">
-                      {d.divisions.map((x) => (
-                        <li key={x} className="rounded bg-brand-pale px-2 py-1.5 text-[11px] leading-snug text-brand-ink">{x}</li>
-                      ))}
-                    </ul>
-                  )}
+                  <ul className="space-y-1.5 p-2">
+                    {d.divisions.map((x) => (
+                      <li key={x} className="rounded bg-brand-pale px-2 py-1.5 text-[11px] leading-snug text-brand-ink">{x}</li>
+                    ))}
+                  </ul>
                 </div>
               ))}
             </div>
