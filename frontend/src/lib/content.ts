@@ -402,6 +402,58 @@ export const partners = [
   "TIC", "BRELA", "EPZA", "TanTrade",
 ];
 
+export type EventItem = {
+  title: string;
+  date: string;
+  location: string;
+  category: string;
+  description: string;
+  image?: string;
+};
+
+export const events: EventItem[] = [
+  {
+    title: "Biomass Briquettes Production Training",
+    date: "2025-11-15",
+    location: "TIRDO Complex, Dar es Salaam",
+    category: "Training",
+    description: "Hands-on, registration-based training on producing biomass briquettes as a clean cooking-fuel alternative to charcoal.",
+    image: `${RES}/H1D6ScYYF7ZdoRK9q5V8fxut6gRVKKVeSQaTWjKU.png`,
+  },
+  {
+    title: "Hands-on Training in Alternative Charcoal Production",
+    date: "2025-10-10",
+    location: "TIRDO Complex, Dar es Salaam",
+    category: "Training",
+    description: "Practical training on producing alternative charcoal, supporting jobs and reducing pressure on forests.",
+    image: `${NEWS}/q2cMG2Q6dwvZqhDC5vXf8vJTzX6LT4DBgJKj1OEd.jpg`,
+  },
+  {
+    title: "Dar es Salaam International Trade Fair (DITF) 2025",
+    date: "2025-07-01",
+    location: "Mwalimu J. K. Nyerere Trade Fair Grounds, Dar es Salaam",
+    category: "Exhibition",
+    description: "TIRDO showcased its research products, laboratories and industrial services at the annual national trade fair.",
+    image: `${CI}/llWLlNlWubobDNVa4AKmzeiScT4efKRsoeZA4xRO.jpg`,
+  },
+];
+
+export type GalleryImage = { src: string; caption: string };
+export const galleryImages: GalleryImage[] = [
+  { src: `${CI}/fRbUBRaWLBHYVw8U8yG1aRENYr39KbRrvArOp5kQ.jpg`, caption: "Ministry Secretary with the TIRDO Board" },
+  { src: `${CI}/uNKy6HRLTxyTlnOfqZlMhXIR8nA6SaMGCDNzTmrq.jpg`, caption: "Deputy Minister's visit to TIRDO" },
+  { src: `${CI}/laX5QEVDZMj4dCwh7uxiIy1gerC4jjQOJe3myxs9.jpg`, caption: "Signing of the strategic minerals research agreement" },
+  { src: `${CI}/llWLlNlWubobDNVa4AKmzeiScT4efKRsoeZA4xRO.jpg`, caption: "TIRDO at the DITF 2025 exhibition" },
+  { src: `${CI}/cCiap7vvzT3PcCrqVYJe99reAp4pnPJVZ5SnDDBV.jpg`, caption: "Non-destructive testing experts at Msalato airport" },
+  { src: `${RES}/feHRWQMR9OJXOpyL21RzVcnWNQ9xzn2ATG2RKDLj.jpg`, caption: "Essential oils production research" },
+  { src: `${RES}/H1D6ScYYF7ZdoRK9q5V8fxut6gRVKKVeSQaTWjKU.png`, caption: "Biomass briquette production plant" },
+  { src: `${RES}/rulXDuQQtR41OMCyxi0UpFChGCupyDdXYHxHEfZz.png`, caption: "Industrial mapping project" },
+  { src: `${RES}/oE73KEynZEZ2mPY8pm9YD39qgwsjTVgtHrC44f7q.png`, caption: "Energy efficiency action plan" },
+  { src: `${NEWS}/eS05a9Ewg0Zp9bxOaIbmJpkipvJVRhpzToa8Pz1u.jpg`, caption: "TIRDO and STAMICO agreement" },
+  { src: `${NEWS}/2KFt3PRz9DRWIww6TBbfl0IcDvKXWfxOAXYHHGah.jpg`, caption: "Alternative charcoal for environmental conservation" },
+  { src: "https://www.tirdo.or.tz/uploads/administration/1.%20Prof.%20Mkumbukwa%20M.%20A.%20message.png", caption: "Director General, Prof. Mkumbukwa M. A. Mtambo" },
+];
+
 // TIRDO management / division heads (from tirdo.or.tz department pages).
 export const management: Leader[] = [
   { name: "Prof. Mkumbukwa M. A.", role: "Director General" },

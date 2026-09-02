@@ -18,11 +18,11 @@ export function Header() {
         <div className="container-tirdo flex min-h-[38px] items-center justify-between text-[0.78rem]">
           <span className="hidden sm:block">United Republic of Tanzania</span>
           <div className="ml-auto flex items-center gap-2">
-            <a href="#" className="hidden px-1 hover:text-brand-gold sm:inline">Staff Mail</a>
+            <a href="https://mail.tirdo.or.tz" target="_blank" rel="noreferrer" className="hidden px-1 hover:text-brand-gold sm:inline">Staff Mail</a>
             <span className="hidden h-3 w-px bg-white/40 sm:inline-block" />
-            <a href="#" className="hidden px-1 hover:text-brand-gold sm:inline">e-Office</a>
+            <a href="https://eoffice.gov.go.tz/users/login" target="_blank" rel="noreferrer" className="hidden px-1 hover:text-brand-gold sm:inline">e-Office</a>
             <span className="hidden h-3 w-px bg-white/40 sm:inline-block" />
-            <a href="#" className="hidden px-1 hover:text-brand-gold sm:inline">Helpdesk</a>
+            <a href="mailto:help@tirdo.or.tz" className="hidden px-1 hover:text-brand-gold sm:inline">Helpdesk</a>
             <span className="hidden h-3 w-px bg-white/40 sm:inline-block" />
             <button className="hidden px-1 hover:text-brand-gold sm:inline">Kiswahili</button>
             <span className="ml-1 rounded-sm border border-white/60 px-1 py-0.5 text-[0.7rem]">EN</span>
