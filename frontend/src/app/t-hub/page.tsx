@@ -36,6 +36,58 @@ export default function THubPage() {
         </div>
       </section>
 
+      {/* About T-Hub */}
+      <section className="border-t py-14">
+        <div className="container-tirdo grid gap-10 lg:grid-cols-[1fr_1.4fr]">
+          <div>
+            <p className="eyebrow mb-2 text-brand-teal">About</p>
+            <h2 className="font-display text-[1.8rem] text-brand-ink md:text-[2.2rem]">About T-Hub</h2>
+          </div>
+          <div className="space-y-4 text-foreground/80">
+            {tHub.about.map((p, i) => <p key={i}>{p}</p>)}
+          </div>
+        </div>
+      </section>
+
+      {/* T-Hub Services */}
+      <section className="border-t py-14">
+        <div className="container-tirdo">
+          <div className="mb-8">
+            <p className="eyebrow mb-2 text-brand-teal">What we offer</p>
+            <h2 className="font-display text-[1.8rem] text-brand-ink md:text-[2.2rem]">T-Hub Services</h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {tHub.services.map((s) => (
+              <Card key={s.title}>
+                <CardContent className="p-5">
+                  <h3 className="mb-1 font-semibold text-primary">{s.title}</h3>
+                  <p className="text-sm text-muted-foreground">{s.text}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why T-Hub */}
+      <section className="bg-brand-blue py-16 text-white">
+        <div className="container-tirdo">
+          <div className="mb-8">
+            <p className="eyebrow mb-2 text-brand-gold">The difference</p>
+            <h2 className="font-display text-[1.8rem] md:text-[2.2rem]">Why T-Hub</h2>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {tHub.why.map((w, i) => (
+              <div key={w.title} className="rounded-xl border border-white/15 bg-white/5 p-5">
+                <div className="mb-2 text-2xl font-black text-brand-gold">{String(i + 1).padStart(2, "0")}</div>
+                <h3 className="mb-1 font-semibold text-brand-gold">{w.title}</h3>
+                <p className="text-sm text-white/80">{w.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Portfolio companies */}
       <section className="bg-brand-pale py-16">
         <div className="container-tirdo">

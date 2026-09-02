@@ -416,15 +416,15 @@ export const management: Leader[] = [
 
 export const orgStructure = {
   intro:
-    "TIRDO follows a hierarchical structure. A Board of Directors provides policy and oversight, and the Director General serves as chief executive officer, leading the directorates and supporting units.",
-  directorates: [
-    "Research & Development",
-    "Technology Development & Transfer",
-    "Industrial Services",
-    "ICT & Information Services",
-    "Finance & Administration",
+    "TIRDO is governed by the Council (Board of Directors) and led by the Director General. The Director General is supported by the Internal Auditor, the Procurement Unit and the Corporate Service & Planning Division, and oversees five departments — each headed by a Director and made up of several divisions.",
+  units: ["Internal Auditor", "Procurement Unit", "Corporate Service & Planning Division"],
+  departments: [
+    { name: "ICT & Technology Development", divisions: ["Information & Communication Technologies", "Electronics & Instrumentation Technologies", "Technology Transfer & Pilot Plants"] },
+    { name: "Industrial Research", divisions: ["Agro-Processing & Industrial Chemistry", "Environmental Technology & Occupational Safety", "Food Processing & Biotechnology"] },
+    { name: "Engineering Development", divisions: ["Engineering Material Technology", "Textile & Leather Technologies", "Energy Technology"] },
+    { name: "Human Resources & Administration", divisions: ["Human Resource — Personnel, Training", "Administration — Office Mgt, Transport, Maintenance, Security", "Estate — Building & Estate Maintenance, Carpentry"] },
+    { name: "Finance", divisions: ["Store Section", "Pre-Audit Section", "Costing & Expenditure Section", "Revenue Section"] },
   ],
-  supportingUnits: ["Legal", "Internal Audit", "Procurement", "Planning"],
 };
 
 // Board of Directors (as provided by TIRDO).
@@ -510,6 +510,26 @@ export type Company = { name: string; description: string; logo?: string; href: 
 export const tHub = {
   intro:
     "T-Hub is TIRDO's innovation and IT development initiative, helping businesses balance proven best practice with innovation, software development, speed, efficiency and flexibility. It guides organisations through complex IT environments and incubates home-grown startups.",
+  about: [
+    "T-Hub has emerged to help businesses balance the benefits of proven best practices, innovation and software development with the need for speed, efficiency and flexibility. It guides organisations through complex IT environments while aligning business objectives with the right technology solutions.",
+    "Operating within TIRDO, the hub provides expertise across IT disciplines to enhance operational value and efficiency, and incubates a portfolio of home-grown startups spanning software, telecommunications, renewable energy and innovation.",
+  ],
+  services: [
+    { title: "Software Solutions", text: "Custom software development and design for public and private sectors and individuals." },
+    { title: "ICT Consultancy", text: "Technology advisory integrated with finance, tax and legal specialists." },
+    { title: "Business Incubation", text: "ICT business incubation for public and private sector and individuals." },
+    { title: "Research & Consultancy", text: "Comprehensive business analysis and solution development." },
+    { title: "Training & Capacity Building", text: "Skills-development programmes tailored to clients." },
+    { title: "Coaching & Facilitation", text: "Business guidance and hands-on support services." },
+    { title: "Advisory Services", text: "Strategic business and management consulting." },
+    { title: "Security Solutions", text: "Consulting, advanced products and managed services to improve security and efficiency." },
+  ],
+  why: [
+    { title: "Tailored Solutions", text: "We partner with you to understand your goals and build customised strategies — not generic products." },
+    { title: "Comprehensive Integration", text: "We understand how organisational facets interconnect, collaborating across professions for integrated solutions." },
+    { title: "Trust Through Competence", text: "Reliable delivery and collaborative planning that build long-term, lasting relationships." },
+    { title: "Enterprise Security", text: "Proven solutions and managed services for modern threats across cloud, mobile, remote work and suppliers." },
+  ],
   companies: [
     { name: "Innovasie", description: "Custom software development, cybersecurity and marketing, building digital products for healthcare, legal and communications across Africa.", logo: "https://www.tirdo.or.tz/uploads/innovasie/innovasie.png", href: "https://www.tirdo.or.tz/en/innovasie" },
     { name: "Ammacom (AwamuPay)", description: "A creative digital agency offering mobile apps, custom software, digital marketing, web design and mobile-money integration.", logo: "https://www.tirdo.or.tz/uploads/icon/AMMACOM.png", href: "https://www.tirdo.or.tz/en/awamupay" },

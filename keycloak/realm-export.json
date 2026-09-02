@@ -51,6 +51,36 @@
       "email": "editor@tirdo.or.tz",
       "credentials": [{ "type": "password", "value": "editor123", "temporary": true }],
       "realmRoles": ["content-editor", "staff"]
+    },
+    {
+      "username": "m.mtambo",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Mkumbukwa",
+      "lastName": "Mtambo",
+      "email": "dg@tirdo.or.tz",
+      "credentials": [{ "type": "password", "value": "Tirdo@2026", "temporary": true }],
+      "realmRoles": ["tirdo-admin", "staff"]
+    },
+    {
+      "username": "m.masoud",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Masoud",
+      "lastName": "Masoud",
+      "email": "m.masoud@tirdo.or.tz",
+      "credentials": [{ "type": "password", "value": "Tirdo@2026", "temporary": true }],
+      "realmRoles": ["content-editor", "staff"]
+    },
+    {
+      "username": "h.ndossi",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Humphrey",
+      "lastName": "Ndossi",
+      "email": "h.ndossi@tirdo.or.tz",
+      "credentials": [{ "type": "password", "value": "Tirdo@2026", "temporary": true }],
+      "realmRoles": ["staff"]
     }
   ]
 }

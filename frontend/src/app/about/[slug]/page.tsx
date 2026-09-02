@@ -65,21 +65,38 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
         )}
 
         {params.slug === "structure" && (
-          <div className="container-tirdo max-w-3xl">
-            <p className="mb-6 text-foreground/80">{orgStructure.intro}</p>
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div>
-                <h3 className="mb-3 border-l-4 border-accent pl-3 font-bold text-primary">Directorates / Departments</h3>
-                <ul className="space-y-2 text-sm text-foreground/80">
-                  {orgStructure.directorates.map((d) => <li key={d} className="rounded bg-secondary px-3 py-2">{d}</li>)}
-                </ul>
-              </div>
-              <div>
-                <h3 className="mb-3 border-l-4 border-accent pl-3 font-bold text-primary">Supporting Units</h3>
-                <ul className="space-y-2 text-sm text-foreground/80">
-                  {orgStructure.supportingUnits.map((d) => <li key={d} className="rounded bg-secondary px-3 py-2">{d}</li>)}
-                </ul>
-              </div>
+          <div className="container-tirdo">
+            <p className="mx-auto mb-10 max-w-3xl text-center text-foreground/80">{orgStructure.intro}</p>
+
+            {/* Council -> Director General */}
+            <div className="flex flex-col items-center">
+              <div className="rounded-md bg-brand-blue px-8 py-2.5 text-center text-sm font-bold text-white shadow">Council<div className="text-[10px] font-normal text-white/80">Board of Directors</div></div>
+              <div className="h-6 w-px bg-border" />
+              <div className="rounded-md bg-brand-teal px-8 py-2.5 text-sm font-bold text-white shadow">Director General</div>
+            </div>
+
+            {/* DG support units */}
+            <div className="mx-auto mt-6 flex max-w-3xl flex-wrap justify-center gap-3">
+              {orgStructure.units.map((u) => (
+                <span key={u} className="rounded-md border border-brand-teal/30 bg-brand-pale px-3 py-2 text-xs font-semibold text-brand-ink">{u}</span>
+              ))}
+            </div>
+
+            {/* Departments and their divisions */}
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {orgStructure.departments.map((d) => (
+                <div key={d.name} className="overflow-hidden rounded-lg border">
+                  <div className="bg-brand-teal px-3 py-2.5 text-center text-xs font-bold leading-tight text-white">
+                    {d.name} Dept.
+                    <div className="text-[10px] font-normal text-white/80">Director</div>
+                  </div>
+                  <ul className="space-y-1.5 p-2">
+                    {d.divisions.map((x) => (
+                      <li key={x} className="rounded bg-brand-pale px-2 py-1.5 text-[11px] leading-snug text-brand-ink">{x}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </div>
         )}
