@@ -69,10 +69,10 @@ export function Header() {
       <nav className="sticky top-0 z-50 bg-brand-teal shadow-[0_4px_12px_rgba(0,43,58,0.18)]">
         <div className="container-tirdo flex h-[62px] items-center gap-2" onMouseLeave={() => setOpenMenu(null)}>
           {/* mobile brand */}
-          <Link href="/" className="font-bold text-white xl:hidden">TIRDO</Link>
+          <Link href="/" className="font-bold text-white lg:hidden">TIRDO</Link>
 
           {/* desktop nav */}
-          <div className="hidden h-full flex-1 items-stretch xl:flex">
+          <div className="hidden h-full flex-1 items-stretch lg:flex">
             {mainNav.map((item) => (
               <DesktopNavItem
                 key={item.title}
@@ -84,7 +84,7 @@ export function Header() {
           </div>
 
           <div className="ml-auto flex items-center gap-2">
-            <Link href="/search" aria-label="Search" className="hidden h-9 w-9 place-items-center text-white hover:text-brand-gold xl:grid">
+            <Link href="/search" aria-label="Search" className="hidden h-9 w-9 place-items-center text-white hover:text-brand-gold lg:grid">
               <Search className="h-5 w-5" />
             </Link>
             <Link
@@ -94,7 +94,7 @@ export function Header() {
               {portal.title} <ArrowRight className="h-4 w-4" />
             </Link>
             <button
-              className="grid h-9 w-9 place-items-center text-white xl:hidden"
+              className="grid h-9 w-9 place-items-center text-white lg:hidden"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label="Toggle menu"
             >
@@ -105,7 +105,7 @@ export function Header() {
 
         {/* mobile menu */}
         {mobileOpen && (
-          <div className="border-t border-white/10 bg-brand-teal xl:hidden">
+          <div className="border-t border-white/10 bg-brand-teal lg:hidden">
             <nav className="container-tirdo flex flex-col py-2">
               {mainNav.map((item) => (
                 <MobileNavItem key={item.title} item={item} onNavigate={() => setMobileOpen(false)} />
@@ -131,7 +131,7 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
       <Link
         href={item.href}
         className={cn(
-          "relative flex items-center gap-0.5 whitespace-nowrap px-2.5 text-[0.82rem] text-white transition-colors hover:bg-brand-teal-dark",
+          "relative flex items-center gap-1 whitespace-nowrap px-3.5 text-[0.9rem] text-white transition-colors hover:bg-brand-teal-dark",
           open && "bg-brand-teal-dark"
         )}
       >
@@ -143,7 +143,7 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
       {hasMenu && open && (
         <div className={cn(
           "absolute left-0 top-full z-50 rounded-b-lg border-t-2 border-brand-gold bg-white p-4 text-brand-ink shadow-xl",
-          item.columns ? (item.columns.length > 3 ? "w-[900px]" : "w-[620px]") : "w-64"
+          item.columns ? (item.columns.length >= 5 ? "w-[900px]" : item.columns.length === 4 ? "w-[780px]" : "w-[620px]") : "w-64"
         )}>
           {item.children && (
             <ul className="space-y-1">
@@ -157,7 +157,7 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
             </ul>
           )}
           {item.columns && (
-            <div className={cn("grid gap-4", item.columns.length > 3 ? "grid-cols-5" : "grid-cols-3")}>
+            <div className={cn("grid gap-4", item.columns.length >= 5 ? "grid-cols-5" : item.columns.length === 4 ? "grid-cols-4" : "grid-cols-3")}>
               {item.columns.map((col) => (
                 <div key={col.heading}>
                   <div className="mb-2 border-b pb-1 text-xs font-bold uppercase tracking-wide text-brand-teal">{col.heading}</div>

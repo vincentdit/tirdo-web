@@ -50,10 +50,11 @@ export const mainNav: NavItem[] = [
       { title: "Board of Directors", href: "/about/board" },
       { title: "Administration", href: "/about/administration" },
       { title: "Success Stories", href: "/about/success-stories" },
+      { title: "COMSATS Centre", href: "/about/comsats" },
     ],
   },
   {
-    title: "Departments",
+    title: "Our Work",
     href: "/departments",
     columns: [
       {
@@ -81,22 +82,12 @@ export const mainNav: NavItem[] = [
         ],
       },
       {
-        heading: "Finance",
-        items: [{ title: "Finance Department", href: "/departments/finance" }],
+        heading: "Corporate Services",
+        items: [
+          { title: "Finance", href: "/departments/finance" },
+          { title: "Human Resources & Administration", href: "/departments/human-resources-administration" },
+        ],
       },
-      {
-        heading: "Human Resource",
-        items: [{ title: "HR & Administration", href: "/departments/human-resources-administration" }],
-      },
-    ],
-  },
-  {
-    title: "COMSATS Center",
-    href: "/about/comsats",
-    children: [
-      { title: "Background", href: "/about/comsats" },
-      { title: "Objectives", href: "/about/comsats" },
-      { title: "Activities", href: "/about/comsats" },
     ],
   },
   {
@@ -112,17 +103,27 @@ export const mainNav: NavItem[] = [
     ],
   },
   {
-    title: "T-Hub",
-    href: "/t-hub",
+    title: "Research & Innovation",
+    href: "/projects",
     children: [
-      { title: "About T-Hub", href: "/t-hub" },
-      { title: "T-Hub Services", href: "/t-hub" },
-      { title: "Why T-Hub", href: "/t-hub" },
-      { title: "Portfolio Companies", href: "/t-hub" },
+      { title: "Ongoing Projects", href: "/projects" },
+      { title: "T-Hub Innovation", href: "/t-hub" },
+      { title: "Industrial Information Centre", href: "/industrial-information-centre" },
+      { title: "Research Products", href: "/projects#products" },
+      { title: "Publications", href: "/publications" },
     ],
   },
-  { title: "Industrial Information Center", href: "/industrial-information-centre" },
-  { title: "Documents", href: "/documents" },
+  {
+    title: "Media Centre",
+    href: "/news",
+    children: [
+      { title: "News & Announcements", href: "/news" },
+      { title: "Events", href: "/events" },
+      { title: "Gallery", href: "/gallery" },
+      { title: "Documents", href: "/documents" },
+    ],
+  },
+  { title: "Contact Us", href: "/contact" },
 ];
 
 // Highlighted portal button in the header (gold).
