@@ -20,3 +20,6 @@ cms/.tmp
 .DS_Store
 Thumbs.db
 
+
+# patch archives from remote edits
+*.tgz
