@@ -27,10 +27,19 @@ kc config credentials --server http://localhost:8080/auth --realm master --user 
 
 $defaultPw = "Tirdo@2026"   # temporary — users must change on first login
 $users = @(
-  @{ u = "m.mtambo"; f = "Mkumbukwa"; l = "Mtambo"; e = "dg@tirdo.or.tz";        roles = @("tirdo-admin", "staff") },
-  @{ u = "m.masoud"; f = "Masoud";    l = "Masoud"; e = "m.masoud@tirdo.or.tz";  roles = @("content-editor", "staff") },
-  @{ u = "h.ndossi"; f = "Humphrey";  l = "Ndossi"; e = "h.ndossi@tirdo.or.tz";  roles = @("staff") }
+  @{ u = "m.mtambo"; f = "Mkumbukwa"; l = "Mtambo"; e = "dg@tirdo.or.tz";       roles = @("tirdo-admin", "staff") },
+  @{ u = "v.maro";   f = "Vincent J."; l = "Maro";  e = "v.maro@tirdo.or.tz";   roles = @("content-editor", "staff") },
+  @{ u = "h.ndossi"; f = "Humphrey";  l = "Ndossi"; e = "h.ndossi@tirdo.or.tz"; roles = @("staff") }
 )
+
+# Remove the old demo account (m.masoud) if it was previously seeded.
+try {
+  $existing = (kc get users -r tirdo -q username=m.masoud 2>$null | Out-String | ConvertFrom-Json)
+  if ($existing -and $existing.Count -gt 0) {
+    kc delete "users/$($existing[0].id)" -r tirdo 2>$null
+    Write-Host "Removed old account m.masoud" -ForegroundColor Yellow
+  }
+} catch { }
 
 foreach ($usr in $users) {
   Write-Host "`n-> $($usr.u)" -ForegroundColor Green

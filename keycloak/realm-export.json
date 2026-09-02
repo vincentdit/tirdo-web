@@ -63,12 +63,12 @@
       "realmRoles": ["tirdo-admin", "staff"]
     },
     {
-      "username": "m.masoud",
+      "username": "v.maro",
       "enabled": true,
       "emailVerified": true,
-      "firstName": "Masoud",
-      "lastName": "Masoud",
-      "email": "m.masoud@tirdo.or.tz",
+      "firstName": "Vincent J.",
+      "lastName": "Maro",
+      "email": "v.maro@tirdo.or.tz",
       "credentials": [{ "type": "password", "value": "Tirdo@2026", "temporary": true }],
       "realmRoles": ["content-editor", "staff"]
     },
