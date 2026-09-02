@@ -21,12 +21,13 @@ export const site = {
 };
 
 // Official TIRDO imagery used across the site (served from tirdo.or.tz).
+// Served locally from frontend/public/media (see scripts/fetch-tirdo-assets.ps1).
 export const assets = {
-  emblem: "https://www.tirdo.or.tz/static/asset/images/tz-emblem.png",
-  logo: "https://www.tirdo.or.tz/static/asset/images/logo.jpg",
-  hero: "https://www.tirdo.or.tz/storage/carousel-items/fRbUBRaWLBHYVw8U8yG1aRENYr39KbRrvArOp5kQ.jpg",
-  director: "https://www.tirdo.or.tz/uploads/administration/1.%20Prof.%20Mkumbukwa%20M.%20A.%20message.png",
-  newsFeatured: "https://www.tirdo.or.tz/storage/carousel-items/laX5QEVDZMj4dCwh7uxiIy1gerC4jjQOJe3myxs9.jpg",
+  emblem: "/media/brand/tz-emblem.png",
+  logo: "/media/brand/logo.jpg",
+  hero: "/media/carousel-items/fRbUBRaWLBHYVw8U8yG1aRENYr39KbRrvArOp5kQ.jpg",
+  director: "/media/administration/director.png",
+  newsFeatured: "/media/carousel-items/laX5QEVDZMj4dCwh7uxiIy1gerC4jjQOJe3myxs9.jpg",
 };
 
 export type NavChild = { title: string; href: string; description?: string };

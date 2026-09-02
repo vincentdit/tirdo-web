@@ -37,10 +37,12 @@ export type StatItem = { label: string; value: number; suffix?: string };
 export type Slide = { title: string; subtitle: string; cta: string; href: string; image: string };
 export type Leader = { name: string; role: string; photo?: string };
 
-const CI = "https://www.tirdo.or.tz/storage/carousel-items";
-const RES = "https://www.tirdo.or.tz/storage/resources";
-const NEWS = "https://www.tirdo.or.tz/storage/news";
-const PUB = "https://www.tirdo.or.tz/storage/publications";
+// Local assets served from frontend/public/media (downloaded from tirdo.or.tz
+// via scripts/fetch-tirdo-assets.ps1).
+const CI = "/media/carousel-items";
+const RES = "/media/resources";
+const NEWS = "/media/news";
+const PUB = "/media/publications";
 
 export const heroSlides: Slide[] = [
   {
@@ -399,7 +401,7 @@ export const publications: Publication[] = [
 export const directorMessage = {
   name: "Prof. Mkumbukwa M. A. Mtambo",
   role: "Director General",
-  photo: "https://www.tirdo.or.tz/uploads/administration/1.%20Prof.%20Mkumbukwa%20M.%20A.%20message.png",
+  photo: "/media/administration/director.png",
   quote:
     "It is my distinguished pleasure and honour to welcome you to the Tanzania Industrial Research and Development Organization. TIRDO is a national industrial research organization whose mandate is to undertake industrial research, provide technology services, and disseminate research findings that have an impact on socio-economic activities in the country.",
 };
@@ -479,7 +481,7 @@ export const galleryImages: GalleryImage[] = [
   { src: `${RES}/oE73KEynZEZ2mPY8pm9YD39qgwsjTVgtHrC44f7q.png`, caption: "Energy efficiency action plan" },
   { src: `${NEWS}/eS05a9Ewg0Zp9bxOaIbmJpkipvJVRhpzToa8Pz1u.jpg`, caption: "TIRDO and STAMICO agreement" },
   { src: `${NEWS}/2KFt3PRz9DRWIww6TBbfl0IcDvKXWfxOAXYHHGah.jpg`, caption: "Alternative charcoal for environmental conservation" },
-  { src: "https://www.tirdo.or.tz/uploads/administration/1.%20Prof.%20Mkumbukwa%20M.%20A.%20message.png", caption: "Director General, Prof. Mkumbukwa M. A. Mtambo" },
+  { src: "/media/administration/director.png", caption: "Director General, Prof. Mkumbukwa M. A. Mtambo" },
 ];
 
 // TIRDO management / division heads (from tirdo.or.tz department pages).
@@ -683,11 +685,11 @@ export const tHub = {
     { title: "Enterprise Security", text: "Proven solutions and managed services for modern threats across cloud, mobile, remote work and suppliers." },
   ],
   companies: [
-    { name: "Innovasie", description: "Custom software development, cybersecurity and marketing, building digital products for healthcare, legal and communications across Africa.", logo: "https://www.tirdo.or.tz/uploads/innovasie/innovasie.png", href: "https://www.tirdo.or.tz/en/innovasie" },
-    { name: "Ammacom (AwamuPay)", description: "A creative digital agency offering mobile apps, custom software, digital marketing, web design and mobile-money integration.", logo: "https://www.tirdo.or.tz/uploads/icon/AMMACOM.png", href: "https://www.tirdo.or.tz/en/awamupay" },
-    { name: "Albetus Technologies", description: "ICT solutions provider delivering infrastructure design, software development, cloud solutions and security systems.", logo: "https://www.tirdo.or.tz/uploads/innovasie/albetus.png", href: "https://www.tirdo.or.tz/en/albetus" },
-    { name: "Bivatek Africa", description: "East African technology company behind BIVA CHUO (student loans) and BIVA VOCHA (digital vouchers), plus cybersecurity and web services.", logo: "https://www.tirdo.or.tz/static/uploads/icon/bivatek.png", href: "https://www.tirdo.or.tz/en/bivatekafrica" },
-    { name: "Amani Solar", description: "Manufactures solar-powered household lighting for off-grid communities — a clean alternative to candles and kerosene.", logo: "https://www.tirdo.or.tz/static/uploads/icon/AMANI%20SOLAR%20LOGO.png", href: "https://www.tirdo.or.tz/en/amanisolar" },
+    { name: "Innovasie", description: "Custom software development, cybersecurity and marketing, building digital products for healthcare, legal and communications across Africa.", logo: "/media/partners/innovasie.png", href: "https://www.tirdo.or.tz/en/innovasie" },
+    { name: "Ammacom (AwamuPay)", description: "A creative digital agency offering mobile apps, custom software, digital marketing, web design and mobile-money integration.", logo: "/media/partners/ammacom.png", href: "https://www.tirdo.or.tz/en/awamupay" },
+    { name: "Albetus Technologies", description: "ICT solutions provider delivering infrastructure design, software development, cloud solutions and security systems.", logo: "/media/partners/albetus.png", href: "https://www.tirdo.or.tz/en/albetus" },
+    { name: "Bivatek Africa", description: "East African technology company behind BIVA CHUO (student loans) and BIVA VOCHA (digital vouchers), plus cybersecurity and web services.", logo: "/media/partners/bivatek.png", href: "https://www.tirdo.or.tz/en/bivatekafrica" },
+    { name: "Amani Solar", description: "Manufactures solar-powered household lighting for off-grid communities — a clean alternative to candles and kerosene.", logo: "/media/partners/amani-solar.png", href: "https://www.tirdo.or.tz/en/amanisolar" },
     { name: "Olas", description: "An early-stage venture incubated at TIRDO's T-Hub, developing technology solutions for Tanzanian industry.", href: "https://www.tirdo.or.tz/en/olas" },
   ] as Company[],
 };
