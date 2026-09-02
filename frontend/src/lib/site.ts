@@ -6,7 +6,7 @@
 export const site = {
   name: "TIRDO",
   longName: "Tanzania Industrial Research and Development Organization",
-  tagline: "Industrial Research for National Development",
+  tagline: "TIRDO for sustainable industrial development",
   established: "Established by Act of Parliament No. 5 of 1979",
   address: "Kimweri Avenue, Msasani, TIRDO Complex, P.O. Box 23235, Dar es Salaam, Tanzania",
   phone: "+255 22 2666034 / +255 22 2668822",
@@ -18,6 +18,15 @@ export const site = {
     linkedin: "https://linkedin.com/company/tirdo",
     youtube: "https://youtube.com/@tirdo",
   },
+};
+
+// Official TIRDO imagery used across the site (served from tirdo.or.tz).
+export const assets = {
+  emblem: "https://www.tirdo.or.tz/static/asset/images/tz-emblem.png",
+  logo: "https://www.tirdo.or.tz/static/asset/images/logo.jpg",
+  hero: "https://www.tirdo.or.tz/storage/carousel-items/fRbUBRaWLBHYVw8U8yG1aRENYr39KbRrvArOp5kQ.jpg",
+  director: "https://www.tirdo.or.tz/uploads/administration/1.%20Prof.%20Mkumbukwa%20M.%20A.%20message.png",
+  newsFeatured: "https://www.tirdo.or.tz/storage/carousel-items/laX5QEVDZMj4dCwh7uxiIy1gerC4jjQOJe3myxs9.jpg",
 };
 
 export type NavChild = { title: string; href: string; description?: string };
@@ -45,7 +54,7 @@ export const mainNav: NavItem[] = [
     ],
   },
   {
-    title: "Departments",
+    title: "Our Work",
     href: "/departments",
     columns: [
       {
@@ -97,7 +106,7 @@ export const mainNav: NavItem[] = [
     ],
   },
   {
-    title: "Media",
+    title: "Media Centre",
     href: "/news",
     children: [
       { title: "News & Announcements", href: "/news" },
@@ -106,17 +115,11 @@ export const mainNav: NavItem[] = [
       { title: "Downloads", href: "/publications" },
     ],
   },
-  {
-    title: "e-Services",
-    href: "/e-services",
-    children: [
-      { title: "Industrial Information Centre", href: "/e-services#iic" },
-      { title: "Client Portal", href: "/e-services#portal" },
-      { title: "Staff e-Office", href: "/e-services#eoffice" },
-    ],
-  },
-  { title: "Contact", href: "/contact" },
+  { title: "Contact Us", href: "/contact" },
 ];
+
+// Highlighted portal button in the header (gold).
+export const portal = { title: "e-Services", href: "/e-services" };
 
 // Coloured quick-access cards under the hero (NACTVET pattern).
 export const quickAccess = [

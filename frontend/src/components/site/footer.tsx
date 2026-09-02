@@ -1,67 +1,70 @@
 import Link from "next/link";
-import { MapPin, Phone, Mail, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
-import { site, footerLinks } from "@/lib/site";
+import { site, assets } from "@/lib/site";
+
+const columns = [
+  {
+    heading: "Explore TIRDO",
+    links: [
+      { title: "About us", href: "/about" },
+      { title: "Our departments", href: "/departments" },
+      { title: "Research products", href: "/projects" },
+      { title: "Publications", href: "/publications" },
+    ],
+  },
+  {
+    heading: "Quick links",
+    links: [
+      { title: "Industrial services", href: "/services" },
+      { title: "T-Hub", href: "/t-hub" },
+      { title: "Career opportunities", href: "/careers" },
+      { title: "Tenders", href: "/tenders" },
+    ],
+  },
+];
 
 export function Footer() {
   return (
-    <footer className="mt-16 bg-primary-dark text-primary-foreground">
-      <div className="container-tirdo grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-4">
-        {/* Identity */}
+    <footer className="bg-brand-navy text-[#d3e0e9]">
+      <div className="container-tirdo grid gap-8 py-16 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.35fr]">
         <div>
-          <div className="mb-3 flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-md bg-white/10 font-bold">TI</div>
-            <div className="text-lg font-extrabold">{site.name}</div>
-          </div>
-          <p className="text-sm text-white/70">{site.longName}</p>
-          <p className="mt-2 text-xs text-white/50">{site.established}</p>
-          <div className="mt-4 flex gap-3">
-            <a href={site.social.facebook} aria-label="Facebook" className="grid h-9 w-9 place-items-center rounded-full bg-white/10 hover:bg-accent hover:text-accent-foreground"><Facebook className="h-4 w-4" /></a>
-            <a href={site.social.twitter} aria-label="Twitter" className="grid h-9 w-9 place-items-center rounded-full bg-white/10 hover:bg-accent hover:text-accent-foreground"><Twitter className="h-4 w-4" /></a>
-            <a href={site.social.instagram} aria-label="Instagram" className="grid h-9 w-9 place-items-center rounded-full bg-white/10 hover:bg-accent hover:text-accent-foreground"><Instagram className="h-4 w-4" /></a>
-            <a href={site.social.linkedin} aria-label="LinkedIn" className="grid h-9 w-9 place-items-center rounded-full bg-white/10 hover:bg-accent hover:text-accent-foreground"><Linkedin className="h-4 w-4" /></a>
-            <a href={site.social.youtube} aria-label="YouTube" className="grid h-9 w-9 place-items-center rounded-full bg-white/10 hover:bg-accent hover:text-accent-foreground"><Youtube className="h-4 w-4" /></a>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={assets.logo} alt="TIRDO" className="w-[76px] bg-white p-1.5" />
+          <p className="mt-4 max-w-[280px] text-sm leading-7">
+            Building a sustainable industrial future through research, technology and innovation.
+          </p>
         </div>
 
-        {/* Quick links */}
-        <div>
-          <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-accent">Quick Links</h3>
-          <ul className="space-y-2 text-sm text-white/75">
-            {footerLinks.quick.map((l) => (
-              <li key={l.href}><Link href={l.href} className="hover:text-accent">{l.title}</Link></li>
+        {columns.map((col) => (
+          <div key={col.heading}>
+            <h4 className="mb-4 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">{col.heading}</h4>
+            {col.links.map((l) => (
+              <Link key={l.href} href={l.href} className="my-2 block text-sm hover:text-brand-gold">
+                {l.title}
+              </Link>
             ))}
-          </ul>
-        </div>
+          </div>
+        ))}
 
-        {/* Related links */}
         <div>
-          <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-accent">Related Links</h3>
-          <ul className="space-y-2 text-sm text-white/75">
-            {footerLinks.related.map((l) => (
-              <li key={l.href}><a href={l.href} target="_blank" rel="noreferrer" className="hover:text-accent">{l.title}</a></li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Contact */}
-        <div>
-          <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-accent">Contact Us</h3>
-          <ul className="space-y-3 text-sm text-white/75">
-            <li className="flex gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{site.address}</li>
-            <li className="flex gap-2"><Phone className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{site.phone}</li>
-            <li className="flex gap-2"><Mail className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{site.email}</li>
-          </ul>
+          <h4 className="mb-4 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">Contact us</h4>
+          <p className="text-sm leading-7">
+            Kimweri Avenue, Msasani<br />
+            P.O. Box 23235<br />
+            Dar es Salaam, Tanzania
+          </p>
+          <a href={`mailto:${site.email}`} className="my-2 block text-sm hover:text-brand-gold">{site.email}</a>
+          <a href="tel:+255222666034" className="block text-sm hover:text-brand-gold">+255 22 266 6034</a>
         </div>
       </div>
 
       <div className="border-t border-white/10">
-        <div className="container-tirdo flex flex-col items-center justify-between gap-2 py-4 text-xs text-white/60 sm:flex-row">
-          <p>© {new Date().getFullYear()} {site.longName}. All rights reserved.</p>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-accent">Privacy Policy</Link>
-            <Link href="/sitemap" className="hover:text-accent">Sitemap</Link>
-            <Link href="/disclaimer" className="hover:text-accent">Disclaimer</Link>
-          </div>
+        <div className="container-tirdo flex flex-col justify-between gap-2 py-5 text-xs text-[#a7bdcd] sm:flex-row">
+          <p>© {new Date().getFullYear()} {site.longName}</p>
+          <p className="flex gap-4">
+            <Link href="/privacy" className="hover:text-brand-gold">Privacy policy</Link>
+            <Link href="/sitemap" className="hover:text-brand-gold">Sitemap</Link>
+            <Link href="/disclaimer" className="hover:text-brand-gold">Accessibility</Link>
+          </p>
         </div>
       </div>
     </footer>

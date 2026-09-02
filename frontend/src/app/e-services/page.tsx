@@ -1,5 +1,7 @@
 import { PageBanner } from "@/components/site/page-banner";
 import { ButtonLink } from "@/components/ui/button";
+import { EServicesPortal } from "@/components/site/eservices-portal";
+import { SectionHeading } from "@/components/site/section-heading";
 import { eservices } from "@/lib/content";
 
 export const metadata = { title: "e-Services" };
@@ -8,7 +10,19 @@ export default function EServicesPage() {
   return (
     <>
       <PageBanner title="TIRDO e-Services" subtitle="Online systems for clients, the public and TIRDO staff." crumbs={[{ label: "e-Services" }]} />
+
+      {/* Authenticated client portal (Keycloak SSO) */}
       <section className="py-14">
+        <div className="container-tirdo">
+          <SectionHeading eyebrow="Secure area" title="Client Portal" />
+          <EServicesPortal />
+        </div>
+      </section>
+
+      <section className="border-t bg-secondary/30 py-14">
+        <div className="container-tirdo">
+          <SectionHeading eyebrow="Public" title="Available Services" />
+        </div>
         <div className="container-tirdo grid gap-6 md:grid-cols-3">
           {eservices.map((e) => (
             <div key={e.anchor} id={e.anchor} className="scroll-mt-28 rounded-xl border bg-card p-6 shadow-sm">

@@ -3,66 +3,68 @@
 @tailwind utilities;
 
 /* ============================================================
-   TIRDO brand theme
-   Primary  = TIRDO blue    #2d4a84  ->  hsl(220 49% 35%)
-   Accent   = TIRDO gold    #e8a33d  ->  hsl(36 79% 57%)
+   TIRDO brand theme (approved design)
+   teal #007e93 · blue #17488e · gold #f2c500 · ink #092a45
+   Headings: Playfair Display (serif) · Body: DM Sans
    ============================================================ */
 @layer base {
   :root {
-    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-      "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+      Roboto, Arial, sans-serif;
+    --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+
     --background: 0 0% 100%;
-    --foreground: 222 30% 15%;
+    --foreground: 207 77% 15%; /* ink */
 
     --card: 0 0% 100%;
-    --card-foreground: 222 30% 15%;
+    --card-foreground: 207 77% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 30% 15%;
+    --popover-foreground: 207 77% 15%;
 
-    --primary: 220 49% 35%;
+    --primary: 189 100% 29%; /* teal */
     --primary-foreground: 0 0% 100%;
-    --primary-dark: 220 52% 26%;
+    --primary-dark: 189 100% 24%;
 
-    --secondary: 220 30% 96%;
-    --secondary-foreground: 220 49% 30%;
+    --secondary: 190 24% 96%; /* pale */
+    --secondary-foreground: 207 60% 22%;
 
-    --accent: 36 79% 57%;
-    --accent-foreground: 222 45% 15%;
+    --accent: 49 100% 47%; /* gold */
+    --accent-foreground: 207 77% 15%;
 
-    --muted: 220 20% 96%;
-    --muted-foreground: 220 12% 42%;
+    --muted: 190 20% 96%;
+    --muted-foreground: 210 14% 44%;
 
     --destructive: 0 72% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 18% 88%;
-    --input: 220 18% 88%;
-    --ring: 220 49% 35%;
+    --border: 200 22% 90%;
+    --input: 200 22% 90%;
+    --ring: 189 100% 29%;
 
-    --radius: 0.5rem;
+    --radius: 0.375rem;
   }
 
   .dark {
-    --background: 222 40% 9%;
-    --foreground: 210 20% 96%;
-    --card: 222 38% 12%;
-    --card-foreground: 210 20% 96%;
-    --popover: 222 38% 12%;
-    --popover-foreground: 210 20% 96%;
-    --primary: 216 70% 62%;
-    --primary-foreground: 222 45% 12%;
-    --primary-dark: 216 60% 48%;
-    --secondary: 222 30% 18%;
-    --secondary-foreground: 210 20% 92%;
-    --accent: 36 79% 57%;
-    --accent-foreground: 222 45% 12%;
-    --muted: 222 26% 18%;
-    --muted-foreground: 220 12% 65%;
+    --background: 207 55% 8%;
+    --foreground: 200 20% 95%;
+    --card: 207 50% 11%;
+    --card-foreground: 200 20% 95%;
+    --popover: 207 50% 11%;
+    --popover-foreground: 200 20% 95%;
+    --primary: 189 70% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-dark: 189 70% 38%;
+    --secondary: 207 40% 16%;
+    --secondary-foreground: 200 20% 92%;
+    --accent: 49 100% 50%;
+    --accent-foreground: 207 77% 12%;
+    --muted: 207 35% 16%;
+    --muted-foreground: 200 14% 65%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 222 26% 22%;
-    --input: 222 26% 22%;
-    --ring: 216 70% 62%;
+    --border: 207 32% 20%;
+    --input: 207 32% 20%;
+    --ring: 189 70% 45%;
   }
 }
 
@@ -73,15 +75,23 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    line-height: 1.55;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 @layer components {
   .container-tirdo {
-    @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-[1160px] px-4 sm:px-6;
   }
-  .link-underline {
-    @apply relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-accent after:transition-all hover:after:w-full;
+  /* Serif display headings, per the design */
+  .font-display {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.15em];
   }
 }

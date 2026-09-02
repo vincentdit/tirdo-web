@@ -1,0 +1,10 @@
+<!doctype html>
+<html>
+  <body>
+    <script>
+      // Used by keycloak-js `check-sso` to verify the session silently in an
+      // iframe without a full-page redirect.
+      parent.postMessage(location.href, location.origin);
+    </script>
+  </body>
+</html>

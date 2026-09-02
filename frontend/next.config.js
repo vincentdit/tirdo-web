@@ -2,6 +2,8 @@
 const nextConfig = {
   output: "standalone",
   reactStrictMode: true,
+  // Fonts load via <link> at runtime (browser), so skip build-time fetch/optimize.
+  optimizeFonts: false,
   images: {
     remotePatterns: [
       { protocol: "http", hostname: "localhost" },

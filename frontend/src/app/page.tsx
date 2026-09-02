@@ -1,176 +1,162 @@
 import Link from "next/link";
-import { ArrowRight, Quote } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { HeroSlider } from "@/components/site/hero-slider";
-import { Stats } from "@/components/site/stats";
-import { SectionHeading } from "@/components/site/section-heading";
-import { NewsCard, ProjectCard } from "@/components/site/cards";
 import { Icon } from "@/components/site/icon";
-import { Card, CardContent } from "@/components/ui/card";
-import { ButtonLink } from "@/components/ui/button";
-import { quickAccess } from "@/lib/site";
-import { coreActivities, services, eservices, partners } from "@/lib/content";
-import { getNews, getProjects } from "@/lib/strapi";
+import { assets } from "@/lib/site";
+import { coreActivities, services } from "@/lib/content";
+import { formatDate } from "@/lib/utils";
+import { getNews } from "@/lib/strapi";
 
 export default async function HomePage() {
-  const [news, projects] = await Promise.all([getNews(3), getProjects()]);
+  const news = await getNews(3);
+  const latest = news[0];
 
   return (
     <>
       <HeroSlider />
 
-      {/* Quick access strip (NACTVET pattern) */}
-      <section className="relative z-10 -mt-8">
-        <div className="container-tirdo">
-          <div className="grid grid-cols-2 gap-3 rounded-xl border bg-card p-4 shadow-lg sm:grid-cols-3 lg:grid-cols-6">
-            {quickAccess.map((q) => (
-              <Link key={q.href} href={q.href} className="group flex flex-col items-center gap-2 rounded-lg p-4 text-center transition-colors hover:bg-secondary">
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <Icon name={q.icon} className="h-6 w-6" />
-                </span>
-                <span className="text-xs font-semibold text-foreground/80">{q.title}</span>
-              </Link>
-            ))}
+      {/* Latest announcement */}
+      {latest && (
+        <section className="border-b border-brand-pale">
+          <div className="container-tirdo flex min-h-[75px] flex-wrap items-center gap-x-5 gap-y-2 py-4 text-sm">
+            <span className="bg-brand-gold px-2 py-1 text-[0.68rem] font-bold tracking-wide text-brand-ink">LATEST</span>
+            <strong className="text-brand-ink">{latest.title}</strong>
+            <Link href={`/news/${latest.slug}`} className="ml-auto inline-flex shrink-0 items-center gap-1 font-bold text-brand-teal hover:gap-2">
+              Read announcement <ArrowRight className="h-4 w-4 transition-all" />
+            </Link>
           </div>
+        </section>
+      )}
+
+      {/* Welcome / intro */}
+      <section className="container-tirdo grid gap-12 py-20 md:grid-cols-2 md:gap-20 md:py-24">
+        <div>
+          <p className="eyebrow mb-3 text-brand-teal">Welcome to TIRDO</p>
+          <h2 className="font-display text-[2rem] leading-tight text-brand-ink md:text-[2.6rem]">
+            Research that moves industry forward.
+          </h2>
+        </div>
+        <div className="md:pt-7">
+          <p className="text-[1.05rem] text-brand-muted">
+            Tanzania Industrial Research and Development Organization is a multidisciplinary R&amp;D
+            institution established in 1979. We help industry solve practical challenges, strengthen
+            technology capability and create value from Tanzania&apos;s resources.
+          </p>
+          <Link href="/about" className="mt-5 inline-flex items-center gap-1 text-sm font-bold uppercase tracking-wide text-brand-teal hover:gap-2">
+            Learn about our mandate <ArrowRight className="h-4 w-4 transition-all" />
+          </Link>
         </div>
       </section>
 
-      {/* DG welcome + core activities */}
-      <section className="py-16">
-        <div className="container-tirdo grid gap-12 lg:grid-cols-[1fr_1.3fr]">
-          <div>
-            <SectionHeading eyebrow="Welcome" title="From the Director General" />
-            <div className="relative rounded-xl bg-secondary p-6">
-              <Quote className="absolute right-5 top-5 h-10 w-10 text-primary/10" />
-              <p className="text-sm leading-relaxed text-foreground/80">
-                Established by an Act of Parliament No. 5 of 1979, TIRDO exists to support the
-                industrialization of Tanzania through applied research, engineering development and
-                the transfer of appropriate technologies. We partner with industry, government and
-                development partners to add value to local resources, improve productivity and grow a
-                competitive, sustainable industrial sector.
-              </p>
-              <div className="mt-5 flex items-center gap-3">
-                <div className="grid h-12 w-12 place-items-center rounded-full bg-primary font-bold text-primary-foreground">DG</div>
-                <div>
-                  <div className="font-semibold text-primary">Director General</div>
-                  <div className="text-xs text-muted-foreground">TIRDO</div>
-                </div>
-              </div>
-              <Link href="/about" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:gap-2">
-                About TIRDO <ArrowRight className="h-4 w-4 transition-all" />
-              </Link>
+      {/* Core activities */}
+      <section className="bg-brand-pale py-20">
+        <div className="container-tirdo">
+          <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <p className="eyebrow mb-2 text-brand-teal">What we do</p>
+              <h2 className="font-display text-[2rem] text-brand-ink md:text-[2.6rem]">Our core activities</h2>
             </div>
+            <p className="max-w-sm text-brand-muted">
+              Practical science, technical expertise and innovation support for an industrial Tanzania.
+            </p>
           </div>
+          <div className="grid gap-px overflow-hidden bg-[#dce5e7] sm:grid-cols-2 lg:grid-cols-4">
+            {coreActivities.map((a, idx) => (
+              <article key={a.title} className="flex min-h-[280px] flex-col bg-white p-6">
+                <span className="text-[0.76rem] font-bold text-[#a4b7ba]">{String(idx + 1).padStart(2, "0")}</span>
+                <span className="my-4 text-brand-teal"><Icon name={a.icon} className="h-8 w-8" /></span>
+                <h3 className="mb-2 text-lg font-semibold text-brand-ink">{a.title}</h3>
+                <p className="flex-1 text-sm text-brand-muted">{a.description}</p>
+                <Link href="/departments" className="mt-3 inline-flex items-center gap-1 text-[0.76rem] font-bold uppercase tracking-wide text-brand-teal hover:gap-2">
+                  Explore <ArrowRight className="h-4 w-4" />
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
+      {/* Industrial services */}
+      <section className="container-tirdo py-20 md:py-24">
+        <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <SectionHeading eyebrow="What we do" title="Our Core Activities" />
-            <div className="grid gap-4 sm:grid-cols-2">
-              {coreActivities.map((a) => (
-                <Card key={a.title} className="transition-shadow hover:shadow-md">
-                  <CardContent className="p-5">
-                    <span className="mb-3 grid h-11 w-11 place-items-center rounded-lg bg-accent/15 text-accent">
-                      <Icon name={a.icon} className="h-6 w-6" />
-                    </span>
-                    <h3 className="mb-1 font-semibold text-primary">{a.title}</h3>
-                    <p className="text-sm text-muted-foreground">{a.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <p className="eyebrow mb-2 text-brand-teal">Digital access</p>
+            <h2 className="font-display text-[2rem] text-brand-ink md:text-[2.6rem]">Industrial services</h2>
+          </div>
+          <Link href="/services" className="inline-flex items-center gap-2 border border-brand-teal px-4 py-3 text-[0.78rem] font-bold uppercase tracking-wide text-brand-teal hover:bg-brand-teal hover:text-white">
+            View all services <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {services.map((s) => (
+            <Link key={s.slug} href={`/services/${s.slug}`} className="group flex min-h-[210px] flex-col border p-6 transition-all hover:-translate-y-1 hover:border-brand-teal hover:shadow-[0_9px_20px_rgba(6,48,68,0.08)]">
+              <span className="mb-4 text-brand-teal"><Icon name={s.icon} className="h-7 w-7" /></span>
+              <h3 className="mb-2 text-lg font-semibold text-brand-ink">{s.title}</h3>
+              <p className="flex-1 text-sm text-brand-muted">{s.description}</p>
+              <span className="mt-3 inline-flex items-center gap-1 text-[0.75rem] font-bold uppercase tracking-wide text-brand-teal">
+                Access service <ArrowRight className="h-4 w-4" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Leadership message */}
+      <section className="bg-brand-blue text-white">
+        <div className="container-tirdo grid items-center gap-10 md:grid-cols-[38%_1fr] md:gap-16">
+          <div className="h-[360px] overflow-hidden md:h-[460px]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={assets.director} alt="Prof. Mkumbukwa M. A." className="h-full w-full object-cover object-top" />
+          </div>
+          <div className="py-12 md:py-14">
+            <p className="eyebrow mb-3 text-brand-gold">Leadership message</p>
+            <h2 className="max-w-2xl font-display text-[1.9rem] leading-tight md:text-[2.5rem]">
+              Working together for a capable, competitive industrial economy.
+            </h2>
+            <p className="mt-5 max-w-2xl text-[1.05rem] text-[#dce8f2]">
+              &ldquo;TIRDO exists to make research useful—by transforming it into technologies, services
+              and knowledge that support Tanzania&apos;s social and economic development.&rdquo;
+            </p>
+            <strong className="mt-6 block">Prof. Mkumbukwa M. A.</strong>
+            <small className="mb-6 block text-[#b8cce3]">Director General</small>
+            <Link href="/about/administration" className="inline-flex items-center gap-4 bg-white px-5 py-3.5 text-[0.78rem] font-bold uppercase tracking-wide text-brand-blue hover:bg-brand-pale">
+              Read the full message <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
 
-      <Stats />
-
-      {/* Services */}
-      <section className="py-16">
-        <div className="container-tirdo">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading eyebrow="How we help" title="Our Services" className="mb-0" />
-            <ButtonLink href="/services" variant="outline">All services</ButtonLink>
+      {/* News & innovations */}
+      <section className="container-tirdo py-20 md:py-24">
+        <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p className="eyebrow mb-2 text-brand-teal">From TIRDO</p>
+            <h2 className="font-display text-[2rem] text-brand-ink md:text-[2.6rem]">News &amp; innovations</h2>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((s) => (
-              <Link key={s.slug} href={`/services/${s.slug}`}>
-                <Card className="group h-full border-l-4 border-l-transparent transition-all hover:border-l-accent hover:shadow-md">
-                  <CardContent className="flex gap-4 p-5">
-                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                      <Icon name={s.icon} className="h-6 w-6" />
-                    </span>
-                    <div>
-                      <h3 className="mb-1 font-semibold text-primary">{s.title}</h3>
-                      <p className="text-sm text-muted-foreground">{s.description}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
+          <Link href="/news" className="inline-flex items-center gap-1 text-sm font-bold uppercase tracking-wide text-brand-teal hover:gap-2">
+            View all news <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
-      </section>
-
-      {/* Featured research products */}
-      <section id="products" className="bg-secondary/50 py-16">
-        <div className="container-tirdo">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading eyebrow="Innovation" title="Featured Research Products" className="mb-0" />
-            <ButtonLink href="/projects" variant="outline">All projects</ButtonLink>
-          </div>
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {projects.slice(0, 4).map((p) => (
-              <ProjectCard key={p.slug} item={p} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Latest news */}
-      <section className="py-16">
-        <div className="container-tirdo">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading eyebrow="Newsroom" title="News & Announcements" className="mb-0" />
-            <ButtonLink href="/news" variant="outline">All news</ButtonLink>
-          </div>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {news.map((n) => (
-              <NewsCard key={n.slug} item={n} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* e-Services CTA band */}
-      <section className="bg-primary py-16 text-primary-foreground">
-        <div className="container-tirdo">
-          <div className="mb-8 text-center">
-            <span className="text-sm font-semibold uppercase tracking-wider text-accent">Online</span>
-            <h2 className="mt-1 text-2xl font-bold sm:text-3xl">TIRDO e-Services</h2>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {eservices.map((e) => (
-              <Link key={e.anchor} href={e.href} className="group rounded-xl border border-white/15 bg-white/5 p-6 transition-colors hover:bg-white/10">
-                <h3 className="mb-2 font-semibold text-accent">{e.title}</h3>
-                <p className="text-sm text-white/75">{e.description}</p>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold group-hover:gap-2">
-                  Open <ArrowRight className="h-4 w-4 transition-all" />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Partners */}
-      <section className="py-14">
-        <div className="container-tirdo">
-          <SectionHeading eyebrow="Collaboration" title="Our Partners" center />
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            {partners.map((p) => (
-              <div key={p} className="grid h-20 w-36 place-items-center rounded-lg border bg-card text-lg font-bold text-primary/70 grayscale transition-all hover:grayscale-0">
-                {p}
+        <div className="grid gap-5 lg:grid-cols-[2fr_1fr_1fr]">
+          {latest && (
+            <Link href={`/news/${latest.slug}`} className="group relative h-[350px] overflow-hidden text-white">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={latest.image || assets.newsFeatured} alt={latest.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,40,62,0.85),transparent_65%)]" />
+              <div className="absolute bottom-0 z-10 p-6">
+                <span className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-gold">{latest.category} · {formatDate(latest.date)}</span>
+                <h3 className="my-2 text-[1.3rem] font-semibold leading-snug">{latest.title}</h3>
+                <span className="inline-flex items-center gap-1 text-sm font-bold uppercase tracking-wide">Read story <ArrowRight className="h-4 w-4" /></span>
               </div>
-            ))}
-          </div>
+            </Link>
+          )}
+          {news.slice(1, 3).map((n) => (
+            <Link key={n.slug} href={`/news/${n.slug}`} className="flex h-[350px] flex-col justify-end border-t-4 border-brand-teal bg-brand-pale p-6">
+              <span className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-teal">{n.category} · {formatDate(n.date)}</span>
+              <h3 className="my-3 text-[1.2rem] font-semibold leading-snug text-brand-ink">{n.title}</h3>
+              <span className="inline-flex items-center gap-1 text-[0.76rem] font-bold uppercase tracking-wide text-brand-teal">Read story <ArrowRight className="h-4 w-4" /></span>
+            </Link>
+          ))}
         </div>
       </section>
     </>

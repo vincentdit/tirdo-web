@@ -45,6 +45,17 @@ const config: Config = {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
+        // TIRDO brand palette (from the approved design)
+        brand: {
+          teal: "#007e93",
+          "teal-dark": "#006e80",
+          blue: "#17488e",
+          gold: "#f2c500",
+          ink: "#092a45",
+          muted: "#607080",
+          pale: "#f3f7f8",
+          navy: "#062b45",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -53,6 +64,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
       },
       keyframes: {
         "accordion-down": {

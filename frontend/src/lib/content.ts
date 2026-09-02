@@ -44,23 +44,22 @@ export type Leader = { name: string; role: string; photo?: string };
 
 export const heroSlides: Slide[] = [
   {
-    title: "Industrial Research for National Development",
-    subtitle:
-      "TIRDO drives industrialization in Tanzania through applied research, engineering development and technology transfer.",
-    cta: "Explore our research",
-    href: "/projects",
+    title: "Ideas engineered for Tanzania's industry.",
+    subtitle: "We turn research, technology and innovation into sustainable industrial growth.",
+    cta: "Discover TIRDO",
+    href: "/about",
   },
   {
-    title: "From the Laboratory to Industry",
+    title: "From the laboratory to industry.",
     subtitle:
       "Contract research, energy auditing, feasibility studies and consultancy for a competitive industrial sector.",
     cta: "Our services",
     href: "/services",
   },
   {
-    title: "T-Hub: Powering Industrial Innovation",
+    title: "Powering industrial innovation.",
     subtitle:
-      "Incubating startups and commercializing home-grown technologies for value addition and jobs.",
+      "T-Hub incubates startups and commercializes home-grown technologies for value addition and jobs.",
     cta: "Visit T-Hub",
     href: "/t-hub",
   },
