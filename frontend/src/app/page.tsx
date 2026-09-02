@@ -2,8 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { HeroSlider } from "@/components/site/hero-slider";
 import { Icon } from "@/components/site/icon";
-import { assets } from "@/lib/site";
-import { coreActivities, services } from "@/lib/content";
+import { coreActivities, services, directorMessage } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
 import { getNews } from "@/lib/strapi";
 
@@ -106,19 +105,16 @@ export default async function HomePage() {
         <div className="container-tirdo grid items-center gap-10 md:grid-cols-[38%_1fr] md:gap-16">
           <div className="h-[360px] overflow-hidden md:h-[460px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={assets.director} alt="Prof. Mkumbukwa M. A." className="h-full w-full object-cover object-top" />
+            <img src={directorMessage.photo} alt={directorMessage.name} className="h-full w-full object-cover object-top" />
           </div>
           <div className="py-12 md:py-14">
             <p className="eyebrow mb-3 text-brand-gold">Leadership message</p>
             <h2 className="max-w-2xl font-display text-[1.9rem] leading-tight md:text-[2.5rem]">
               Working together for a capable, competitive industrial economy.
             </h2>
-            <p className="mt-5 max-w-2xl text-[1.05rem] text-[#dce8f2]">
-              &ldquo;TIRDO exists to make research useful—by transforming it into technologies, services
-              and knowledge that support Tanzania&apos;s social and economic development.&rdquo;
-            </p>
-            <strong className="mt-6 block">Prof. Mkumbukwa M. A.</strong>
-            <small className="mb-6 block text-[#b8cce3]">Director General</small>
+            <p className="mt-5 max-w-2xl text-[1.05rem] text-[#dce8f2]">&ldquo;{directorMessage.quote}&rdquo;</p>
+            <strong className="mt-6 block">{directorMessage.name}</strong>
+            <small className="mb-6 block text-[#b8cce3]">{directorMessage.role}</small>
             <Link href="/about/administration" className="inline-flex items-center gap-4 bg-white px-5 py-3.5 text-[0.78rem] font-bold uppercase tracking-wide text-brand-blue hover:bg-brand-pale">
               Read the full message <ArrowRight className="h-4 w-4" />
             </Link>
@@ -141,7 +137,7 @@ export default async function HomePage() {
           {latest && (
             <Link href={`/news/${latest.slug}`} className="group relative h-[350px] overflow-hidden text-white">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={latest.image || assets.newsFeatured} alt={latest.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={latest.image} alt={latest.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
               <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,40,62,0.85),transparent_65%)]" />
               <div className="absolute bottom-0 z-10 p-6">
                 <span className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-gold">{latest.category} · {formatDate(latest.date)}</span>

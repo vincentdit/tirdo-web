@@ -9,9 +9,14 @@ export function NewsCard({ item }: { item: NewsItem }) {
   return (
     <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
       <div className="relative aspect-[16/9] overflow-hidden bg-primary/10">
-        <div className="grid h-full place-items-center bg-gradient-to-br from-primary/15 to-accent/15 text-primary/40">
-          <span className="text-4xl font-black">TIRDO</span>
-        </div>
+        {item.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        ) : (
+          <div className="grid h-full place-items-center bg-gradient-to-br from-primary/15 to-accent/15 text-primary/40">
+            <span className="text-4xl font-black">TIRDO</span>
+          </div>
+        )}
         <Badge variant="accent" className="absolute left-3 top-3">{item.category}</Badge>
       </div>
       <CardContent className="flex flex-1 flex-col p-5">
@@ -34,9 +39,14 @@ export function ProjectCard({ item }: { item: Project }) {
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
       <div className="relative aspect-[16/10] bg-primary/10">
-        <div className="grid h-full place-items-center bg-gradient-to-br from-primary/20 to-primary-dark/20 text-primary/40">
-          <span className="text-3xl font-black">{item.department.split(" ")[0]}</span>
-        </div>
+        {item.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        ) : (
+          <div className="grid h-full place-items-center bg-gradient-to-br from-primary/20 to-primary-dark/20 text-primary/40">
+            <span className="text-3xl font-black">{item.department.split(" ")[0]}</span>
+          </div>
+        )}
         <Badge variant={item.status === "Ongoing" ? "default" : "accent"} className="absolute right-3 top-3">
           {item.status}
         </Badge>

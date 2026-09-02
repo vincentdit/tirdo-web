@@ -6,11 +6,11 @@ import { leaders } from "@/lib/content";
 const pages: Record<string, { title: string; subtitle: string; body: string[] }> = {
   "mission-vision": {
     title: "Mission & Vision",
-    subtitle: "Our purpose and long-term aspiration",
+    subtitle: "Our purpose, aspiration and values",
     body: [
-      "Vision: To be a centre of excellence in industrial research and technology development driving Tanzania's sustainable industrialization.",
-      "Mission: To carry out applied industrial research and provide technological services that add value to national resources, improve industrial productivity and competitiveness, and facilitate the transfer of appropriate technologies.",
-      "Our objectives include problem-solving research for industry, development and adaptation of technologies, dissemination of industrial information, and building national capacity in industrial R&D.",
+      "Vision: To be a centre of excellence in provision of innovative solutions for a competitive industrial sector.",
+      "Mission: To support the development of competitive and sustainable industries through quality research and professional technical services.",
+      "Core values: Integrity, Customer Focus, Quality, Innovation, Partnership, Accountability and Environmental Protection guide how TIRDO delivers its mandate.",
     ],
   },
   structure: {

@@ -41,7 +41,8 @@ export async function getNews(limit = 8): Promise<NewsItem[]> {
     body: a.body,
     category: a.category ?? "News",
     date: a.date ?? a.publishedAt,
-    image: a.cover?.url,
+    image: a.imageUrl || a.cover?.url,
+    sourceUrl: a.sourceUrl,
   }));
 }
 
@@ -53,7 +54,8 @@ export async function getNewsBySlug(slug: string): Promise<NewsItem | null> {
     const a = data[0];
     return {
       slug: a.slug, title: a.title, excerpt: a.excerpt, body: a.body,
-      category: a.category ?? "News", date: a.date ?? a.publishedAt, image: a.cover?.url,
+      category: a.category ?? "News", date: a.date ?? a.publishedAt,
+      image: a.imageUrl || a.cover?.url, sourceUrl: a.sourceUrl,
     };
   }
   return fallback.news.find((n) => n.slug === slug) ?? null;
@@ -64,7 +66,7 @@ export async function getProjects(): Promise<Project[]> {
   if (!data || data.length === 0) return fallback.projects;
   return data.map((p) => ({
     slug: p.slug, title: p.title, summary: p.summary,
-    department: p.department ?? "", status: p.status ?? "Ongoing", image: p.cover?.url,
+    department: p.department ?? "", status: p.status ?? "Ongoing", image: p.imageUrl || p.cover?.url,
   }));
 }
 
@@ -73,6 +75,6 @@ export async function getPublications(): Promise<Publication[]> {
   if (!data || data.length === 0) return fallback.publications;
   return data.map((p) => ({
     slug: p.slug, title: p.title, type: p.type ?? "Report",
-    year: p.year ?? new Date().getFullYear(), fileUrl: p.file?.url,
+    year: p.year ?? new Date().getFullYear(), fileUrl: p.fileUrl || p.file?.url,
   }));
 }

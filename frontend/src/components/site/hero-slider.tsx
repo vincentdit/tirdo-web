@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { heroSlides } from "@/lib/content";
-import { assets } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export function HeroSlider() {
@@ -20,8 +19,18 @@ export function HeroSlider() {
 
   return (
     <section className="relative h-[470px] overflow-hidden text-white md:h-[515px]">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={assets.hero} alt="TIRDO leadership and team" className="absolute inset-0 h-full w-full object-cover object-[center_42%]" />
+      {heroSlides.map((s, idx) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={idx}
+          src={s.image}
+          alt={s.title}
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover object-[center_42%] transition-opacity duration-700",
+            idx === i ? "opacity-100" : "opacity-0"
+          )}
+        />
+      ))}
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,42,59,0.87)_0%,rgba(7,54,73,0.6)_40%,transparent_70%)]" />
 
       <div className="container-tirdo relative flex h-full flex-col justify-center">

@@ -9,6 +9,7 @@
     "start": "strapi start",
     "strapi": "strapi",
     "seed": "node ./scripts/seed.js",
+    "reseed": "node ./scripts/reseed.js",
     "reindex": "node ./scripts/reindex.js"
   },
   "dependencies": {

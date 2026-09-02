@@ -19,6 +19,7 @@
       "enum": ["Ongoing", "Completed", "Featured"],
       "default": "Ongoing"
     },
+    "imageUrl": { "type": "string" },
     "cover": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
   }
 }

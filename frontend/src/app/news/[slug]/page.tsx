@@ -26,7 +26,12 @@ export default async function NewsDetail({ params }: { params: { slug: string } 
               <Badge variant="accent">{item.category}</Badge>
               <span className="inline-flex items-center gap-1"><Calendar className="h-4 w-4" /> {formatDate(item.date)}</span>
             </div>
-            <div className="mb-8 aspect-[16/7] rounded-xl bg-gradient-to-br from-primary/15 to-accent/15" />
+            {item.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={item.image} alt={item.title} className="mb-8 aspect-[16/7] w-full rounded-xl object-cover" />
+            ) : (
+              <div className="mb-8 aspect-[16/7] rounded-xl bg-gradient-to-br from-primary/15 to-accent/15" />
+            )}
             <div className="space-y-4 text-foreground/80">
               <p className="text-lg font-medium text-foreground">{item.excerpt}</p>
               {item.body ? (

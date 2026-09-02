@@ -11,12 +11,9 @@
   "attributes": {
     "title": { "type": "string", "required": true },
     "slug": { "type": "uid", "targetField": "title", "required": true },
-    "type": {
-      "type": "enumeration",
-      "enum": ["Report", "Journal", "Policy Brief", "Guideline"],
-      "default": "Report"
-    },
+    "type": { "type": "string", "default": "Report" },
     "year": { "type": "integer" },
+    "fileUrl": { "type": "string" },
     "file": { "type": "media", "multiple": false, "allowedTypes": ["files", "images"] }
   }
 }

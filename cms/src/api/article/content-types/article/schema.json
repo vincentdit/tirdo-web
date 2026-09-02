@@ -15,6 +15,8 @@
     "body": { "type": "richtext" },
     "category": { "type": "string", "default": "News" },
     "date": { "type": "date" },
+    "imageUrl": { "type": "string" },
+    "sourceUrl": { "type": "string" },
     "cover": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
   }
 }
