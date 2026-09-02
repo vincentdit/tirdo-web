@@ -8,7 +8,7 @@ const columns = [
       { title: "About us", href: "/about" },
       { title: "Our departments", href: "/departments" },
       { title: "Research products", href: "/projects" },
-      { title: "Publications", href: "/publications" },
+      { title: "Documents", href: "/documents" },
     ],
   },
   {

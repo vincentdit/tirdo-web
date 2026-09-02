@@ -113,7 +113,7 @@ export const mainNav: NavItem[] = [
       { title: "News & Announcements", href: "/news" },
       { title: "Events", href: "/events" },
       { title: "Gallery", href: "/gallery" },
-      { title: "Downloads", href: "/publications" },
+      { title: "Documents", href: "/documents" },
     ],
   },
   { title: "Contact Us", href: "/contact" },
