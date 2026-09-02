@@ -58,27 +58,27 @@ export const mainNav: NavItem[] = [
     href: "/departments",
     columns: [
       {
-        heading: "Industry & Research",
+        heading: "Industrial Research",
         items: [
-          { title: "Environment", href: "/departments/environment" },
-          { title: "Food & Biotechnology", href: "/departments/food-biotechnology" },
-          { title: "Industrial Chemistry", href: "/departments/industrial-chemistry" },
+          { title: "Environmental Technology & Occupational Safety Division", href: "/departments/environment" },
+          { title: "Food Processing & Biotechnology Division", href: "/departments/food-biotechnology" },
+          { title: "Agro processing Industrial Chemistry Division", href: "/departments/industrial-chemistry" },
         ],
       },
       {
         heading: "Engineering Development",
         items: [
-          { title: "Energy", href: "/departments/energy" },
-          { title: "Material Science & Technology", href: "/departments/materials" },
-          { title: "Textile & Leather", href: "/departments/textile-leather" },
+          { title: "Energy Technology Division", href: "/departments/energy" },
+          { title: "Engineering Material Technology Division", href: "/departments/materials" },
+          { title: "Textile & Leather Technologies Division", href: "/departments/textile-leather" },
         ],
       },
       {
         heading: "ICT & Technology Development",
         items: [
-          { title: "ICT", href: "/departments/ict" },
-          { title: "Instrumentation", href: "/departments/instrumentation" },
-          { title: "Technology Transfer", href: "/departments/technology-transfer" },
+          { title: "Information & Communication Technologies Division", href: "/departments/ict" },
+          { title: "Electronics & Instrumentation Technologies Division", href: "/departments/instrumentation" },
+          { title: "Technology Transfer & Pilot Plants Division", href: "/departments/technology-transfer" },
         ],
       },
     ],
@@ -88,27 +88,27 @@ export const mainNav: NavItem[] = [
     href: "/departments",
     columns: [
       {
-        heading: "Industry & Research",
+        heading: "Industrial Research",
         items: [
-          { title: "Environment", href: "/departments/environment" },
-          { title: "Food & Biotechnology", href: "/departments/food-biotechnology" },
-          { title: "Industrial Chemistry", href: "/departments/industrial-chemistry" },
+          { title: "Environmental Technology & Occupational Safety Division", href: "/departments/environment" },
+          { title: "Food Processing & Biotechnology Division", href: "/departments/food-biotechnology" },
+          { title: "Agro processing Industrial Chemistry Division", href: "/departments/industrial-chemistry" },
         ],
       },
       {
         heading: "Engineering Development",
         items: [
-          { title: "Energy", href: "/departments/energy" },
-          { title: "Material Science & Technology", href: "/departments/materials" },
-          { title: "Textile & Leather", href: "/departments/textile-leather" },
+          { title: "Energy Technology Division", href: "/departments/energy" },
+          { title: "Engineering Material Technology Division", href: "/departments/materials" },
+          { title: "Textile & Leather Technologies Division", href: "/departments/textile-leather" },
         ],
       },
       {
         heading: "ICT & Technology Development",
         items: [
-          { title: "ICT", href: "/departments/ict" },
-          { title: "Instrumentation", href: "/departments/instrumentation" },
-          { title: "Technology Transfer", href: "/departments/technology-transfer" },
+          { title: "Information & Communication Technologies Division", href: "/departments/ict" },
+          { title: "Electronics & Instrumentation Technologies Division", href: "/departments/instrumentation" },
+          { title: "Technology Transfer & Pilot Plants Division", href: "/departments/technology-transfer" },
         ],
       },
       {
@@ -121,7 +121,7 @@ export const mainNav: NavItem[] = [
         ],
       },
       {
-        heading: "Human Resource",
+        heading: "Human Resources & Admin",
         items: [
           { title: "Human Resource Division", href: "/departments/human-resources-administration" },
           { title: "Administration Division", href: "/departments/human-resources-administration" },

@@ -175,7 +175,7 @@ export type Department = {
 export const departments: Department[] = [
   {
     slug: "environment",
-    title: "Environment",
+    title: "Environmental Technology & Occupational Safety Division",
     group: "Industrial Research",
     blurb: "Environmental monitoring, pollution control and cleaner production.",
     head: "Ms. Kunda Sikazwe",
@@ -186,7 +186,7 @@ export const departments: Department[] = [
   },
   {
     slug: "food-biotechnology",
-    title: "Food & Biotechnology",
+    title: "Food Processing & Biotechnology Division",
     group: "Industrial Research",
     blurb: "Food processing, preservation, value addition and bioprocess research.",
     body: [
@@ -196,7 +196,7 @@ export const departments: Department[] = [
   },
   {
     slug: "industrial-chemistry",
-    title: "Industrial Chemistry",
+    title: "Agro processing Industrial Chemistry Division",
     group: "Industrial Research",
     blurb: "Chemical analysis, formulation and process chemistry for industry.",
     head: "Ms. Jacqueline Mwendwa",
@@ -207,7 +207,7 @@ export const departments: Department[] = [
   },
   {
     slug: "energy",
-    title: "Energy",
+    title: "Energy Technology Division",
     group: "Engineering Development",
     blurb: "Renewable energy, energy efficiency and industrial energy systems.",
     head: "Eng. Hossen Iddi Kayumba",
@@ -218,7 +218,7 @@ export const departments: Department[] = [
   },
   {
     slug: "materials",
-    title: "Material Science & Technology",
+    title: "Engineering Material Technology Division",
     group: "Engineering Development",
     blurb: "Materials testing, characterization and development of local materials.",
     head: "Eng. Liberatus Chizuzu",
@@ -229,7 +229,7 @@ export const departments: Department[] = [
   },
   {
     slug: "textile-leather",
-    title: "Textile & Leather Technologies",
+    title: "Textile & Leather Technologies Division",
     group: "Engineering Development",
     blurb: "Textile, leather and garment technology and quality improvement.",
     head: "Eng. Athanas Ntawanga",
@@ -240,7 +240,7 @@ export const departments: Department[] = [
   },
   {
     slug: "ict",
-    title: "ICT",
+    title: "Information & Communication Technologies Division",
     group: "ICT & Technology Development",
     blurb: "Software systems, cybersecurity, networks and industrial ICT solutions.",
     head: "Ms. Elizabeth Mtegwa",
@@ -251,7 +251,7 @@ export const departments: Department[] = [
   },
   {
     slug: "instrumentation",
-    title: "Instrumentation",
+    title: "Electronics & Instrumentation Technologies Division",
     group: "ICT & Technology Development",
     blurb: "Design, calibration and maintenance of scientific instruments.",
     head: "Ms. Ester Lazaro",
@@ -262,7 +262,7 @@ export const departments: Department[] = [
   },
   {
     slug: "technology-transfer",
-    title: "Technology Transfer",
+    title: "Technology Transfer & Pilot Plants Division",
     group: "ICT & Technology Development",
     blurb: "Commercialization and diffusion of proven technologies to industry.",
     body: [
@@ -272,8 +272,8 @@ export const departments: Department[] = [
   },
   {
     slug: "human-resources-administration",
-    title: "Human Resources & Administration",
-    group: "Human Resources & Administration",
+    title: "Human Resources & Admin",
+    group: "Human Resources & Admin",
     blurb: "Human resources, administration and estate services that keep TIRDO running.",
     head: "Mr. Emilian S. Bundala",
     body: [
@@ -511,7 +511,7 @@ export const orgStructure: { intro: string; units: OrgUnit[]; departments: OrgDe
   // `role` becomes the bracketed tag, e.g. "(Director)" / "(Head)"; `director`/`head` hold names.
   departments: [
     {
-      name: "ICT & Technology Development Dept.", role: "Director", director: "Eng. Vincent J. Maro",
+      name: "ICT & Technology Development Dept.", role: "Director",
       divisions: [
         { name: "Information & Communication Technologies Division", role: "Head" },
         { name: "Electronics & Instrumentation Technologies Division", role: "Head" },
@@ -519,7 +519,7 @@ export const orgStructure: { intro: string; units: OrgUnit[]; departments: OrgDe
       ],
     },
     {
-      name: "Industrial Research Dept.", role: "Director", director: "Mr. Humphrey P. Ndossi",
+      name: "Industrial Research Dept.", role: "Director",
       divisions: [
         { name: "Agro processing Industrial Chemistry Division", role: "Head" },
         { name: "Environmental Technology & Occupational Safety Division", role: "Head" },
@@ -527,7 +527,7 @@ export const orgStructure: { intro: string; units: OrgUnit[]; departments: OrgDe
       ],
     },
     {
-      name: "Engineering Development Dept.", role: "Director", director: "Eng. Ramson A. Mwilangali",
+      name: "Engineering Development Dept.", role: "Director",
       divisions: [
         { name: "Engineering Material Technology Division", role: "Head" },
         { name: "Textile & Leather Technologies Division", role: "Head" },
@@ -535,7 +535,7 @@ export const orgStructure: { intro: string; units: OrgUnit[]; departments: OrgDe
       ],
     },
     {
-      name: "Human Resources & Admin Dept.", role: "Director", director: "Mr. Emilian S. Bundala",
+      name: "Human Resources & Admin Dept.", role: "Director",
       divisions: [
         { name: "Human Resource Division", role: "Head", items: ["Personnel", "Training"] },
         { name: "Administration Division", role: "Head", items: ["Office Mgt", "Transport", "Maintenance", "Security"] },
@@ -543,7 +543,7 @@ export const orgStructure: { intro: string; units: OrgUnit[]; departments: OrgDe
       ],
     },
     {
-      name: "Finance Dept.", role: "Director", director: "Mr. David J. Kisiwa",
+      name: "Finance Dept.", role: "Director",
       divisions: [
         { name: "Store Section" },
         { name: "Pre-Audit Section" },
