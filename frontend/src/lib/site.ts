@@ -83,12 +83,26 @@ export const mainNav: NavItem[] = [
       },
       {
         heading: "Finance",
-        items: [{ title: "Finance Department", href: "/departments/finance" }],
+        items: [{ title: "Finance", href: "/departments/finance" }],
       },
       {
         heading: "Human Resource",
-        items: [{ title: "HR & Administration", href: "/departments/human-resources-administration" }],
+        items: [
+          { title: "Human Resource Division", href: "/departments/human-resources-administration" },
+          { title: "Administration Division", href: "/departments/human-resources-administration" },
+          { title: "Estate Division", href: "/departments/human-resources-administration" },
+        ],
       },
+    ],
+  },
+  {
+    title: "Units",
+    href: "/units",
+    children: [
+      { title: "Legal", href: "/units#legal" },
+      { title: "Internal Audit", href: "/units#internal-audit" },
+      { title: "Procurement", href: "/units#procurement" },
+      { title: "Planning", href: "/units#planning" },
     ],
   },
   {

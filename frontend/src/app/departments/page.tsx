@@ -77,11 +77,11 @@ export default function DepartmentsPage() {
             );
           })}
 
-          {/* Management & Administration units (report to the Director General) */}
+          {/* Supporting units (report directly to the Director General) */}
           <div>
-            <h2 className="mb-2 border-l-4 border-accent pl-3 text-xl font-bold text-primary">Management &amp; Administration</h2>
+            <h2 className="mb-2 border-l-4 border-accent pl-3 text-xl font-bold text-primary">Supporting Units</h2>
             <p className="mb-5 pl-4 text-sm text-muted-foreground">Units reporting directly to the Director General.</p>
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {managementUnits.map((u) => (
                 <Card key={u.name}>
                   <CardContent className="p-5">

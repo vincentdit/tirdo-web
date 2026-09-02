@@ -496,14 +496,15 @@ export const management: Leader[] = [
 
 export const orgStructure = {
   intro:
-    "TIRDO is governed by the Council (Board of Directors) and led by the Director General. The Director General is supported by the Internal Auditor, the Procurement Unit and the Corporate Service & Planning Division, and oversees five departments — each headed by a Director and made up of several divisions.",
-  units: ["Internal Auditor", "Procurement Unit", "Corporate Service & Planning Division"],
+    "TIRDO is governed by the Council (Board of Directors) and led by the Director General. The Director General is supported by four units — Legal, Internal Audit, Procurement and Planning — and oversees five directorates, each headed by a Director and made up of several divisions.",
+  units: ["Legal", "Internal Audit", "Procurement", "Planning"],
+  // Five directorates. Divisions are filled from the mapping provided by TIRDO.
   departments: [
-    { name: "ICT & Technology Development", divisions: ["Information & Communication Technologies", "Electronics & Instrumentation Technologies", "Technology Transfer & Pilot Plants"] },
-    { name: "Industrial Research", divisions: ["Agro-Processing & Industrial Chemistry", "Environmental Technology & Occupational Safety", "Food Processing & Biotechnology"] },
-    { name: "Engineering Development", divisions: ["Engineering Material Technology", "Textile & Leather Technologies", "Energy Technology"] },
-    { name: "Human Resources & Administration", divisions: ["Human Resource — Personnel, Training", "Administration — Office Mgt, Transport, Maintenance, Security", "Estate — Building & Estate Maintenance, Carpentry"] },
-    { name: "Finance", divisions: ["Store Section", "Pre-Audit Section", "Costing & Expenditure Section", "Revenue Section"] },
+    { name: "Research & Development", divisions: [] as string[] },
+    { name: "Technology Development & Transfer", divisions: [] as string[] },
+    { name: "Industrial Services", divisions: [] as string[] },
+    { name: "ICT & Information Services", divisions: [] as string[] },
+    { name: "Finance & Administration", divisions: [] as string[] },
   ],
 };
 
@@ -530,20 +531,28 @@ export const topManagement: Leader[] = [
   { name: "Mr. David J. Kisiwa", role: "Director of Finance" },
 ];
 
-// Management & Administration units reporting directly to the Director General
+// Supporting units reporting directly to the Director General
 // (shown beside the DG in the organization structure — not departments).
 export const managementUnits = [
   {
-    name: "Internal Auditor",
-    desc: "Provides independent assurance and internal audit of TIRDO's operations, risk management and controls, reporting to the Council/Board.",
+    slug: "legal",
+    name: "Legal Unit",
+    desc: "Provides legal advisory services to management, drafts and reviews contracts, agreements and memoranda of understanding, ensures statutory and regulatory compliance, and represents TIRDO in legal matters.",
   },
   {
+    slug: "internal-audit",
+    name: "Internal Audit Unit",
+    desc: "Provides independent assurance on TIRDO's governance, risk management and internal controls, reviewing operations and reporting to the Council/Board.",
+  },
+  {
+    slug: "procurement",
     name: "Procurement Unit",
-    desc: "The Procurement Management Unit responsible for all procurement of goods, works and services in line with the Public Procurement Act.",
+    desc: "The Procurement Management Unit responsible for all procurement of goods, works and services in line with the Public Procurement Act and its regulations.",
   },
   {
-    name: "Corporate Service & Planning Division",
-    desc: "Coordinates corporate planning, monitoring and evaluation, quality management and cross-cutting corporate services across the organisation.",
+    slug: "planning",
+    name: "Planning Unit",
+    desc: "Coordinates corporate planning, monitoring and evaluation, and the preparation of strategic plans, budgets and performance reports across the organisation.",
   },
 ];
 
