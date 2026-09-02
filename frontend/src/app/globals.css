@@ -94,4 +94,42 @@
   .eyebrow {
     @apply text-xs font-bold uppercase tracking-[0.15em];
   }
+  /* Org-chart connectors */
+  .org-v {
+    width: 2px;
+    background-color: hsl(var(--primary) / 0.6);
+  }
+  .org-h {
+    height: 2px;
+    background-color: hsl(var(--primary) / 0.6);
+  }
+}
+
+/* Horizontal bus + vertical drops for a row of org-chart nodes (desktop) */
+@media (min-width: 1024px) {
+  .org-row {
+    position: relative;
+  }
+  .org-row > * {
+    position: relative;
+  }
+  .org-row > *::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -20px;
+    height: 20px;
+    width: 2px;
+    transform: translateX(-50%);
+    background-color: hsl(var(--primary) / 0.6);
+  }
+  .org-row::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    height: 2px;
+    left: calc(50% / var(--cols));
+    right: calc(50% / var(--cols));
+    background-color: hsl(var(--primary) / 0.6);
+  }
 }
