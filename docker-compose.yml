@@ -89,6 +89,14 @@ services:
       OPENSEARCH_NODE: http://opensearch:9200
       OPENSEARCH_INDEX: ${OPENSEARCH_INDEX}
       SEED_DATA: "true"
+      # Email (SMTP) — captured by Mailpit locally
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      EMAIL_FROM: ${EMAIL_FROM}
+      EMAIL_REPLY_TO: ${EMAIL_REPLY_TO}
+      CONTACT_RECIPIENT: ${CONTACT_RECIPIENT}
     ports:
       - "1337:1337"
     volumes:
@@ -256,6 +264,20 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+    networks: [tirdo-net]
+
+  # ----------------------------------------------------------------------
+  # Mailpit - local SMTP server that captures outgoing email for testing
+  # ----------------------------------------------------------------------
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: tirdo-mailpit
+    restart: unless-stopped
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+    ports:
+      - "8025:8025"   # web UI to read captured emails
     networks: [tirdo-net]
 
   # ----------------------------------------------------------------------

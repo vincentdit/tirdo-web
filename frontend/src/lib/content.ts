@@ -369,7 +369,7 @@ export const leaders: Leader[] = [
 
 // Director General welcome (verbatim from tirdo.or.tz).
 export const directorMessage = {
-  name: "Prof. Mkumbukwa M. A.",
+  name: "Prof. Mkumbukwa M. A. Mtambo",
   role: "Director General",
   photo: "https://www.tirdo.or.tz/uploads/administration/1.%20Prof.%20Mkumbukwa%20M.%20A.%20message.png",
   quote:
@@ -392,7 +392,7 @@ export const mission = {
 };
 
 export const eservices = [
-  { title: "Industrial Information Centre", anchor: "iic", description: "Search technical reports, standards and industrial data.", href: "/publications" },
+  { title: "Industrial Information Centre", anchor: "iic", description: "Search technical reports, standards and industrial data.", href: "/industrial-information-centre" },
   { title: "Client Service Portal", anchor: "portal", description: "Request research, testing and consultancy services online.", href: "/contact" },
   { title: "Staff e-Office", anchor: "eoffice", description: "Internal document management and correspondence system.", href: "#" },
 ];
@@ -414,10 +414,84 @@ export const management: Leader[] = [
   { name: "Ms. Ester Lazaro", role: "Head, Electronics & Instrumentation" },
 ];
 
-export const orgStructure = [
-  "TIRDO is governed by a Board of Directors and led by a Director General who oversees the technical directorates and corporate services.",
-  "Technical work is delivered through three clusters — Industry & Research (Environment, Food & Biotechnology, Industrial Chemistry); Engineering Development (Energy, Material Science & Technology, Textile & Leather Technologies); and ICT & Technology Development (ICT, Instrumentation, Technology Transfer) — supported by Finance and Human Resources. TIRDO also hosts the COMSATS Centre, the Industrial Information Centre and the T-Hub innovation hub.",
+export const orgStructure = {
+  intro:
+    "TIRDO follows a hierarchical structure. A Board of Directors provides policy and oversight, and the Director General serves as chief executive officer, leading the directorates and supporting units.",
+  directorates: [
+    "Research & Development",
+    "Technology Development & Transfer",
+    "Industrial Services",
+    "ICT & Information Services",
+    "Finance & Administration",
+  ],
+  supportingUnits: ["Legal", "Internal Audit", "Procurement", "Planning"],
+};
+
+// Board of Directors (as provided by TIRDO).
+export const board: Leader[] = [
+  { name: "Eng. Bashiri Juma Mrindoko", role: "Chairman" },
+  { name: "Prof. Mkumbukwa M. A. Mtambo", role: "Director General / Secretary" },
+  { name: "Prof. Maulilio John Kipanyula", role: "Member" },
+  { name: "Dr. Mwansule Wilson Lugano", role: "Member" },
+  { name: "Prof. Sylvester M. Mpanduji", role: "Member" },
+  { name: "Dr. Amos Muhunde Nungu", role: "Member" },
+  { name: "Dr. Abdulla Rashid Abdulla", role: "Member" },
+  { name: "Ms. Rhobi Daniel Satima", role: "Member" },
+  { name: "Mr. Peter Alanambula Ilomo", role: "Member" },
 ];
+
+// Top management / directors (as provided by TIRDO).
+export const topManagement: Leader[] = [
+  { name: "Prof. Mkumbukwa M. A. Mtambo", role: "Director General" },
+  { name: "Mr. Emilian S. Bundala", role: "Director of HR & Administration" },
+  { name: "Dr. Masoud M. Masoud", role: "Director of ICT & Technology Transfer" },
+  { name: "Eng. Ramson A. Mwilangali", role: "Director of Engineering Development" },
+  { name: "Mr. Humphrey P. Ndossi", role: "Director of Industrial Research" },
+  { name: "Mr. David J. Kisiwa", role: "Director of Finance" },
+];
+
+export const comsatsObjectives = [
+  "Enhance scientific knowledge of the South on climate change for appropriate climate action and advocacy.",
+  "Assess how environmental and climatic changes affect communities' wellbeing and economic performance.",
+  "Combat climate change through mitigation and adaptation for sustainable growth and development.",
+  "Build public understanding and skills on climate and environmental challenges.",
+  "Create comprehensive information databases to support evidence-based decision-making.",
+  "Promote regional and global partnerships for effective climate and sustainability action.",
+];
+
+export const comsatsActivities = [
+  "Research & development — value addition to industrial waste streams, cleaner production technologies, and liquid and solid waste management.",
+  "Consultancy & technical services — indoor and outdoor environmental management, air quality monitoring (particulates, pollutant gases, noise, light, heat, ground vibration).",
+  "Environmental and social impact assessments (ESIA) and environmental audits for industry.",
+];
+
+export const iic = {
+  intro: [
+    "TIRDO established the Industrial Information Centre to support Tanzania's industrialization agenda by closing gaps in industrial coordination and technology monitoring — providing updated industrial information, industrial clinic services and industrial incubation services for new and existing industries.",
+    "The Centre is a comprehensive knowledge repository serving researchers, entrepreneurs, industries and policymakers. It fosters innovation through access to research materials and technical expertise, enhances competitiveness through market insight, and promotes collaboration among academia, industry and government.",
+  ],
+  objectives: [
+    "Act as a repository of up-to-date information on industries, market trends, regulations and technology.",
+    "Provide researchers access to scholarly journals, research papers and patents.",
+    "Offer businesses insight into emerging opportunities and challenges.",
+    "Organize seminars and training sessions to build professional and entrepreneurial skills.",
+    "Foster partnerships between academia, industry and government.",
+  ],
+  activities: [
+    "Information collection, cataloguing and curation",
+    "Knowledge dissemination via publications, newsletters and events",
+    "Research support — journals, databases and research tools",
+    "Market intelligence and industry-trend studies",
+    "Technical advisory services from subject-matter experts",
+    "Networking events and conferences",
+    "Industry exhibitions",
+    "Capacity-building and entrepreneurship training",
+    "Evidence-based policy support",
+    "Digital resource access through online platforms",
+    "International collaborations for knowledge exchange",
+    "Incubation support for startups",
+  ],
+};
 
 export const successStories = [
   { title: "National reference laboratory for coal", text: "TIRDO's coal laboratory analyses materials for proximate, ultimate and heating-value parameters. Having analysed over 60 coal samples, it was declared the national backstop reference laboratory for coal-quality assessment by the Minister for Energy and Minerals." },

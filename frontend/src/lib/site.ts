@@ -101,6 +101,7 @@ export const mainNav: NavItem[] = [
     children: [
       { title: "Ongoing Projects", href: "/projects" },
       { title: "T-Hub Innovation", href: "/t-hub" },
+      { title: "Industrial Information Centre", href: "/industrial-information-centre" },
       { title: "Research Products", href: "/projects#products" },
       { title: "Publications", href: "/publications" },
     ],

@@ -6,6 +6,25 @@ module.exports = ({ env }) => {
         jwtSecret: env("JWT_SECRET"),
       },
     },
+
+    // Email via SMTP (Mailpit locally; real SMTP in production)
+    email: {
+      config: {
+        provider: "nodemailer",
+        providerOptions: {
+          host: env("SMTP_HOST", "mailpit"),
+          port: env.int("SMTP_PORT", 1025),
+          auth: env("SMTP_USERNAME")
+            ? { user: env("SMTP_USERNAME"), pass: env("SMTP_PASSWORD") }
+            : undefined,
+          ignoreTLS: true,
+        },
+        settings: {
+          defaultFrom: env("EMAIL_FROM", "no-reply@tirdo.or.tz"),
+          defaultReplyTo: env("EMAIL_REPLY_TO", "info@tirdo.or.tz"),
+        },
+      },
+    },
   };
 
   // File storage on MinIO (S3-compatible). Only registered when a MinIO
