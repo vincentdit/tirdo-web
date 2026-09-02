@@ -20,7 +20,7 @@ export default async function HomePage() {
           <div className="container-tirdo flex min-h-[75px] flex-wrap items-center gap-x-5 gap-y-2 py-4 text-sm">
             <span className="bg-brand-gold px-2 py-1 text-[0.68rem] font-bold tracking-wide text-brand-ink">LATEST</span>
             <strong className="text-brand-ink">{latest.title}</strong>
-            <Link href={`/news/${latest.slug}`} className="ml-auto inline-flex shrink-0 items-center gap-1 font-bold text-brand-teal hover:gap-2">
+            <Link href={latest.sourceUrl || `/news/${latest.slug}`} target={latest.sourceUrl ? "_blank" : undefined} rel={latest.sourceUrl ? "noreferrer" : undefined} className="ml-auto inline-flex shrink-0 items-center gap-1 font-bold text-brand-teal hover:gap-2">
               Read announcement <ArrowRight className="h-4 w-4 transition-all" />
             </Link>
           </div>
@@ -135,7 +135,7 @@ export default async function HomePage() {
         </div>
         <div className="grid gap-5 lg:grid-cols-[2fr_1fr_1fr]">
           {latest && (
-            <Link href={`/news/${latest.slug}`} className="group relative h-[350px] overflow-hidden text-white">
+            <Link href={latest.sourceUrl || `/news/${latest.slug}`} target={latest.sourceUrl ? "_blank" : undefined} rel={latest.sourceUrl ? "noreferrer" : undefined} className="group relative h-[350px] overflow-hidden text-white">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={latest.image} alt={latest.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
               <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,40,62,0.85),transparent_65%)]" />
@@ -147,7 +147,7 @@ export default async function HomePage() {
             </Link>
           )}
           {news.slice(1, 3).map((n) => (
-            <Link key={n.slug} href={`/news/${n.slug}`} className="flex h-[350px] flex-col justify-end border-t-4 border-brand-teal bg-brand-pale p-6">
+            <Link key={n.slug} href={n.sourceUrl || `/news/${n.slug}`} target={n.sourceUrl ? "_blank" : undefined} rel={n.sourceUrl ? "noreferrer" : undefined} className="flex h-[350px] flex-col justify-end border-t-4 border-brand-teal bg-brand-pale p-6">
               <span className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-teal">{n.category} · {formatDate(n.date)}</span>
               <h3 className="my-3 text-[1.2rem] font-semibold leading-snug text-brand-ink">{n.title}</h3>
               <span className="inline-flex items-center gap-1 text-[0.76rem] font-bold uppercase tracking-wide text-brand-teal">Read story <ArrowRight className="h-4 w-4" /></span>

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { PageBanner } from "@/components/site/page-banner";
 import { Card, CardContent } from "@/components/ui/card";
-import { leaders } from "@/lib/content";
+import { management, successStories, comsats, orgStructure } from "@/lib/content";
 
 const pages: Record<string, { title: string; subtitle: string; body: string[] }> = {
   "mission-vision": {
@@ -16,38 +16,34 @@ const pages: Record<string, { title: string; subtitle: string; body: string[] }>
   structure: {
     title: "Organization Structure",
     subtitle: "How TIRDO is organised",
-    body: [
-      "TIRDO is governed by a Board of Directors and led by a Director General who oversees the technical directorates and corporate services.",
-      "The technical work is delivered through three clusters — Industry & Research, Engineering Development, and ICT & Technology Development — each grouping several specialised departments, supported by Finance and Human Resources.",
-    ],
+    body: orgStructure,
   },
   board: {
     title: "Board of Directors",
     subtitle: "Governance and oversight",
     body: [
-      "The Board of Directors provides strategic direction and oversight, ensuring TIRDO delivers on its statutory mandate and serves the national industrialization agenda.",
+      "The Board of Directors provides strategic direction and oversight, ensuring TIRDO delivers on its statutory mandate under the TIRDO Act, 1979 and serves the national industrialization agenda.",
+      "The Board sets policy and monitors performance, while day-to-day operations are led by the Director General and the management team across the technical directorates and corporate services.",
     ],
   },
   administration: {
     title: "Administration",
-    subtitle: "TIRDO management team",
+    subtitle: "TIRDO management and division heads",
     body: [
-      "TIRDO's management team leads the day-to-day operations of the organization across research, engineering, corporate services and finance.",
+      "TIRDO's management team leads the organisation's research, engineering, ICT and corporate services, translating the mandate into applied research and technical services for industry.",
     ],
   },
   "success-stories": {
     title: "Success Stories",
-    subtitle: "Impact from lab to industry",
+    subtitle: "Impact from the laboratory to industry",
     body: [
-      "Over four decades TIRDO has delivered technologies and services that have created jobs, added value to local raw materials and improved industrial productivity — from essential-oils extraction and biomass briquetting to energy auditing and materials development.",
+      "Over four decades TIRDO has delivered technologies and services with real national impact. A selection of milestones:",
     ],
   },
   comsats: {
-    title: "COMSATS Centre",
+    title: "COMSATS Centre for Climate & Sustainability",
     subtitle: "International science & technology cooperation",
-    body: [
-      "TIRDO hosts a COMSATS Centre of Excellence, connecting Tanzanian industry and researchers to a global network of science and technology institutions in the developing world for collaborative research and capacity building.",
-    ],
+    body: comsats,
   },
 };
 
@@ -63,7 +59,6 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
 export default function AboutSubPage({ params }: { params: { slug: string } }) {
   const page = pages[params.slug];
   if (!page) notFound();
-  const showLeaders = params.slug === "board" || params.slug === "administration";
 
   return (
     <>
@@ -72,16 +67,30 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
         <div className="container-tirdo max-w-3xl space-y-4 text-foreground/80">
           {page.body.map((p, i) => <p key={i}>{p}</p>)}
         </div>
-        {showLeaders && (
+
+        {params.slug === "administration" && (
           <div className="container-tirdo mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {leaders.map((l) => (
+            {management.map((l) => (
               <Card key={l.name}>
                 <CardContent className="p-5 text-center">
                   <div className="mx-auto mb-3 grid h-20 w-20 place-items-center rounded-full bg-primary/10 text-2xl font-bold text-primary">
-                    {l.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                    {l.name.replace(/^(Prof\.|Eng\.|Ms\.|Mr\.|Dr\.)\s*/, "").split(" ").map((w) => w[0]).slice(0, 2).join("")}
                   </div>
-                  <div className="font-semibold text-primary">{l.name}</div>
+                  <div className="text-sm font-semibold text-primary">{l.name}</div>
                   <div className="text-xs text-muted-foreground">{l.role}</div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {params.slug === "success-stories" && (
+          <div className="container-tirdo mt-8 max-w-3xl space-y-4">
+            {successStories.map((s) => (
+              <Card key={s.title} className="border-l-4 border-l-accent">
+                <CardContent className="p-5">
+                  <h3 className="mb-1 font-semibold text-primary">{s.title}</h3>
+                  <p className="text-sm text-muted-foreground">{s.text}</p>
                 </CardContent>
               </Card>
             ))}

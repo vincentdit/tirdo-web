@@ -22,19 +22,10 @@ export default function DepartmentPage({ params }: { params: { slug: string } })
       <PageBanner title={dept.title} subtitle={dept.group} crumbs={[{ label: "Departments", href: "/departments" }, { label: dept.title }]} />
       <section className="py-14">
         <div className="container-tirdo max-w-3xl space-y-4 text-foreground/80">
-          <p>{dept.blurb}</p>
-          <p>
-            The {dept.title} department provides applied research, technical services, testing and
-            consultancy to industry and public institutions. Our specialists combine laboratory
-            capability with field experience to solve practical problems and support value addition
-            across the Tanzanian industrial sector.
-          </p>
-          <ul className="list-inside list-disc space-y-1 text-sm">
-            <li>Applied and adaptive research relevant to industry needs</li>
-            <li>Testing, analysis and technical advisory services</li>
-            <li>Technology development, demonstration and transfer</li>
-            <li>Capacity building and training for industry professionals</li>
-          </ul>
+          {dept.head && (
+            <p className="text-sm font-semibold text-brand-teal">Head of division: {dept.head}</p>
+          )}
+          {dept.body.map((p, i) => <p key={i}>{p}</p>)}
         </div>
 
         {related.length > 0 && (

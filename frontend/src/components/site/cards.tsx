@@ -6,6 +6,9 @@ import { formatDate } from "@/lib/utils";
 import type { NewsItem, Project } from "@/lib/content";
 
 export function NewsCard({ item }: { item: NewsItem }) {
+  const href = item.sourceUrl || `/news/${item.slug}`;
+  const external = !!item.sourceUrl;
+  const linkProps = external ? { target: "_blank", rel: "noreferrer" } : {};
   return (
     <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
       <div className="relative aspect-[16/9] overflow-hidden bg-primary/10">
@@ -24,10 +27,10 @@ export function NewsCard({ item }: { item: NewsItem }) {
           <Calendar className="h-3.5 w-3.5" /> {formatDate(item.date)}
         </div>
         <h3 className="mb-2 line-clamp-2 font-semibold leading-snug text-primary group-hover:underline">
-          <Link href={`/news/${item.slug}`}>{item.title}</Link>
+          <Link href={href} {...linkProps}>{item.title}</Link>
         </h3>
         <p className="mb-4 line-clamp-3 flex-1 text-sm text-muted-foreground">{item.excerpt}</p>
-        <Link href={`/news/${item.slug}`} className="inline-flex items-center gap-1 text-sm font-semibold text-accent hover:gap-2">
+        <Link href={href} {...linkProps} className="inline-flex items-center gap-1 text-sm font-semibold text-accent hover:gap-2">
           Read more <ArrowRight className="h-4 w-4 transition-all" />
         </Link>
       </CardContent>
