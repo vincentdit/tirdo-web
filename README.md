@@ -1,7 +1,7 @@
 # TIRDO Web Platform
 
 A dynamic, containerised rebuild of the **TIRDO** website (tirdo.or.tz), re-organised
-following the information architecture of the **NACTVET** site and keeping TIRDO's
+following the information architecture of the **from other sites** and keeping TIRDO's
 brand colours (primary blue `#2d4a84`, gold accent `#e8a33d`).
 
 Everything runs locally with **Docker Desktop** on Windows and is driven from **PowerShell**.
