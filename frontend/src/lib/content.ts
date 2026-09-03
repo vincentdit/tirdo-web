@@ -581,7 +581,8 @@ export const topManagement: Leader[] = [
 
 // Supporting units reporting directly to the Director General
 // (shown beside the DG in the organization structure — not departments).
-export const managementUnits = [
+export type ManagementUnit = { slug: string; name: string; desc: string; head?: string; photo?: string };
+export const managementUnits: ManagementUnit[] = [
   {
     slug: "internal-audit",
     name: "Internal Auditor",

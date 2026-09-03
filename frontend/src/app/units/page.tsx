@@ -1,5 +1,5 @@
+import { User } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
-import { Card, CardContent } from "@/components/ui/card";
 import { managementUnits } from "@/lib/content";
 
 export const metadata = { title: "Supporting Units" };
@@ -13,20 +13,32 @@ export default function UnitsPage() {
         crumbs={[{ label: "Units" }]}
       />
       <section className="py-14">
-        <div className="container-tirdo max-w-4xl space-y-5">
-          <p className="text-foreground/80">
+        <div className="container-tirdo">
+          <p className="mx-auto max-w-3xl text-center text-foreground/80">
             Alongside its five departments, TIRDO&apos;s Director General is supported by
             units that provide independent assurance, procurement, corporate planning and
             legal functions across the organisation.
           </p>
-          <div className="grid gap-5 sm:grid-cols-2">
+
+          <div className="mt-12 grid justify-items-center gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {managementUnits.map((u) => (
-              <Card key={u.slug} id={u.slug} className="scroll-mt-28 border-l-4 border-l-accent">
-                <CardContent className="p-6">
-                  <h2 className="mb-2 text-lg font-bold text-primary">{u.name}</h2>
-                  <p className="text-sm text-muted-foreground">{u.desc}</p>
-                </CardContent>
-              </Card>
+              <div key={u.slug} id={u.slug} className="scroll-mt-28 flex flex-col items-center text-center">
+                <div className="h-44 w-40 overflow-hidden rounded-lg border border-black/5 shadow-sm">
+                  {u.photo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={u.photo} alt={u.head ?? u.name} className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="grid h-full w-full place-items-center bg-gradient-to-b from-brand-pale to-secondary/70 text-brand-teal/40">
+                      <User className="h-12 w-12" />
+                    </div>
+                  )}
+                </div>
+                {u.head && <div className="mt-3 text-sm font-bold leading-snug text-brand-ink">{u.head}</div>}
+                <div className={`${u.head ? "text-[11px] font-semibold uppercase tracking-wide text-brand-teal" : "mt-3 text-sm font-bold text-primary"}`}>
+                  {u.name}
+                </div>
+                <p className="mt-2 max-w-[15rem] text-xs leading-relaxed text-muted-foreground">{u.desc}</p>
+              </div>
             ))}
           </div>
         </div>
