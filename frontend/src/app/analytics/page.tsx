@@ -1,5 +1,5 @@
 import { PageBanner } from "@/components/site/page-banner";
-import { ChartCard, KpiCard, TrendArea, BarList, Donut } from "@/components/analytics/charts";
+import { ChartCard, KpiCard, StatTile, TrendArea, BarList, Donut } from "@/components/analytics/charts";
 import { getDashboard } from "@/lib/matomo-api";
 
 export const metadata = { title: "Analytics" };
@@ -31,9 +31,18 @@ export default async function AnalyticsPage() {
             </div>
           ) : (
             <>
-              {/* KPIs */}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                <KpiCard label="Total visits" value={fmt(d.totalVisits)} hint="All time" />
+              {/* Headline visit statistics */}
+              <div>
+                <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand-teal">Visit statistics</h2>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <StatTile label="Today" value={fmt(d.today)} hint="Visits so far today" />
+                  <StatTile label="This month" value={fmt(d.month)} hint="Visits this calendar month" />
+                  <StatTile label="Total visits" value={fmt(d.total)} hint="All time" />
+                </div>
+              </div>
+
+              {/* Secondary KPIs (last 30 days) */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <KpiCard label="Visits" value={fmt(s?.nb_visits)} hint="Last 30 days" />
                 <KpiCard label="Unique visitors" value={fmt(s?.nb_uniq_visitors)} hint="Last 30 days" />
                 <KpiCard label="Pageviews" value={fmt(s?.nb_actions)} hint="Last 30 days" />

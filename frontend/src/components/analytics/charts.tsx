@@ -21,6 +21,17 @@ export function ChartCard({ title, subtitle, children }: { title: string; subtit
   );
 }
 
+// Highlighted headline stat (teal), for the Today / This month / Total group.
+export function StatTile({ label, value, hint }: { label: string; value: string; hint?: string }) {
+  return (
+    <div className="rounded-xl bg-gradient-to-br from-brand-teal to-[#0a5f70] p-5 text-white shadow-sm">
+      <div className="text-xs font-semibold uppercase tracking-wide text-white/85">{label}</div>
+      <div className="mt-2 text-[2.1rem] font-bold leading-none tabular-nums">{value}</div>
+      {hint && <div className="mt-2 text-xs text-white/75">{hint}</div>}
+    </div>
+  );
+}
+
 export function KpiCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
     <div className="rounded-xl border bg-card p-5 shadow-sm">

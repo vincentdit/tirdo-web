@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
-import { getTotalVisits } from "@/lib/matomo-api";
+import { getVisitStats } from "@/lib/matomo-api";
 
-// Lightweight endpoint for the footer visitor counter. Rendered at request
-// time (runtime token); browsers cache the response for 15 minutes.
+// Lightweight endpoint for the footer visitor widget (today / this month /
+// total). Rendered at request time (runtime token); browsers cache 15 min.
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const totalVisits = await getTotalVisits();
-  return NextResponse.json(
-    { totalVisits },
-    { headers: { "Cache-Control": "public, max-age=900, stale-while-revalidate=3600" } },
-  );
+  const stats = await getVisitStats();
+  return NextResponse.json(stats, {
+    headers: { "Cache-Control": "public, max-age=900, stale-while-revalidate=3600" },
+  });
 }

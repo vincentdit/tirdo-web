@@ -64,7 +64,10 @@ export type Summary = {
   nb_actions_per_visit?: number;
 };
 
-export type Dashboard = {
+// Headline visit counts grouped by period.
+export type VisitStats = { today: number | null; month: number | null; total: number | null };
+
+export type Dashboard = VisitStats & {
   configured: boolean;
   totalVisits: number | null;
   summary: Summary | null;
@@ -75,13 +78,22 @@ export type Dashboard = {
   referrers: { label: string; value: number }[];
 };
 
-// All-time total visits (headline number for the footer).
+const visits = (s: Summary | null) => (typeof s?.nb_visits === "number" ? s.nb_visits : null);
+
+// All-time total visits.
 export async function getTotalVisits(revalidate = 900): Promise<number | null> {
-  const data = await call<Summary>(
-    { method: "VisitsSummary.get", period: "range", date: "2015-01-01,today" },
-    revalidate,
-  );
-  return typeof data?.nb_visits === "number" ? data.nb_visits : null;
+  return visits(await call<Summary>({ method: "VisitsSummary.get", period: "range", date: "2015-01-01,today" }, revalidate));
+}
+
+// Today / this month / all-time visit counts — for the footer widget.
+export async function getVisitStats(): Promise<VisitStats> {
+  if (!TOKEN) return { today: null, month: null, total: null };
+  const [today, month, total] = await Promise.all([
+    call<Summary>({ method: "VisitsSummary.get", period: "day", date: "today" }, 300),
+    call<Summary>({ method: "VisitsSummary.get", period: "month", date: "today" }, 600),
+    getTotalVisits(),
+  ]);
+  return { today: visits(today), month: visits(month), total };
 }
 
 function toSeries(rows: Row[] | null, metric: "nb_visits" | "nb_hits" = "nb_visits"): { label: string; value: number }[] {
@@ -94,12 +106,12 @@ function toSeries(rows: Row[] | null, metric: "nb_visits" | "nb_hits" = "nb_visi
 // Everything the dashboard needs, fetched in parallel.
 export async function getDashboard(): Promise<Dashboard> {
   if (!TOKEN) {
-    return { configured: false, totalVisits: null, summary: null, trend: [], topPages: [], countries: [], devices: [], referrers: [] };
+    return { configured: false, today: null, month: null, total: null, totalVisits: null, summary: null, trend: [], topPages: [], countries: [], devices: [], referrers: [] };
   }
   const period = { period: "range", date: "last30" } as const;
 
-  const [totalVisits, summary, visitsByDay, pages, countries, devices, referrers] = await Promise.all([
-    getTotalVisits(),
+  const [stats, summary, visitsByDay, pages, countries, devices, referrers] = await Promise.all([
+    getVisitStats(),
     call<Summary>({ method: "VisitsSummary.get", ...period }),
     call<Record<string, number>>({ method: "VisitsSummary.getVisits", period: "day", date: "last30" }),
     call<Row[]>({ method: "Actions.getPageTitles", flat: "1", filter_limit: "8", filter_sort_column: "nb_hits", ...period }),
@@ -109,12 +121,15 @@ export async function getDashboard(): Promise<Dashboard> {
   ]);
 
   const trend = visitsByDay
-    ? Object.entries(visitsByDay).map(([date, visits]) => ({ date, visits: Number(visits) || 0 }))
+    ? Object.entries(visitsByDay).map(([date, v]) => ({ date, visits: Number(v) || 0 }))
     : [];
 
   return {
     configured: true,
-    totalVisits,
+    today: stats.today,
+    month: stats.month,
+    total: stats.total,
+    totalVisits: stats.total,
     summary: summary ?? null,
     trend,
     topPages: toSeries(pages, "nb_hits"),

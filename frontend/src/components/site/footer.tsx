@@ -26,7 +26,7 @@ const columns = [
 export function Footer() {
   return (
     <footer className="bg-brand-navy text-[#d3e0e9]">
-      <div className="container-tirdo grid gap-8 py-16 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.35fr]">
+      <div className="container-tirdo grid gap-8 py-16 md:grid-cols-2 lg:grid-cols-[1.7fr_1fr_1fr_1.2fr_1.15fr]">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={assets.logo} alt="TIRDO" className="w-[76px] bg-white p-1.5" />
@@ -55,8 +55,10 @@ export function Footer() {
           </p>
           <a href={`mailto:${site.email}`} className="my-2 block text-sm hover:text-brand-gold">{site.email}</a>
           <a href="tel:+255222666034" className="block text-sm hover:text-brand-gold">+255 22 266 6034</a>
+        </div>
 
-          <h4 className="mb-3 mt-6 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">Visitors</h4>
+        <div>
+          <h4 className="mb-4 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">Visitors</h4>
           <VisitorCounter />
         </div>
       </div>
