@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, User } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
+import { UnitsGrid } from "@/components/site/units-grid";
 import { Card, CardContent } from "@/components/ui/card";
 import { departments, managementUnits } from "@/lib/content";
 
@@ -80,17 +81,8 @@ export default function DepartmentsPage() {
           {/* Supporting units (report directly to the Director General) */}
           <div>
             <h2 className="mb-2 border-l-4 border-accent pl-3 text-xl font-bold text-primary">Supporting Units</h2>
-            <p className="mb-5 pl-4 text-sm text-muted-foreground">Units reporting directly to the Director General.</p>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {managementUnits.map((u) => (
-                <Card key={u.name}>
-                  <CardContent className="p-5">
-                    <h3 className="mb-1 font-semibold text-primary">{u.name}</h3>
-                    <p className="text-sm text-muted-foreground">{u.desc}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <p className="mb-8 pl-4 text-sm text-muted-foreground">Units reporting directly to the Director General.</p>
+            <UnitsGrid units={managementUnits} />
           </div>
         </div>
       </section>
