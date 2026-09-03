@@ -30,7 +30,6 @@ $assets = @(
   @{ Url = "https://www.tirdo.or.tz/storage/carousel-items/fRbUBRaWLBHYVw8U8yG1aRENYr39KbRrvArOp5kQ.jpg"; Path = "carousel-items\fRbUBRaWLBHYVw8U8yG1aRENYr39KbRrvArOp5kQ.jpg" },
   @{ Url = "https://www.tirdo.or.tz/storage/carousel-items/uNKy6HRLTxyTlnOfqZlMhXIR8nA6SaMGCDNzTmrq.jpg"; Path = "carousel-items\uNKy6HRLTxyTlnOfqZlMhXIR8nA6SaMGCDNzTmrq.jpg" },
   @{ Url = "https://www.tirdo.or.tz/storage/carousel-items/cCiap7vvzT3PcCrqVYJe99reAp4pnPJVZ5SnDDBV.jpg"; Path = "carousel-items\cCiap7vvzT3PcCrqVYJe99reAp4pnPJVZ5SnDDBV.jpg" },
-  @{ Url = "https://www.tirdo.or.tz/storage/carousel-items/llWLlNlWubobDNVa4AKmzeiScT4efKRsoeZA4xRO.jpg"; Path = "carousel-items\llWLlNlWubobDNVa4AKmzeiScT4efKRsoeZA4xRO.jpg" },
   @{ Url = "https://www.tirdo.or.tz/storage/carousel-items/laX5QEVDZMj4dCwh7uxiIy1gerC4jjQOJe3myxs9.jpg"; Path = "carousel-items\laX5QEVDZMj4dCwh7uxiIy1gerC4jjQOJe3myxs9.jpg" },
 
   # --- Research products / resources ---
