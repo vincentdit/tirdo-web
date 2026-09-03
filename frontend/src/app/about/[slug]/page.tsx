@@ -28,26 +28,6 @@ function initials(name: string) {
   return name.replace(/^(Prof\.|Eng\.|Ms\.|Mr\.|Dr\.)\s*/, "").split(" ").map((w) => w[0]).slice(0, 2).join("");
 }
 
-function LeaderGrid({ people }: { people: Leader[] }) {
-  return (
-    <div className="container-tirdo mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {people.map((l) => (
-        <Card key={l.name}>
-          <CardContent className="flex items-center gap-4 p-5">
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-primary/10 font-bold text-primary">
-              {initials(l.name)}
-            </div>
-            <div>
-              <div className="font-semibold text-primary">{l.name}</div>
-              <div className="text-xs text-muted-foreground">{l.role}</div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-}
-
 // Portrait card for the governance tree (photo when available, initials otherwise).
 function PortraitCard({ l, featured = false }: { l: Leader; featured?: boolean }) {
   return (
@@ -92,6 +72,24 @@ function BoardTree() {
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+// Management tree: the lead (Director General) featured on top, the rest in a grid.
+function LeaderTree({ people }: { people: Leader[] }) {
+  const [lead, ...rest] = people;
+  return (
+    <div className="container-tirdo mt-10">
+      <div className="flex justify-center">
+        <PortraitCard l={lead} featured />
+      </div>
+      <div className="mx-auto my-7 h-7 w-px bg-brand-teal/30" />
+      <div className="grid justify-items-center gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+        {rest.map((m) => (
+          <PortraitCard key={m.name} l={m} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -190,10 +188,10 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
 
         {params.slug === "administration" && (
           <>
-            <div className="container-tirdo max-w-3xl text-foreground/80">
+            <div className="container-tirdo max-w-3xl text-center text-foreground/80">
               <p>TIRDO&apos;s top management leads the organisation&apos;s research, engineering, ICT and corporate services, translating the mandate into applied research and technical services for industry.</p>
             </div>
-            <LeaderGrid people={topManagement} />
+            <LeaderTree people={topManagement} />
 
             <div className="container-tirdo mt-12">
               <h2 className="text-lg font-bold text-primary">Supporting Units</h2>
