@@ -48,6 +48,54 @@ function LeaderGrid({ people }: { people: Leader[] }) {
   );
 }
 
+// Portrait card for the governance tree (photo when available, initials otherwise).
+function PortraitCard({ l, featured = false }: { l: Leader; featured?: boolean }) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <div className={`overflow-hidden rounded-lg border border-black/5 shadow-sm ${featured ? "h-56 w-48" : "h-44 w-40"}`}>
+        {l.photo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={l.photo} alt={l.name} className="h-full w-full object-cover" />
+        ) : (
+          <div className="grid h-full w-full place-items-center bg-gradient-to-b from-brand-pale to-secondary/70 text-3xl font-bold text-brand-teal/50">
+            {initials(l.name)}
+          </div>
+        )}
+      </div>
+      <div className="mt-3 max-w-[12rem] text-sm font-bold leading-snug text-brand-ink">{l.name}</div>
+      <div className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand-teal">{l.role}</div>
+    </div>
+  );
+}
+
+// Governance tree: Chairperson on top, members in a grid, Secretary at the bottom.
+function BoardTree() {
+  const chair = board.find((b) => /chair/i.test(b.role)) ?? board[0];
+  const secretary = board.find((b) => /secretary/i.test(b.role));
+  const members = board.filter((b) => b !== chair && b !== secretary);
+  return (
+    <div className="container-tirdo mt-10">
+      <div className="flex justify-center">
+        <PortraitCard l={chair} featured />
+      </div>
+      <div className="mx-auto my-7 h-7 w-px bg-brand-teal/30" />
+      <div className="grid justify-items-center gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+        {members.map((m) => (
+          <PortraitCard key={m.name} l={m} />
+        ))}
+      </div>
+      {secretary && (
+        <>
+          <div className="mx-auto my-7 h-7 w-px bg-brand-teal/30" />
+          <div className="flex justify-center">
+            <PortraitCard l={secretary} />
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function AboutSubPage({ params }: { params: { slug: string } }) {
   const m = meta[params.slug];
   if (!m) notFound();
@@ -133,10 +181,10 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
 
         {params.slug === "board" && (
           <>
-            <div className="container-tirdo max-w-3xl text-foreground/80">
+            <div className="container-tirdo max-w-3xl text-center text-foreground/80">
               <p>The Board of Directors provides strategic direction and oversight, ensuring TIRDO delivers on its statutory mandate under the TIRDO Act, 1979 and serves the national industrialization agenda.</p>
             </div>
-            <LeaderGrid people={board} />
+            <BoardTree />
           </>
         )}
 

@@ -12,7 +12,8 @@ export function Header() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   return (
-    <header>
+    <>
+      <header>
       {/* Utility bar */}
       <div className="bg-brand-teal text-white">
         <div className="container-tirdo flex min-h-[38px] items-center justify-between gap-3 text-[0.78rem]">
@@ -64,8 +65,9 @@ export function Header() {
           </Link>
         </div>
       </div>
+      </header>
 
-      {/* Nav */}
+      {/* Nav — pinned to the top for the whole page */}
       <nav className="sticky top-0 z-50 bg-brand-teal shadow-[0_4px_12px_rgba(0,43,58,0.18)]">
         <div className="container-tirdo flex h-[62px] items-center gap-2" onMouseLeave={() => setOpenMenu(null)}>
           {/* mobile brand */}
@@ -120,7 +122,7 @@ export function Header() {
           </div>
         )}
       </nav>
-    </header>
+    </>
   );
 }
 
