@@ -125,6 +125,9 @@ services:
         NEXT_PUBLIC_STRAPI_URL: http://localhost:1337
         NEXT_PUBLIC_MATOMO_URL: http://localhost:8095/
         NEXT_PUBLIC_MATOMO_SITE_ID: "1"
+        # First-party analytics paths (proxied to Matomo by Nginx) — evade ad blockers.
+        NEXT_PUBLIC_MATOMO_JS_URL: /s/js
+        NEXT_PUBLIC_MATOMO_TRACK_URL: /s/e
         NEXT_PUBLIC_KEYCLOAK_URL: http://localhost:8080/auth
         NEXT_PUBLIC_KEYCLOAK_REALM: ${KEYCLOAK_REALM}
         NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}

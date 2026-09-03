@@ -5,17 +5,25 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 // Loads the Matomo tracker and records a page view on every route change
-// (Next.js App Router navigations don't reload the page). Configured via
-// NEXT_PUBLIC_MATOMO_URL and NEXT_PUBLIC_MATOMO_SITE_ID (baked at build time).
-// No-ops if the URL is unset.
+// (Next.js App Router navigations don't reload the page).
+//
+// The tracker script and endpoint are served FIRST-PARTY through Nginx under
+// bland paths (/s/js and /s/e) so ad/privacy blockers — which block the
+// tell-tale "matomo.js" / "matomo.php" — don't drop them. Configured via
+// NEXT_PUBLIC_MATOMO_JS_URL, NEXT_PUBLIC_MATOMO_TRACK_URL and
+// NEXT_PUBLIC_MATOMO_SITE_ID (baked at build time). Set the track URL to
+// "off" to disable analytics entirely.
 export function MatomoAnalytics() {
-  const url = process.env.NEXT_PUBLIC_MATOMO_URL;
+  const jsUrl = process.env.NEXT_PUBLIC_MATOMO_JS_URL || "/s/js";
+  const trackUrl = process.env.NEXT_PUBLIC_MATOMO_TRACK_URL || "/s/e";
   const siteId = process.env.NEXT_PUBLIC_MATOMO_SITE_ID || "1";
   const pathname = usePathname();
   const initialLoad = useRef(true);
 
+  const enabled = trackUrl.toLowerCase() !== "off";
+
   useEffect(() => {
-    if (!url) return;
+    if (!enabled) return;
     // The inline script below already tracks the first page view on load.
     if (initialLoad.current) {
       initialLoad.current = false;
@@ -26,9 +34,9 @@ export function MatomoAnalytics() {
     w._paq.push(["setCustomUrl", window.location.href]);
     w._paq.push(["setDocumentTitle", document.title]);
     w._paq.push(["trackPageView"]);
-  }, [pathname, url]);
+  }, [pathname, enabled]);
 
-  if (!url) return null;
+  if (!enabled) return null;
 
   return (
     <Script id="matomo" strategy="afterInteractive">
@@ -37,11 +45,10 @@ export function MatomoAnalytics() {
         _paq.push(['enableLinkTracking']);
         _paq.push(['trackPageView']);
         (function() {
-          var u="${url}";
-          _paq.push(['setTrackerUrl', u+'matomo.php']);
+          _paq.push(['setTrackerUrl', '${trackUrl}']);
           _paq.push(['setSiteId', '${siteId}']);
           var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-          g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+          g.async=true; g.src='${jsUrl}'; s.parentNode.insertBefore(g,s);
         })();
       `}
     </Script>

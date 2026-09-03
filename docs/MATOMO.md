@@ -13,7 +13,8 @@ restarts and rebuilds.
 | Matomo app | `docker-compose.yml` → `matomo` (`matomo:5-apache`) | http://localhost:8095 |
 | Database | `docker-compose.yml` → `mariadb` (`mariadb:11`) | host `mariadb`, db/user from `.env` |
 | Tracker snippet | `frontend/src/components/site/matomo.tsx` | injected on every page |
-| Tracker target | build arg `NEXT_PUBLIC_MATOMO_URL` | `http://localhost:8095/` |
+| Tracker script (first-party) | `NEXT_PUBLIC_MATOMO_JS_URL` → Nginx | `/s/js` |
+| Tracking endpoint (first-party) | `NEXT_PUBLIC_MATOMO_TRACK_URL` → Nginx | `/s/e` |
 | Tracked site ID | build arg `NEXT_PUBLIC_MATOMO_SITE_ID` | `1` |
 
 The tracker records a page view on first load **and** on every in-app navigation.
@@ -79,6 +80,43 @@ protection often block `matomo.js` — allow it for `localhost`.)
 - **Start the install over** — remove the volume and bring Matomo back up:
   `docker compose rm -sf matomo && docker volume rm tirdo-web_matomo_data && docker compose up -d matomo`.
   (This erases all collected analytics.)
+
+## First-party tracking (ad-blocker resistance)
+
+Ad and privacy blockers block Matomo by the tell-tale names `matomo.js` and
+`matomo.php` (you'll see `net::ERR_BLOCKED_BY_CLIENT` in the console). To avoid
+losing that traffic, the tracker is served **first-party** through Nginx under
+bland, same-origin paths — no separate port, no "matomo" in the URL:
+
+| Purpose | Public path (same origin as the site) | Proxied to |
+|---------|---------------------------------------|------------|
+| Tracker script | `/s/js` | `matomo:80/matomo.js` |
+| Tracking endpoint | `/s/e` | `matomo:80/matomo.php` |
+
+These are defined in `nginx/conf.d/default.conf`, and the tracker
+(`frontend/src/components/site/matomo.tsx`) points at them via the build args
+`NEXT_PUBLIC_MATOMO_JS_URL=/s/js` and `NEXT_PUBLIC_MATOMO_TRACK_URL=/s/e`
+(in `docker-compose.yml`). The Matomo **dashboard** is still at
+http://localhost:8095 for admins — only the visitor-facing tracking is proxied.
+
+**Verify:** load http://localhost, open DevTools → Network, and you should see
+`s/js` and `s/e` return **200** (no `ERR_BLOCKED_BY_CLIENT`), and the visit
+appears in Matomo → Visitors → Real-time. To turn analytics off entirely, set
+`NEXT_PUBLIC_MATOMO_TRACK_URL: off` and rebuild the frontend.
+
+### Real visitor IPs behind the proxy (optional)
+
+Because hits now reach Matomo through Nginx, Matomo sees the proxy's IP unless
+told to read the forwarded header. Nginx already sends `X-Forwarded-For`; tell
+Matomo to trust it once, then it applies forever (stored in the volume). In your
+PowerShell:
+
+```powershell
+docker compose exec matomo bash -lc "printf '\n[General]\nproxy_client_headers[] = HTTP_X_FORWARDED_FOR\nproxy_host_headers[] = HTTP_X_FORWARDED_HOST\n' >> /var/www/html/config/config.ini.php"
+docker compose restart matomo
+```
+
+(Skip this for local testing — it only affects visitor IP/geolocation accuracy.)
 
 ## Going to production
 
