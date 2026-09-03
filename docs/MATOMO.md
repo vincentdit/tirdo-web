@@ -108,18 +108,23 @@ appears in Matomo → Visitors → Real-time. To turn analytics off entirely, se
 
 Because hits now reach Matomo through Nginx, Matomo sees the proxy's IP unless
 told to read the forwarded header. Nginx already sends `X-Forwarded-For`; tell
-Matomo to trust it once (stored in the volume, so it sticks). In your PowerShell:
+Matomo to trust it once (stored in the volume, so it sticks).
+
+On **Windows/PowerShell** the JSON quotes get mangled if you inline the command,
+so open a shell inside the container first, then run Matomo's console there:
 
 ```powershell
-docker compose exec -u www-data matomo ./console config:set 'General.proxy_client_headers=["HTTP_X_FORWARDED_FOR"]'
-docker compose exec -u www-data matomo ./console config:set 'General.proxy_host_headers=["HTTP_X_FORWARDED_HOST"]'
-docker compose restart matomo
+docker compose exec -u www-data matomo bash
 ```
-
-Verify it took:
-
+```bash
+# now inside the container (prompt: www-data@...:/var/www/html$)
+./console config:set 'General.proxy_client_headers=["HTTP_X_FORWARDED_FOR"]'
+./console config:set 'General.proxy_host_headers=["HTTP_X_FORWARDED_HOST"]'
+./console config:get 'General.proxy_client_headers'   # verify -> ["HTTP_X_FORWARDED_FOR"]
+exit
+```
 ```powershell
-docker compose exec -u www-data matomo ./console config:get 'General.proxy_client_headers'
+docker compose restart matomo
 ```
 
 Note: **locally** every request is loopback, so visits will still show an
