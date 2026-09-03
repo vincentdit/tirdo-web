@@ -464,7 +464,7 @@ export const events: EventItem[] = [
     location: "Mwalimu J. K. Nyerere Trade Fair Grounds, Dar es Salaam",
     category: "Exhibition",
     description: "TIRDO showcased its research products, laboratories and industrial services at the annual national trade fair.",
-    image: `${CI}/llWLlNlWubobDNVa4AKmzeiScT4efKRsoeZA4xRO.jpg`,
+    image: `${CI}/cCiap7vvzT3PcCrqVYJe99reAp4pnPJVZ5SnDDBV.jpg`,
   },
 ];
 
@@ -473,7 +473,7 @@ export const galleryImages: GalleryImage[] = [
   { src: `${CI}/fRbUBRaWLBHYVw8U8yG1aRENYr39KbRrvArOp5kQ.jpg`, caption: "Ministry Secretary with the TIRDO Board" },
   { src: `${CI}/uNKy6HRLTxyTlnOfqZlMhXIR8nA6SaMGCDNzTmrq.jpg`, caption: "Deputy Minister's visit to TIRDO" },
   { src: `${CI}/laX5QEVDZMj4dCwh7uxiIy1gerC4jjQOJe3myxs9.jpg`, caption: "Signing of the strategic minerals research agreement" },
-  { src: `${CI}/llWLlNlWubobDNVa4AKmzeiScT4efKRsoeZA4xRO.jpg`, caption: "TIRDO at the DITF 2025 exhibition" },
+  { src: `${NEWS}/Bi9KLvoqbRxTjvSEKZnmGtp9DcH41MmFbkdOLFuV.jpg`, caption: "Hon. Dr. Selemani Jafo visits TIRDO" },
   { src: `${CI}/cCiap7vvzT3PcCrqVYJe99reAp4pnPJVZ5SnDDBV.jpg`, caption: "Non-destructive testing experts at Msalato airport" },
   { src: `${RES}/feHRWQMR9OJXOpyL21RzVcnWNQ9xzn2ATG2RKDLj.jpg`, caption: "Essential oils production research" },
   { src: `${RES}/H1D6ScYYF7ZdoRK9q5V8fxut6gRVKKVeSQaTWjKU.png`, caption: "Biomass briquette production plant" },
