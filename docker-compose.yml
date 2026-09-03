@@ -139,6 +139,11 @@ services:
       STRAPI_INTERNAL_URL: http://cms:1337
       OPENSEARCH_NODE: http://opensearch:9200
       OPENSEARCH_INDEX: ${OPENSEARCH_INDEX}
+      # Matomo reporting API (server-side; token never reaches the browser).
+      # Routed via Nginx's internal :8081 upstream, which pins the trusted Host.
+      MATOMO_API_URL: http://nginx:8081
+      MATOMO_API_TOKEN: ${MATOMO_API_TOKEN}
+      MATOMO_SITE_ID: "1"
     depends_on:
       - cms
     networks: [tirdo-net]

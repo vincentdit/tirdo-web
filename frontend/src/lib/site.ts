@@ -164,6 +164,7 @@ export const mainNav: NavItem[] = [
       { title: "Documents", href: "/documents" },
     ],
   },
+  { title: "Analytics", href: "/analytics" },
   { title: "Contact Us", href: "/contact" },
 ];
 
