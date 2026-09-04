@@ -21,6 +21,8 @@ export function MatomoAnalytics() {
   const initialLoad = useRef(true);
 
   const enabled = trackUrl.toLowerCase() !== "off";
+  // Don't count views of the analytics dashboard itself as site visits.
+  const excluded = pathname === "/analytics" || pathname.startsWith("/analytics/");
 
   useEffect(() => {
     if (!enabled) return;
@@ -29,12 +31,13 @@ export function MatomoAnalytics() {
       initialLoad.current = false;
       return;
     }
+    if (excluded) return;
     const w = window as unknown as { _paq?: unknown[][] };
     if (!w._paq) return;
     w._paq.push(["setCustomUrl", window.location.href]);
     w._paq.push(["setDocumentTitle", document.title]);
     w._paq.push(["trackPageView"]);
-  }, [pathname, enabled]);
+  }, [pathname, enabled, excluded]);
 
   if (!enabled) return null;
 
@@ -43,7 +46,7 @@ export function MatomoAnalytics() {
       {`
         var _paq = window._paq = window._paq || [];
         _paq.push(['enableLinkTracking']);
-        _paq.push(['trackPageView']);
+        ${excluded ? "" : "_paq.push(['trackPageView']);"}
         (function() {
           _paq.push(['setTrackerUrl', '${trackUrl}']);
           _paq.push(['setSiteId', '${siteId}']);
