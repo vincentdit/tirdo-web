@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "audit_logs",
+  "info": {
+    "singularName": "audit-log",
+    "pluralName": "audit-logs",
+    "displayName": "Audit Log",
+    "description": "Append-only, hash-chained record of administrative content actions"
+  },
+  "options": { "draftAndPublish": false },
+  "pluginOptions": { "content-manager": { "visible": true }, "content-type-builder": { "visible": false } },
+  "attributes": {
+    "seq": { "type": "integer", "required": true, "unique": true },
+    "occurredAt": { "type": "string", "required": true },
+    "action": { "type": "string", "required": true },
+    "contentType": { "type": "string", "required": true },
+    "entityId": { "type": "string" },
+    "entitySlug": { "type": "string" },
+    "actor": { "type": "string" },
+    "actorId": { "type": "string" },
+    "summary": { "type": "json" },
+    "prevHash": { "type": "string", "required": true },
+    "hash": { "type": "string", "required": true, "unique": true }
+  }
+}

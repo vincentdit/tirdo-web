@@ -89,6 +89,8 @@ services:
       OPENSEARCH_NODE: http://opensearch:9200
       OPENSEARCH_INDEX: ${OPENSEARCH_INDEX}
       SEED_DATA: "true"
+      # Optional: protect GET /api/audit-log/verify (blank = open internally)
+      AUDIT_LOG_TOKEN: ${AUDIT_LOG_TOKEN}
       # Email (SMTP) — captured by Mailpit locally
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}

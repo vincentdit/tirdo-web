@@ -1,9 +1,14 @@
 'use strict';
 
 const seedData = require('./seed-data');
+const { auditMiddleware } = require('./audit');
 
 module.exports = {
-  register() {},
+  register({ strapi }) {
+    // Record every create/update/delete/publish on audited content types to
+    // the tamper-evident audit log.
+    strapi.documents.use(auditMiddleware(strapi));
+  },
 
   async bootstrap({ strapi }) {
     // 1) Open up the public REST API for read access + contact submissions.
