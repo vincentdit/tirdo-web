@@ -1,55 +1,48 @@
 import { NextResponse } from "next/server";
-import { news, projects, publications, services, departments } from "@/lib/content";
+import {
+  gatherDocuments,
+  ensurePopulated,
+  searchContent,
+  type SearchHit,
+  type Facet,
+} from "@/lib/search";
 
-const OS_NODE = process.env.OPENSEARCH_NODE || "http://opensearch:9200";
-const OS_INDEX = process.env.OPENSEARCH_INDEX || "tirdo-content";
+export const dynamic = "force-dynamic";
 
-export type SearchHit = { title: string; type: string; url: string; excerpt?: string };
-
-// Local fallback index built from bundled content.
-function localIndex(): SearchHit[] {
-  return [
-    ...news.map((n) => ({ title: n.title, type: "News", url: `/news/${n.slug}`, excerpt: n.excerpt })),
-    ...projects.map((p) => ({ title: p.title, type: "Project", url: `/projects#${p.slug}`, excerpt: p.summary })),
-    ...publications.map((p) => ({ title: p.title, type: "Publication", url: `/publications`, excerpt: `${p.type} · ${p.year}` })),
-    ...services.map((s) => ({ title: s.title, type: "Service", url: `/services/${s.slug}`, excerpt: s.description })),
-    ...departments.map((d) => ({ title: d.title, type: "Department", url: `/departments/${d.slug}`, excerpt: d.blurb })),
-  ];
+// Local fallback: scan the gathered documents when OpenSearch is unavailable.
+async function localResults(q: string, type?: string): Promise<{ hits: SearchHit[]; total: number; facets: Facet[] }> {
+  const needle = q.toLowerCase();
+  const docs = await gatherDocuments();
+  const matched = docs.filter(
+    (d) =>
+      d.title.toLowerCase().includes(needle) ||
+      d.excerpt?.toLowerCase().includes(needle) ||
+      d.body?.toLowerCase().includes(needle)
+  );
+  const counts = new Map<string, number>();
+  for (const m of matched) counts.set(m.type, (counts.get(m.type) ?? 0) + 1);
+  const facets: Facet[] = [...counts.entries()].map(([t, count]) => ({ type: t, count })).sort((a, b) => b.count - a.count);
+  const filtered = type ? matched.filter((m) => m.type === type) : matched;
+  const hits: SearchHit[] = filtered.map((d) => ({ title: d.title, type: d.type, url: d.url, excerpt: d.excerpt }));
+  return { hits, total: hits.length, facets };
 }
 
 export async function GET(req: Request) {
-  const q = new URL(req.url).searchParams.get("q")?.trim() ?? "";
-  if (!q) return NextResponse.json({ hits: [] });
+  const url = new URL(req.url);
+  const q = url.searchParams.get("q")?.trim() ?? "";
+  const type = url.searchParams.get("type")?.trim() || undefined;
+  const from = Math.max(0, parseInt(url.searchParams.get("from") ?? "0", 10) || 0);
+  if (!q) return NextResponse.json({ hits: [], total: 0, facets: [], engine: "none" });
 
-  // Try OpenSearch first.
+  // Try OpenSearch (self-populating on first use), then fall back to local.
   try {
-    const res = await fetch(`${OS_NODE}/${OS_INDEX}/_search`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        size: 20,
-        query: { multi_match: { query: q, fields: ["title^3", "excerpt", "body"], fuzziness: "AUTO" } },
-      }),
-      signal: AbortSignal.timeout(3000),
-    });
-    if (res.ok) {
-      const json = await res.json();
-      const hits: SearchHit[] = (json.hits?.hits ?? []).map((h: any) => ({
-        title: h._source.title,
-        type: h._source.type ?? "Content",
-        url: h._source.url ?? "#",
-        excerpt: h._source.excerpt,
-      }));
-      if (hits.length) return NextResponse.json({ hits, engine: "opensearch" });
-    }
+    await ensurePopulated();
+    const result = await searchContent(q, { type, from });
+    if (result) return NextResponse.json({ ...result, engine: "opensearch" });
   } catch {
-    // fall through to local
+    // fall through
   }
 
-  // Fallback: simple case-insensitive match over bundled content.
-  const needle = q.toLowerCase();
-  const hits = localIndex().filter(
-    (h) => h.title.toLowerCase().includes(needle) || h.excerpt?.toLowerCase().includes(needle)
-  );
-  return NextResponse.json({ hits, engine: "local" });
+  const local = await localResults(q, type);
+  return NextResponse.json({ ...local, engine: "local" });
 }
