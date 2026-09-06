@@ -1,0 +1,112 @@
+{
+  "site": {
+    "country": "United Republic of Tanzania",
+    "countryUpper": "THE UNITED REPUBLIC OF TANZANIA",
+    "orgName": "Tanzania Industrial Research and Development Organization",
+    "tagline": "TIRDO for sustainable industrial development",
+    "staffMail": "Staff Mail",
+    "eOffice": "e-Office",
+    "search": "Search"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "ourWork": "Our Work",
+    "departments": "Departments",
+    "services": "Services",
+    "research": "Research & Innovation",
+    "media": "Media Centre",
+    "analytics": "Analytics",
+    "contact": "Contact Us",
+    "eServices": "e-Services",
+    "headings": {
+      "industrialResearch": "Industrial Research",
+      "engineeringDevelopment": "Engineering Development",
+      "ictTech": "ICT & Technology Development",
+      "finance": "Finance",
+      "hrAdmin": "Human Resources & Admin"
+    },
+    "aboutMenu": {
+      "missionVision": "Mission & Vision",
+      "structure": "Organization Structure",
+      "board": "Board of Directors",
+      "administration": "Administration",
+      "successStories": "Success Stories",
+      "comsats": "COMSATS Centre"
+    },
+    "divisions": {
+      "environment": "Environmental Technology & Occupational Safety Division",
+      "foodBiotech": "Food Processing & Biotechnology Division",
+      "industrialChemistry": "Agro processing Industrial Chemistry Division",
+      "energy": "Energy Technology Division",
+      "materials": "Engineering Material Technology Division",
+      "textileLeather": "Textile & Leather Technologies Division",
+      "ict": "Information & Communication Technologies Division",
+      "instrumentation": "Electronics & Instrumentation Technologies Division",
+      "techTransfer": "Technology Transfer & Pilot Plants Division"
+    },
+    "finance": {
+      "store": "Store Section",
+      "preAudit": "Pre-Audit Section",
+      "costing": "Costing & Expenditure Section",
+      "revenue": "Revenue Section"
+    },
+    "hr": {
+      "humanResource": "Human Resource Division",
+      "administration": "Administration Division",
+      "estate": "Estate Division"
+    },
+    "servicesMenu": {
+      "research": "Research",
+      "energyAuditing": "Energy Auditing",
+      "feasibility": "Feasibility Studies",
+      "consultancy": "Consultancy & Technical Services",
+      "laboratory": "Laboratory Analytical Services",
+      "training": "Training & Skill Development"
+    },
+    "researchMenu": {
+      "ongoing": "Ongoing Projects",
+      "tHub": "T-Hub Innovation",
+      "iic": "Industrial Information Centre",
+      "products": "Research Products",
+      "publications": "Publications"
+    },
+    "mediaMenu": {
+      "news": "News & Announcements",
+      "events": "Events",
+      "gallery": "Gallery",
+      "documents": "Documents"
+    }
+  },
+  "footer": {
+    "blurb": "Building a sustainable industrial future through research, technology and innovation.",
+    "exploreHeading": "Explore TIRDO",
+    "quickHeading": "Quick links",
+    "contactHeading": "Contact us",
+    "visitorsHeading": "Visitors",
+    "explore": {
+      "about": "About us",
+      "departments": "Our departments",
+      "products": "Research products",
+      "documents": "Documents"
+    },
+    "quick": {
+      "services": "Industrial services",
+      "tHub": "T-Hub",
+      "careers": "Career opportunities",
+      "tenders": "Tenders"
+    },
+    "privacy": "Privacy policy",
+    "sitemap": "Sitemap",
+    "accessibility": "Accessibility",
+    "copyright": "{year} {org}"
+  },
+  "visitors": {
+    "total": "Total Site Visitors",
+    "today": "Today",
+    "thisMonth": "This month"
+  },
+  "sitemap": {
+    "title": "Sitemap"
+  }
+}

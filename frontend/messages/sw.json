@@ -1,0 +1,112 @@
+{
+  "site": {
+    "country": "Jamhuri ya Muungano wa Tanzania",
+    "countryUpper": "JAMHURI YA MUUNGANO WA TANZANIA",
+    "orgName": "Shirika la Utafiti na Maendeleo ya Viwanda Tanzania",
+    "tagline": "TIRDO kwa maendeleo endelevu ya viwanda",
+    "staffMail": "Barua za Watumishi",
+    "eOffice": "e-Office",
+    "search": "Tafuta"
+  },
+  "nav": {
+    "home": "Mwanzo",
+    "about": "Kuhusu Sisi",
+    "ourWork": "Kazi Zetu",
+    "departments": "Idara",
+    "services": "Huduma",
+    "research": "Utafiti na Ubunifu",
+    "media": "Kituo cha Habari",
+    "analytics": "Takwimu",
+    "contact": "Wasiliana Nasi",
+    "eServices": "Huduma za Kielektroniki",
+    "headings": {
+      "industrialResearch": "Utafiti wa Viwanda",
+      "engineeringDevelopment": "Uendelezaji wa Uhandisi",
+      "ictTech": "TEHAMA na Uendelezaji wa Teknolojia",
+      "finance": "Fedha",
+      "hrAdmin": "Rasilimali Watu na Utawala"
+    },
+    "aboutMenu": {
+      "missionVision": "Dira na Dhamira",
+      "structure": "Muundo wa Shirika",
+      "board": "Bodi ya Wakurugenzi",
+      "administration": "Utawala",
+      "successStories": "Hadithi za Mafanikio",
+      "comsats": "Kituo cha COMSATS"
+    },
+    "divisions": {
+      "environment": "Idara ya Teknolojia ya Mazingira na Usalama Kazini",
+      "foodBiotech": "Idara ya Usindikaji wa Chakula na Bioteknolojia",
+      "industrialChemistry": "Idara ya Kemia ya Viwanda na Usindikaji wa Mazao ya Kilimo",
+      "energy": "Idara ya Teknolojia ya Nishati",
+      "materials": "Idara ya Teknolojia ya Malighafi za Uhandisi",
+      "textileLeather": "Idara ya Teknolojia ya Nguo na Ngozi",
+      "ict": "Idara ya Teknolojia ya Habari na Mawasiliano",
+      "instrumentation": "Idara ya Teknolojia ya Elektroniki na Vifaa vya Kupimia",
+      "techTransfer": "Idara ya Uhamishaji wa Teknolojia na Mitambo ya Majaribio"
+    },
+    "finance": {
+      "store": "Sehemu ya Ghala",
+      "preAudit": "Sehemu ya Ukaguzi wa Awali",
+      "costing": "Sehemu ya Gharama na Matumizi",
+      "revenue": "Sehemu ya Mapato"
+    },
+    "hr": {
+      "humanResource": "Idara ya Rasilimali Watu",
+      "administration": "Idara ya Utawala",
+      "estate": "Idara ya Majengo"
+    },
+    "servicesMenu": {
+      "research": "Utafiti",
+      "energyAuditing": "Ukaguzi wa Nishati",
+      "feasibility": "Tafiti za Uwezekano",
+      "consultancy": "Ushauri na Huduma za Kiufundi",
+      "laboratory": "Huduma za Uchambuzi wa Maabara",
+      "training": "Mafunzo na Uendelezaji wa Ujuzi"
+    },
+    "researchMenu": {
+      "ongoing": "Miradi Inayoendelea",
+      "tHub": "Ubunifu wa T-Hub",
+      "iic": "Kituo cha Taarifa za Viwanda",
+      "products": "Bidhaa za Utafiti",
+      "publications": "Machapisho"
+    },
+    "mediaMenu": {
+      "news": "Habari na Matangazo",
+      "events": "Matukio",
+      "gallery": "Matunzio",
+      "documents": "Nyaraka"
+    }
+  },
+  "footer": {
+    "blurb": "Kujenga mustakabali endelevu wa viwanda kupitia utafiti, teknolojia na ubunifu.",
+    "exploreHeading": "Gundua TIRDO",
+    "quickHeading": "Viungo vya Haraka",
+    "contactHeading": "Wasiliana Nasi",
+    "visitorsHeading": "Wageni",
+    "explore": {
+      "about": "Kuhusu sisi",
+      "departments": "Idara zetu",
+      "products": "Bidhaa za utafiti",
+      "documents": "Nyaraka"
+    },
+    "quick": {
+      "services": "Huduma za viwanda",
+      "tHub": "T-Hub",
+      "careers": "Fursa za ajira",
+      "tenders": "Zabuni"
+    },
+    "privacy": "Sera ya faragha",
+    "sitemap": "Ramani ya tovuti",
+    "accessibility": "Ufikivu",
+    "copyright": "{year} {org}"
+  },
+  "visitors": {
+    "total": "Jumla ya Wageni wa Tovuti",
+    "today": "Leo",
+    "thisMonth": "Mwezi huu"
+  },
+  "sitemap": {
+    "title": "Ramani ya Tovuti"
+  }
+}

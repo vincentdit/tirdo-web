@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Users, ArrowUpRight } from "lucide-react";
 
 type Stats = { today: number | null; month: number | null; total: number | null };
@@ -11,6 +12,7 @@ const fmt = (n: number | null) => (typeof n === "number" ? n.toLocaleString("en-
 // Footer visitor widget: total (headline) + today + this month, linking to the
 // analytics dashboard. Renders nothing until analytics is configured.
 export function VisitorCounter() {
+  const t = useTranslations("visitors");
   const [s, setS] = useState<Stats | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -46,18 +48,18 @@ export function VisitorCounter() {
           <span className="block text-[1.6rem] font-bold leading-none tabular-nums text-white">
             {s ? fmt(s.total) : "…"}
           </span>
-          <span className="mt-1 block text-xs text-[#cfe0ea]">Total Site Visitors</span>
+          <span className="mt-1 block text-xs text-[#cfe0ea]">{t("total")}</span>
         </span>
         <ArrowUpRight className="ml-auto h-4 w-4 shrink-0 text-[#cfe0ea] opacity-0 transition-opacity group-hover:opacity-100" />
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <span className="rounded bg-white/5 px-3 py-2">
           <span className="block text-sm font-bold tabular-nums text-white">{s ? fmt(s.today) : "…"}</span>
-          <span className="block text-[0.68rem] uppercase tracking-wide text-[#a7c0d1]">Today</span>
+          <span className="block text-[0.68rem] uppercase tracking-wide text-[#a7c0d1]">{t("today")}</span>
         </span>
         <span className="rounded bg-white/5 px-3 py-2">
           <span className="block text-sm font-bold tabular-nums text-white">{s ? fmt(s.month) : "…"}</span>
-          <span className="block text-[0.68rem] uppercase tracking-wide text-[#a7c0d1]">This month</span>
+          <span className="block text-[0.68rem] uppercase tracking-wide text-[#a7c0d1]">{t("thisMonth")}</span>
         </span>
       </div>
     </Link>

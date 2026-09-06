@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Menu, X, ChevronDown, Search, ArrowRight, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
 import { site, mainNav, portal, assets, type NavItem } from "@/lib/site";
 import { AuthButton } from "@/components/site/auth-button";
+import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const t = useTranslations();
 
   return (
     <>
@@ -26,17 +29,16 @@ export function Header() {
               <a href={site.social.youtube} aria-label="YouTube" target="_blank" rel="noreferrer" className="hidden hover:text-brand-gold sm:inline"><Youtube className="h-4 w-4" /></a>
             </div>
             <span className="hidden h-3 w-px bg-white/40 md:inline-block" />
-            <span className="hidden md:block">United Republic of Tanzania</span>
+            <span className="hidden md:block">{t("site.country")}</span>
           </div>
           <div className="flex items-center gap-2">
             <a href="mailto:help@tirdo.or.tz" className="hidden px-1 hover:text-brand-gold md:inline">help@tirdo.or.tz</a>
             <span className="hidden h-3 w-px bg-white/40 md:inline-block" />
             <a href="https://eoffice.gov.go.tz/users/login" target="_blank" rel="noreferrer" className="hidden px-1 hover:text-brand-gold sm:inline">e-Office</a>
             <span className="hidden h-3 w-px bg-white/40 sm:inline-block" />
-            <a href="https://mail.tirdo.or.tz" target="_blank" rel="noreferrer" className="hidden px-1 hover:text-brand-gold sm:inline">Staff Mail</a>
+            <a href="https://mail.tirdo.or.tz" target="_blank" rel="noreferrer" className="hidden px-1 hover:text-brand-gold sm:inline">{t("site.staffMail")}</a>
             <span className="hidden h-3 w-px bg-white/40 sm:inline-block" />
-            <button className="hidden px-1 hover:text-brand-gold sm:inline">Kiswahili</button>
-            <span className="ml-1 rounded-sm border border-white/60 px-1 py-0.5 text-[0.7rem]">EN</span>
+            <LanguageSwitcher />
             <span className="mx-1 hidden h-3 w-px bg-white/40 sm:inline-block" />
             <AuthButton onDark />
           </div>
@@ -52,12 +54,12 @@ export function Header() {
           </Link>
           <div className="text-center leading-tight">
             <p className="text-[0.55rem] tracking-[0.18em] text-brand-muted md:text-[0.67rem]">
-              THE UNITED REPUBLIC OF TANZANIA
+              {t("site.countryUpper")}
             </p>
             <h1 className="my-1 text-sm font-bold uppercase leading-tight tracking-wide text-brand-blue md:text-[1.7rem]">
-              Tanzania Industrial Research and<br className="hidden md:block" /> Development Organization
+              {t("site.orgName")}
             </h1>
-            <span className="text-[0.62rem] font-semibold italic text-brand-ink md:text-sm">{site.tagline}</span>
+            <span className="text-[0.62rem] font-semibold italic text-brand-ink md:text-sm">{t("site.tagline")}</span>
           </div>
           <Link href="/" className="shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -93,7 +95,7 @@ export function Header() {
               href={portal.href}
               className="hidden items-center gap-2 bg-brand-gold px-3 py-2.5 text-[0.84rem] font-bold text-brand-ink hover:brightness-95 sm:inline-flex"
             >
-              {portal.title} <ArrowRight className="h-4 w-4" />
+              {t(`nav.${portal.key}`)} <ArrowRight className="h-4 w-4" />
             </Link>
             <button
               className="grid h-9 w-9 place-items-center text-white lg:hidden"
@@ -113,10 +115,10 @@ export function Header() {
                 <MobileNavItem key={item.title} item={item} onNavigate={() => setMobileOpen(false)} />
               ))}
               <Link href={portal.href} onClick={() => setMobileOpen(false)} className="mt-2 inline-flex items-center gap-2 bg-brand-gold px-3 py-2 text-sm font-bold text-brand-ink">
-                {portal.title} <ArrowRight className="h-4 w-4" />
+                {t(`nav.${portal.key}`)} <ArrowRight className="h-4 w-4" />
               </Link>
               <Link href="/search" onClick={() => setMobileOpen(false)} className="mt-2 flex items-center gap-2 py-2 text-sm font-medium text-white">
-                <Search className="h-4 w-4" /> Search
+                <Search className="h-4 w-4" /> {t("site.search")}
               </Link>
             </nav>
           </div>
@@ -127,6 +129,7 @@ export function Header() {
 }
 
 function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; onOpen: () => void }) {
+  const t = useTranslations("nav");
   const hasMenu = !!(item.children || item.columns);
   return (
     <div className="relative flex items-stretch" onMouseEnter={onOpen}>
@@ -137,7 +140,7 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
           open && "bg-brand-teal-dark"
         )}
       >
-        {item.title}
+        {t(item.key)}
         {hasMenu && <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-180")} />}
         {open && <span className="absolute inset-x-3 bottom-0 h-[3px] bg-brand-gold" />}
       </Link>
@@ -150,9 +153,9 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
           {item.children && (
             <ul className="space-y-1">
               {item.children.map((c) => (
-                <li key={c.href}>
+                <li key={c.key}>
                   <Link href={c.href} className="block rounded px-3 py-2 text-sm text-brand-ink/80 hover:bg-brand-pale hover:text-brand-teal">
-                    {c.title}
+                    {t(c.key)}
                   </Link>
                 </li>
               ))}
@@ -162,12 +165,12 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
             <div className={cn("grid gap-4", item.columns.length >= 5 ? "grid-cols-5" : item.columns.length === 4 ? "grid-cols-4" : "grid-cols-3")}>
               {item.columns.map((col) => (
                 <div key={col.heading}>
-                  <div className="mb-2 border-b pb-1 text-xs font-bold uppercase tracking-wide text-brand-teal">{col.heading}</div>
+                  <div className="mb-2 border-b pb-1 text-xs font-bold uppercase tracking-wide text-brand-teal">{t(col.headingKey)}</div>
                   <ul className="space-y-1">
                     {col.items.map((c) => (
-                      <li key={c.href}>
+                      <li key={c.key}>
                         <Link href={c.href} className="block rounded px-2 py-1.5 text-sm text-brand-ink/80 hover:bg-brand-pale hover:text-brand-teal">
-                          {c.title}
+                          {t(c.key)}
                         </Link>
                       </li>
                     ))}
@@ -183,13 +186,14 @@ function DesktopNavItem({ item, open, onOpen }: { item: NavItem; open: boolean; 
 }
 
 function MobileNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
+  const t = useTranslations("nav");
   const [expanded, setExpanded] = useState(false);
   const children = item.children ?? item.columns?.flatMap((c) => c.items);
   return (
     <div className="border-b border-white/10 last:border-0">
       <div className="flex items-center justify-between">
         <Link href={item.href} onClick={onNavigate} className="flex-1 py-3 text-sm font-semibold text-white">
-          {item.title}
+          {t(item.key)}
         </Link>
         {children && (
           <button onClick={() => setExpanded((v) => !v)} className="p-3 text-white" aria-label="Expand">
@@ -200,9 +204,9 @@ function MobileNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () => 
       {children && expanded && (
         <ul className="pb-2 pl-3">
           {children.map((c) => (
-            <li key={c.href}>
+            <li key={c.key}>
               <Link href={c.href} onClick={onNavigate} className="block py-2 text-sm text-white/80 hover:text-brand-gold">
-                {c.title}
+                {t(c.key)}
               </Link>
             </li>
           ))}

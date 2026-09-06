@@ -1,29 +1,33 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { site, assets } from "@/lib/site";
 import { VisitorCounter } from "@/components/site/visitor-counter";
 
+// Footer link columns: hrefs are fixed; labels come from the "footer" message
+// catalogue so they translate with the active locale.
 const columns = [
   {
-    heading: "Explore TIRDO",
+    heading: "exploreHeading",
     links: [
-      { title: "About us", href: "/about" },
-      { title: "Our departments", href: "/departments" },
-      { title: "Research products", href: "/projects" },
-      { title: "Documents", href: "/documents" },
+      { key: "explore.about", href: "/about" },
+      { key: "explore.departments", href: "/departments" },
+      { key: "explore.products", href: "/projects" },
+      { key: "explore.documents", href: "/documents" },
     ],
   },
   {
-    heading: "Quick links",
+    heading: "quickHeading",
     links: [
-      { title: "Industrial services", href: "/services" },
-      { title: "T-Hub", href: "/t-hub" },
-      { title: "Career opportunities", href: "/careers" },
-      { title: "Tenders", href: "/tenders" },
+      { key: "quick.services", href: "/services" },
+      { key: "quick.tHub", href: "/t-hub" },
+      { key: "quick.careers", href: "/careers" },
+      { key: "quick.tenders", href: "/tenders" },
     ],
   },
 ];
 
 export function Footer() {
+  const t = useTranslations("footer");
   return (
     <footer className="bg-brand-navy text-[#d3e0e9]">
       <div className="container-tirdo grid gap-8 py-16 md:grid-cols-2 lg:grid-cols-[1.7fr_1fr_1fr_1.2fr_1.15fr]">
@@ -31,23 +35,23 @@ export function Footer() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={assets.logo} alt="TIRDO" className="w-[76px] bg-white p-1.5" />
           <p className="mt-4 max-w-[280px] text-sm leading-7">
-            Building a sustainable industrial future through research, technology and innovation.
+            {t("blurb")}
           </p>
         </div>
 
         {columns.map((col) => (
           <div key={col.heading}>
-            <h4 className="mb-4 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">{col.heading}</h4>
+            <h4 className="mb-4 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">{t(col.heading)}</h4>
             {col.links.map((l) => (
               <Link key={l.href} href={l.href} className="my-2 block text-sm hover:text-brand-gold">
-                {l.title}
+                {t(l.key)}
               </Link>
             ))}
           </div>
         ))}
 
         <div>
-          <h4 className="mb-4 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">Contact us</h4>
+          <h4 className="mb-4 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">{t("contactHeading")}</h4>
           <p className="text-sm leading-7">
             Kimweri Avenue, Msasani<br />
             P.O. Box 23235<br />
@@ -58,7 +62,7 @@ export function Footer() {
         </div>
 
         <div>
-          <h4 className="mb-4 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">Visitors</h4>
+          <h4 className="mb-4 text-[0.8rem] font-bold uppercase tracking-wider text-brand-gold">{t("visitorsHeading")}</h4>
           <VisitorCounter />
         </div>
       </div>
@@ -67,9 +71,9 @@ export function Footer() {
         <div className="container-tirdo flex flex-col justify-between gap-2 py-5 text-xs text-[#a7bdcd] sm:flex-row">
           <p>© {new Date().getFullYear()} {site.longName}</p>
           <p className="flex gap-4">
-            <Link href="/privacy" className="hover:text-brand-gold">Privacy policy</Link>
-            <Link href="/sitemap" className="hover:text-brand-gold">Sitemap</Link>
-            <Link href="/disclaimer" className="hover:text-brand-gold">Accessibility</Link>
+            <Link href="/privacy" className="hover:text-brand-gold">{t("privacy")}</Link>
+            <Link href="/sitemap" className="hover:text-brand-gold">{t("sitemap")}</Link>
+            <Link href="/disclaimer" className="hover:text-brand-gold">{t("accessibility")}</Link>
           </p>
         </div>
       </div>

@@ -30,146 +30,141 @@ export const assets = {
   newsFeatured: "/media/carousel-items/laX5QEVDZMj4dCwh7uxiIy1gerC4jjQOJe3myxs9.jpg",
 };
 
-export type NavChild = { title: string; href: string; description?: string };
+// `title` is the English source text (fallback / sitemap default); `key` is the
+// i18n message key (namespace-relative under "nav") the header and sitemap use
+// to render translated labels. Keep both in sync when editing the nav.
+export type NavChild = { title: string; key: string; href: string; description?: string };
 export type NavItem = {
   title: string;
+  key: string;
   href: string;
   children?: NavChild[];
-  columns?: { heading: string; items: NavChild[] }[];
+  columns?: { heading: string; headingKey: string; items: NavChild[] }[];
+};
+
+// Reusable department columns (shared by "Our Work" and "Departments").
+const researchCol = {
+  heading: "Industrial Research",
+  headingKey: "headings.industrialResearch",
+  items: [
+    { title: "Environmental Technology & Occupational Safety Division", key: "divisions.environment", href: "/departments/environment" },
+    { title: "Food Processing & Biotechnology Division", key: "divisions.foodBiotech", href: "/departments/food-biotechnology" },
+    { title: "Agro processing Industrial Chemistry Division", key: "divisions.industrialChemistry", href: "/departments/industrial-chemistry" },
+  ],
+};
+const engineeringCol = {
+  heading: "Engineering Development",
+  headingKey: "headings.engineeringDevelopment",
+  items: [
+    { title: "Energy Technology Division", key: "divisions.energy", href: "/departments/energy" },
+    { title: "Engineering Material Technology Division", key: "divisions.materials", href: "/departments/materials" },
+    { title: "Textile & Leather Technologies Division", key: "divisions.textileLeather", href: "/departments/textile-leather" },
+  ],
+};
+const ictCol = {
+  heading: "ICT & Technology Development",
+  headingKey: "headings.ictTech",
+  items: [
+    { title: "Information & Communication Technologies Division", key: "divisions.ict", href: "/departments/ict" },
+    { title: "Electronics & Instrumentation Technologies Division", key: "divisions.instrumentation", href: "/departments/instrumentation" },
+    { title: "Technology Transfer & Pilot Plants Division", key: "divisions.techTransfer", href: "/departments/technology-transfer" },
+  ],
 };
 
 // Primary navigation with mega-menu columns (NACTVET information architecture,
 // TIRDO content).
 export const mainNav: NavItem[] = [
-  { title: "Home", href: "/" },
+  { title: "Home", key: "home", href: "/" },
   {
     title: "About Us",
+    key: "about",
     href: "/about",
     children: [
-      { title: "Mission & Vision", href: "/about/mission-vision" },
-      { title: "Organization Structure", href: "/about/structure" },
-      { title: "Board of Directors", href: "/about/board" },
-      { title: "Administration", href: "/about/administration" },
-      { title: "Success Stories", href: "/about/success-stories" },
-      { title: "COMSATS Centre", href: "/about/comsats" },
+      { title: "Mission & Vision", key: "aboutMenu.missionVision", href: "/about/mission-vision" },
+      { title: "Organization Structure", key: "aboutMenu.structure", href: "/about/structure" },
+      { title: "Board of Directors", key: "aboutMenu.board", href: "/about/board" },
+      { title: "Administration", key: "aboutMenu.administration", href: "/about/administration" },
+      { title: "Success Stories", key: "aboutMenu.successStories", href: "/about/success-stories" },
+      { title: "COMSATS Centre", key: "aboutMenu.comsats", href: "/about/comsats" },
     ],
   },
   {
     title: "Our Work",
+    key: "ourWork",
     href: "/departments",
-    columns: [
-      {
-        heading: "Industrial Research",
-        items: [
-          { title: "Environmental Technology & Occupational Safety Division", href: "/departments/environment" },
-          { title: "Food Processing & Biotechnology Division", href: "/departments/food-biotechnology" },
-          { title: "Agro processing Industrial Chemistry Division", href: "/departments/industrial-chemistry" },
-        ],
-      },
-      {
-        heading: "Engineering Development",
-        items: [
-          { title: "Energy Technology Division", href: "/departments/energy" },
-          { title: "Engineering Material Technology Division", href: "/departments/materials" },
-          { title: "Textile & Leather Technologies Division", href: "/departments/textile-leather" },
-        ],
-      },
-      {
-        heading: "ICT & Technology Development",
-        items: [
-          { title: "Information & Communication Technologies Division", href: "/departments/ict" },
-          { title: "Electronics & Instrumentation Technologies Division", href: "/departments/instrumentation" },
-          { title: "Technology Transfer & Pilot Plants Division", href: "/departments/technology-transfer" },
-        ],
-      },
-    ],
+    columns: [researchCol, engineeringCol, ictCol],
   },
   {
     title: "Departments",
+    key: "departments",
     href: "/departments",
     columns: [
-      {
-        heading: "Industrial Research",
-        items: [
-          { title: "Environmental Technology & Occupational Safety Division", href: "/departments/environment" },
-          { title: "Food Processing & Biotechnology Division", href: "/departments/food-biotechnology" },
-          { title: "Agro processing Industrial Chemistry Division", href: "/departments/industrial-chemistry" },
-        ],
-      },
-      {
-        heading: "Engineering Development",
-        items: [
-          { title: "Energy Technology Division", href: "/departments/energy" },
-          { title: "Engineering Material Technology Division", href: "/departments/materials" },
-          { title: "Textile & Leather Technologies Division", href: "/departments/textile-leather" },
-        ],
-      },
-      {
-        heading: "ICT & Technology Development",
-        items: [
-          { title: "Information & Communication Technologies Division", href: "/departments/ict" },
-          { title: "Electronics & Instrumentation Technologies Division", href: "/departments/instrumentation" },
-          { title: "Technology Transfer & Pilot Plants Division", href: "/departments/technology-transfer" },
-        ],
-      },
+      researchCol,
+      engineeringCol,
+      ictCol,
       {
         heading: "Finance",
+        headingKey: "headings.finance",
         items: [
-          { title: "Store Section", href: "/departments/finance" },
-          { title: "Pre-Audit Section", href: "/departments/finance" },
-          { title: "Costing & Expenditure Section", href: "/departments/finance" },
-          { title: "Revenue Section", href: "/departments/finance" },
+          { title: "Store Section", key: "finance.store", href: "/departments/finance" },
+          { title: "Pre-Audit Section", key: "finance.preAudit", href: "/departments/finance" },
+          { title: "Costing & Expenditure Section", key: "finance.costing", href: "/departments/finance" },
+          { title: "Revenue Section", key: "finance.revenue", href: "/departments/finance" },
         ],
       },
       {
         heading: "Human Resources & Admin",
+        headingKey: "headings.hrAdmin",
         items: [
-          { title: "Human Resource Division", href: "/departments/human-resources-administration" },
-          { title: "Administration Division", href: "/departments/human-resources-administration" },
-          { title: "Estate Division", href: "/departments/human-resources-administration" },
+          { title: "Human Resource Division", key: "hr.humanResource", href: "/departments/human-resources-administration" },
+          { title: "Administration Division", key: "hr.administration", href: "/departments/human-resources-administration" },
+          { title: "Estate Division", key: "hr.estate", href: "/departments/human-resources-administration" },
         ],
       },
     ],
   },
   {
     title: "Services",
+    key: "services",
     href: "/services",
     children: [
-      { title: "Research", href: "/services/research" },
-      { title: "Energy Auditing", href: "/services/energy-auditing" },
-      { title: "Feasibility Studies", href: "/services/feasibility-studies" },
-      { title: "Consultancy & Technical Services", href: "/services/consultancy" },
-      { title: "Laboratory Analytical Services", href: "/services/laboratory" },
-      { title: "Training & Skill Development", href: "/services/training" },
+      { title: "Research", key: "servicesMenu.research", href: "/services/research" },
+      { title: "Energy Auditing", key: "servicesMenu.energyAuditing", href: "/services/energy-auditing" },
+      { title: "Feasibility Studies", key: "servicesMenu.feasibility", href: "/services/feasibility-studies" },
+      { title: "Consultancy & Technical Services", key: "servicesMenu.consultancy", href: "/services/consultancy" },
+      { title: "Laboratory Analytical Services", key: "servicesMenu.laboratory", href: "/services/laboratory" },
+      { title: "Training & Skill Development", key: "servicesMenu.training", href: "/services/training" },
     ],
   },
   {
     title: "Research & Innovation",
+    key: "research",
     href: "/projects",
     children: [
-      { title: "Ongoing Projects", href: "/projects" },
-      { title: "T-Hub Innovation", href: "/t-hub" },
-      { title: "Industrial Information Centre", href: "/industrial-information-centre" },
-      { title: "Research Products", href: "/projects#products" },
-      { title: "Publications", href: "/publications" },
+      { title: "Ongoing Projects", key: "researchMenu.ongoing", href: "/projects" },
+      { title: "T-Hub Innovation", key: "researchMenu.tHub", href: "/t-hub" },
+      { title: "Industrial Information Centre", key: "researchMenu.iic", href: "/industrial-information-centre" },
+      { title: "Research Products", key: "researchMenu.products", href: "/projects#products" },
+      { title: "Publications", key: "researchMenu.publications", href: "/publications" },
     ],
   },
   {
     title: "Media Centre",
+    key: "media",
     href: "/news",
     children: [
-      { title: "News & Announcements", href: "/news" },
-      { title: "Events", href: "/events" },
-      { title: "Gallery", href: "/gallery" },
-      { title: "Documents", href: "/documents" },
+      { title: "News & Announcements", key: "mediaMenu.news", href: "/news" },
+      { title: "Events", key: "mediaMenu.events", href: "/events" },
+      { title: "Gallery", key: "mediaMenu.gallery", href: "/gallery" },
+      { title: "Documents", key: "mediaMenu.documents", href: "/documents" },
     ],
   },
-  { title: "Analytics", href: "/analytics" },
-  { title: "Contact Us", href: "/contact" },
+  { title: "Analytics", key: "analytics", href: "/analytics" },
+  { title: "Contact Us", key: "contact", href: "/contact" },
 ];
 
 // Highlighted portal button in the header (gold).
-export const portal = { title: "e-Services", href: "/e-services" };
+export const portal = { title: "e-Services", key: "eServices", href: "/e-services" };
 
 // Coloured quick-access cards under the hero (NACTVET pattern).
 export const quickAccess = [

@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+const createNextIntlPlugin = require("next-intl/plugin");
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+
 const nextConfig = {
   output: "standalone",
   reactStrictMode: true,
@@ -15,4 +18,4 @@ const nextConfig = {
   // Allow the site to render even if the CMS is still booting.
   experimental: { missingSuspenseWithCSRBailout: false },
 };
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);
