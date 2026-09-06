@@ -17,10 +17,10 @@ export default async function SitemapPage() {
             const children = item.children ?? item.columns?.flatMap((c) => c.items) ?? [];
             return (
               <div key={item.key}>
-                <Link href={item.href} className="mb-2 block font-bold text-primary hover:text-accent">{t(item.key)}</Link>
+                <Link href={item.href} className="mb-2 block font-bold text-primary hover:text-brand-teal">{t(item.key)}</Link>
                 <ul className="space-y-1 text-sm">
                   {children.map((c) => (
-                    <li key={c.key}><Link href={c.href} className="text-muted-foreground hover:text-accent">{t(c.key)}</Link></li>
+                    <li key={c.key}><Link href={c.href} className="text-muted-foreground hover:text-brand-teal">{t(c.key)}</Link></li>
                   ))}
                 </ul>
               </div>

@@ -65,7 +65,7 @@ export function VacanciesExplorer({ vacancies }: { vacancies: Vacancy[] }) {
                     <Badge variant={open ? "accent" : "outline"}>{open ? "Open" : "Closed"}</Badge>
                   </div>
                   <h3 className="flex items-center gap-2 font-semibold text-primary">
-                    <Briefcase className="h-4 w-4 text-accent" /> {v.title}
+                    <Briefcase className="h-4 w-4 text-brand-teal" /> {v.title}
                   </h3>
                   <p className="mt-1 text-sm text-muted-foreground">{v.description}</p>
                   {v.body && v.body.length > 0 && (

@@ -47,7 +47,7 @@ export default function AboutPage() {
               ].map((v) => (
                 <Card key={v.title}>
                   <CardContent className="p-5">
-                    <v.icon className="mb-2 h-7 w-7 text-accent" />
+                    <v.icon className="mb-2 h-7 w-7 text-brand-teal" />
                     <h3 className="mb-1 font-semibold text-primary">{v.title}</h3>
                     <p className="text-sm text-muted-foreground">{v.text}</p>
                   </CardContent>

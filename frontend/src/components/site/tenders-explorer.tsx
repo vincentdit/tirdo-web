@@ -69,7 +69,7 @@ export function TendersExplorer({ tenders }: { tenders: Tender[] }) {
                       <Badge variant={open ? "accent" : "outline"}>{open ? "Open" : "Closed"}</Badge>
                     </div>
                     <div className="flex items-start gap-2 font-medium text-primary">
-                      <FileText className="mt-0.5 h-4 w-4 shrink-0 text-accent" /> {t.title}
+                      <FileText className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" /> {t.title}
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">{t.description}</p>
                     <span className="mt-1 block text-xs text-muted-foreground md:hidden">Ref: {t.reference}</span>
@@ -80,7 +80,7 @@ export function TendersExplorer({ tenders }: { tenders: Tender[] }) {
                   </td>
                   <td className="px-5 py-4 text-right">
                     {t.documentUrl ? (
-                      <a href={t.documentUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-accent hover:underline">
+                      <a href={t.documentUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-brand-teal hover:underline">
                         <Download className="h-4 w-4" /> PDF
                       </a>
                     ) : (

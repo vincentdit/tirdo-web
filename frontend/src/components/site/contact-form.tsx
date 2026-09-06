@@ -28,7 +28,7 @@ export function ContactForm() {
   if (status === "sent") {
     return (
       <div className="flex flex-col items-center gap-3 rounded-lg bg-secondary/50 p-8 text-center">
-        <CheckCircle2 className="h-12 w-12 text-accent" />
+        <CheckCircle2 className="h-12 w-12 text-brand-teal" />
         <p className="font-semibold text-primary">Thank you — your message has been received.</p>
         <p className="text-sm text-muted-foreground">The TIRDO team will get back to you shortly.</p>
         <Button variant="outline" onClick={() => setStatus("idle")}>Send another</Button>
@@ -42,21 +42,21 @@ export function ContactForm() {
     <form onSubmit={onSubmit} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-sm font-medium">Full name</label>
-          <input name="name" required className={input} />
+          <label htmlFor="cf-name" className="mb-1 block text-sm font-medium">Full name</label>
+          <input id="cf-name" name="name" required autoComplete="name" className={input} />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">Email</label>
-          <input name="email" type="email" required className={input} />
+          <label htmlFor="cf-email" className="mb-1 block text-sm font-medium">Email</label>
+          <input id="cf-email" name="email" type="email" required autoComplete="email" className={input} />
         </div>
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium">Subject</label>
-        <input name="subject" required className={input} />
+        <label htmlFor="cf-subject" className="mb-1 block text-sm font-medium">Subject</label>
+        <input id="cf-subject" name="subject" required className={input} />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium">Message</label>
-        <textarea name="message" required rows={5} className={input} />
+        <label htmlFor="cf-message" className="mb-1 block text-sm font-medium">Message</label>
+        <textarea id="cf-message" name="message" required rows={5} className={input} />
       </div>
       {status === "error" && <p className="text-sm text-destructive">Something went wrong. Please try again.</p>}
       <Button type="submit" variant="accent" disabled={status === "sending"} className="w-full justify-center">

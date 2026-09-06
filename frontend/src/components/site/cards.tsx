@@ -30,7 +30,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
           <Link href={href} {...linkProps}>{item.title}</Link>
         </h3>
         <p className="mb-4 line-clamp-3 flex-1 text-sm text-muted-foreground">{item.excerpt}</p>
-        <Link href={href} {...linkProps} className="inline-flex items-center gap-1 text-sm font-semibold text-accent hover:gap-2">
+        <Link href={href} {...linkProps} className="inline-flex items-center gap-1 text-sm font-semibold text-brand-teal hover:gap-2">
           Read more <ArrowRight className="h-4 w-4 transition-all" />
         </Link>
       </CardContent>
@@ -55,7 +55,7 @@ export function ProjectCard({ item }: { item: Project }) {
         </Badge>
       </div>
       <CardContent className="p-5">
-        <div className="mb-1 text-xs font-medium uppercase tracking-wide text-accent">{item.department}</div>
+        <div className="mb-1 text-xs font-medium uppercase tracking-wide text-brand-teal">{item.department}</div>
         <h3 className="mb-2 font-semibold text-primary">{item.title}</h3>
         <p className="text-sm text-muted-foreground">{item.summary}</p>
       </CardContent>

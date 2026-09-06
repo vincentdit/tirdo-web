@@ -46,7 +46,7 @@ export function Stats() {
         {stats.map((s) => (
           <div key={s.label} className="text-center">
             <Counter value={s.value} suffix={s.suffix} />
-            <div className="mt-2 text-sm font-medium uppercase tracking-wide text-accent">{s.label}</div>
+            <div className="mt-2 text-sm font-medium uppercase tracking-wide text-brand-teal">{s.label}</div>
           </div>
         ))}
       </div>

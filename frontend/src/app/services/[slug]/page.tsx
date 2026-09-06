@@ -32,7 +32,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
       <section className="py-14">
         <div className="container-tirdo grid gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div className="space-y-4 text-foreground/80">
-            <span className="grid h-14 w-14 place-items-center rounded-xl bg-accent/15 text-accent">
+            <span className="grid h-14 w-14 place-items-center rounded-xl bg-accent/15 text-brand-teal">
               <Icon name={svc.icon} className="h-7 w-7" />
             </span>
             <p className="text-lg">{svc.description}</p>
@@ -45,7 +45,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
             <ul className="space-y-2">
               {["Qualified, multidisciplinary expert team", "Accredited laboratory and testing capability", "Actionable technical reports and recommendations", "Confidential, client-focused engagement"].map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-accent" /> {f}
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-teal" /> {f}
                 </li>
               ))}
             </ul>
@@ -60,7 +60,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
                 <h4 className="mb-2 text-sm font-semibold text-primary">Other services</h4>
                 <ul className="space-y-1 text-sm">
                   {services.filter((s) => s.slug !== svc.slug).slice(0, 5).map((s) => (
-                    <li key={s.slug}><Link href={`/services/${s.slug}`} className="text-foreground/75 hover:text-accent">{s.title}</Link></li>
+                    <li key={s.slug}><Link href={`/services/${s.slug}`} className="text-foreground/75 hover:text-brand-teal">{s.title}</Link></li>
                   ))}
                 </ul>
               </div>

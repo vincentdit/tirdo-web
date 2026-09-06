@@ -24,7 +24,7 @@ export default function IICPage() {
             <ul className="space-y-2">
               {iic.objectives.map((o, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-accent" /> {o}
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-teal" /> {o}
                 </li>
               ))}
             </ul>

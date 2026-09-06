@@ -65,7 +65,7 @@ export default async function NewsDetail({ params }: { params: { slug: string } 
                 </>
               )}
             </div>
-            <Link href="/news" className="mt-8 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:gap-2">
+            <Link href="/news" className="mt-8 inline-flex items-center gap-1 text-sm font-semibold text-brand-teal hover:gap-2">
               <ArrowLeft className="h-4 w-4" /> Back to news
             </Link>
           </article>
@@ -76,7 +76,7 @@ export default async function NewsDetail({ params }: { params: { slug: string } 
               <ul className="space-y-3">
                 {related.map((n) => (
                   <li key={n.slug}>
-                    <Link href={`/news/${n.slug}`} className="block text-sm font-medium text-foreground/80 hover:text-accent">
+                    <Link href={`/news/${n.slug}`} className="block text-sm font-medium text-foreground/80 hover:text-brand-teal">
                       {n.title}
                     </Link>
                     <span className="text-xs text-muted-foreground">{formatDate(n.date)}</span>

@@ -21,9 +21,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 207 77% 15%;
 
-    --primary: 189 100% 29%; /* teal */
+    --primary: 189 100% 25%; /* teal (darkened for AA text contrast on light) */
     --primary-foreground: 0 0% 100%;
-    --primary-dark: 189 100% 24%;
+    --primary-dark: 189 100% 20%;
 
     --secondary: 190 24% 96%; /* pale */
     --secondary-foreground: 207 60% 22%;
@@ -39,7 +39,7 @@
 
     --border: 200 22% 90%;
     --input: 200 22% 90%;
-    --ring: 189 100% 29%;
+    --ring: 189 100% 25%;
 
     --radius: 0.375rem;
   }
@@ -131,5 +131,17 @@
     left: calc(50% / var(--cols));
     right: calc(50% / var(--cols));
     background-color: hsl(var(--primary) / 0.6);
+  }
+}
+
+/* Respect the user's reduced-motion preference site-wide (WCAG 2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

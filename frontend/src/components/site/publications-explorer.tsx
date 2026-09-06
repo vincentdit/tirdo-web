@@ -89,7 +89,7 @@ export function PublicationsExplorer({ publications }: { publications: Publicati
                       className={"flex items-start gap-2 text-left font-medium text-primary " + (expandable ? "cursor-pointer" : "cursor-default")}
                       aria-expanded={isOpen}
                     >
-                      <FileText className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                      <FileText className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
                       <span>
                         {p.title}
                         {p.authors && <span className="block text-xs font-normal text-muted-foreground">{p.authors}</span>}
@@ -110,7 +110,7 @@ export function PublicationsExplorer({ publications }: { publications: Publicati
                           </div>
                         )}
                         {p.doi && (
-                          <p>DOI: <a href={`https://doi.org/${p.doi}`} className="text-accent hover:underline" target="_blank" rel="noreferrer">{p.doi}</a></p>
+                          <p>DOI: <a href={`https://doi.org/${p.doi}`} className="text-brand-teal hover:underline" target="_blank" rel="noreferrer">{p.doi}</a></p>
                         )}
                         {p.citation && <p className="italic">{p.citation}</p>}
                       </div>
@@ -119,7 +119,7 @@ export function PublicationsExplorer({ publications }: { publications: Publicati
                   <td className="hidden px-5 py-4 sm:table-cell"><Badge variant="secondary">{p.type}</Badge></td>
                   <td className="hidden px-5 py-4 text-muted-foreground sm:table-cell">{p.year}</td>
                   <td className="px-5 py-4 text-right">
-                    <a href={p.fileUrl ?? "#"} className="inline-flex items-center gap-1 text-accent hover:underline" target="_blank" rel="noreferrer">
+                    <a href={p.fileUrl ?? "#"} className="inline-flex items-center gap-1 text-brand-teal hover:underline" target="_blank" rel="noreferrer">
                       <Download className="h-4 w-4" /> PDF
                     </a>
                   </td>

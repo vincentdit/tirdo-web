@@ -67,7 +67,7 @@ export default async function HomePage() {
           <div className="grid gap-px overflow-hidden bg-[#dce5e7] sm:grid-cols-2 lg:grid-cols-4">
             {coreActivities.map((a, idx) => (
               <article key={a.title} className="flex min-h-[280px] flex-col bg-white p-6">
-                <span className="text-[0.76rem] font-bold text-[#a4b7ba]">{String(idx + 1).padStart(2, "0")}</span>
+                <span className="text-[0.76rem] font-bold text-brand-muted">{String(idx + 1).padStart(2, "0")}</span>
                 <span className="my-4 text-brand-teal"><Icon name={a.icon} className="h-8 w-8" /></span>
                 <h3 className="mb-2 text-lg font-semibold text-brand-ink">{a.title}</h3>
                 <p className="flex-1 text-sm text-brand-muted">{a.description}</p>

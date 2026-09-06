@@ -47,8 +47,8 @@ const config: Config = {
         },
         // TIRDO brand palette (from the approved design)
         brand: {
-          teal: "#007e93",
-          "teal-dark": "#006e80",
+          teal: "#006979",
+          "teal-dark": "#00566b",
           blue: "#17488e",
           gold: "#f2c500",
           ink: "#092a45",

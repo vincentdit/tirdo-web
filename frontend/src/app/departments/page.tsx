@@ -41,7 +41,7 @@ export default function DepartmentsPage() {
                           </p>
                         )}
                         <div>
-                          <Link href={`/departments/${dept.slug}`} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:gap-2">
+                          <Link href={`/departments/${dept.slug}`} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-teal hover:gap-2">
                             View department <ArrowRight className="h-4 w-4 transition-all" />
                           </Link>
                         </div>
@@ -65,7 +65,7 @@ export default function DepartmentsPage() {
                           <CardContent className="p-5">
                             <h3 className="mb-1 font-semibold text-primary group-hover:underline">{d.title}</h3>
                             <p className="mb-3 text-sm text-muted-foreground">{d.blurb}</p>
-                            <span className="inline-flex items-center gap-1 text-sm font-semibold text-accent">
+                            <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-teal">
                               Learn more <ArrowRight className="h-4 w-4" />
                             </span>
                           </CardContent>
