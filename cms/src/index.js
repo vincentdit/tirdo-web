@@ -30,7 +30,7 @@ async function setPublicPermissions(strapi) {
     .findOne({ where: { type: 'public' } });
   if (!publicRole) return;
 
-  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page'];
+  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender'];
   const perms = {};
   for (const t of readTypes) {
     perms[`api::${t}.${t}`] = { controllers: { [t]: { find: { enabled: true }, findOne: { enabled: true } } } };

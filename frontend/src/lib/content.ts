@@ -22,6 +22,9 @@ export type Project = {
   department: string;
   status: "Ongoing" | "Completed" | "Featured";
   image?: string;
+  researchArea?: string;
+  year?: number;
+  funder?: string;
 };
 
 export type Publication = {
@@ -30,6 +33,11 @@ export type Publication = {
   type: string;
   year: number;
   fileUrl?: string;
+  abstract?: string;
+  authors?: string;
+  keywords?: string[];
+  doi?: string;
+  citation?: string;
 };
 
 export type ServiceItem = { slug: string; title: string; description: string; icon: string; body?: string[] };
@@ -694,3 +702,149 @@ export const tHub = {
     { name: "Olas", description: "An early-stage venture incubated at TIRDO's T-Hub, developing technology solutions for Tanzanian industry.", href: "https://www.tirdo.or.tz/en/olas" },
   ] as Company[],
 };
+
+// -----------------------------------------------------------------------
+// Structured taxonomies & content model (research areas, vacancies, tenders)
+// -----------------------------------------------------------------------
+
+export type ResearchArea = { slug: string; name: string };
+
+// Research areas used to classify projects and publications.
+export const researchAreas: ResearchArea[] = [
+  { slug: "energy", name: "Energy" },
+  { slug: "environment", name: "Environment & Climate" },
+  { slug: "food-biotechnology", name: "Food & Biotechnology" },
+  { slug: "materials", name: "Materials & Engineering" },
+  { slug: "industrial-chemistry", name: "Industrial Chemistry" },
+  { slug: "ict", name: "ICT & Electronics" },
+  { slug: "technology-transfer", name: "Technology Transfer" },
+];
+
+// Derive a project's research area from its (possibly free-text) department.
+export function projectAreaSlug(p: Project): string | undefined {
+  if (p.researchArea) return p.researchArea;
+  const d = p.department.toLowerCase();
+  if (d.includes("energy")) return "energy";
+  if (d.includes("environment")) return "environment";
+  if (d.includes("food") || d.includes("biotech")) return "food-biotechnology";
+  if (d.includes("material")) return "materials";
+  if (d.includes("chemistry")) return "industrial-chemistry";
+  if (d.includes("information") || d.includes("ict") || d.includes("communication") || d.includes("electronic")) return "ict";
+  if (d.includes("transfer")) return "technology-transfer";
+  return undefined;
+}
+
+export function researchAreaName(slug: string | undefined): string | undefined {
+  return researchAreas.find((a) => a.slug === slug)?.name;
+}
+
+export type Vacancy = {
+  slug: string;
+  title: string;
+  department: string;
+  category: string; // Professional | Technical | Administrative | Internship
+  location: string;
+  description: string;
+  body?: string[];
+  postedDate: string;
+  closingDate: string;
+  applyUrl?: string;
+};
+
+export type Tender = {
+  slug: string;
+  title: string;
+  reference: string;
+  category: string; // Goods | Works | Services | Consultancy
+  description: string;
+  postedDate: string;
+  closingDate: string;
+  documentUrl?: string;
+};
+
+// Sample vacancies (replaced by CMS content when available). Closing dates
+// drive the open/closed status via isOpen().
+export const vacancies: Vacancy[] = [
+  {
+    slug: "research-officer-energy",
+    title: "Research Officer II — Energy Technology",
+    department: "Energy Technology Division",
+    category: "Professional",
+    location: "Dar es Salaam",
+    description: "Support applied research on energy efficiency, renewable energy and cleaner production for Tanzanian industry.",
+    body: [
+      "Conduct laboratory and field research on energy technologies and industrial energy efficiency.",
+      "Prepare technical reports, proposals and publications; support consultancy and energy-audit assignments.",
+    ],
+    postedDate: "2026-08-20",
+    closingDate: "2026-09-30",
+    applyUrl: "https://portal.ajira.go.tz",
+  },
+  {
+    slug: "laboratory-technician",
+    title: "Laboratory Technician II",
+    department: "Environmental Technology & Occupational Safety Division",
+    category: "Technical",
+    location: "Dar es Salaam",
+    description: "Carry out sample preparation and analytical testing in TIRDO's accredited laboratories.",
+    body: [
+      "Prepare samples and operate analytical instruments under quality-assured procedures.",
+      "Maintain laboratory records and support accreditation and calibration activities.",
+    ],
+    postedDate: "2026-08-20",
+    closingDate: "2026-09-15",
+    applyUrl: "https://portal.ajira.go.tz",
+  },
+  {
+    slug: "ict-officer",
+    title: "ICT Officer II",
+    department: "Information & Communication Technologies Division",
+    category: "Professional",
+    location: "Dar es Salaam",
+    description: "Support TIRDO's information systems, network infrastructure and digital services.",
+    postedDate: "2026-06-01",
+    closingDate: "2026-07-15",
+    applyUrl: "https://portal.ajira.go.tz",
+  },
+];
+
+// Sample tenders (replaced by CMS content when available).
+export const tenders: Tender[] = [
+  {
+    slug: "supply-laboratory-reagents-2026",
+    title: "Supply and Delivery of Laboratory Reagents and Consumables",
+    reference: "PA/023/2026-2027/HQ/G/01",
+    category: "Goods",
+    description: "Supply and delivery of laboratory reagents and consumables for TIRDO's analytical laboratories for the 2026/2027 financial year.",
+    postedDate: "2026-08-25",
+    closingDate: "2026-09-25",
+  },
+  {
+    slug: "office-block-renovation-2026",
+    title: "Renovation of Administration Office Block",
+    reference: "PA/023/2026-2027/HQ/W/03",
+    category: "Works",
+    description: "Renovation works for the administration office block at the TIRDO Complex, Msasani.",
+    postedDate: "2026-08-10",
+    closingDate: "2026-09-20",
+  },
+  {
+    slug: "consultancy-energy-audit-2026",
+    title: "Consultancy for Institutional Energy Audit",
+    reference: "PA/023/2026-2027/HQ/C/02",
+    category: "Consultancy",
+    description: "Provision of consultancy services for an institutional energy audit and efficiency improvement plan.",
+    postedDate: "2026-05-15",
+    closingDate: "2026-06-30",
+  },
+];
+
+// True when a closing date is today or in the future (drives auto-archive of
+// vacancies and tenders once their deadline passes).
+export function isOpen(closingDate: string, now: Date = new Date()): boolean {
+  const d = new Date(closingDate);
+  if (isNaN(d.getTime())) return true;
+  // Treat the whole closing day as open (end of day).
+  d.setHours(23, 59, 59, 999);
+  return d.getTime() >= now.getTime();
+}

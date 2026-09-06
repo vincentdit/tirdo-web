@@ -4,7 +4,7 @@
 // renders — even during the CMS's first boot.
 // -----------------------------------------------------------------------
 import * as fallback from "./content";
-import type { NewsItem, Project, Publication } from "./content";
+import type { NewsItem, Project, Publication, Vacancy, Tender } from "./content";
 
 const INTERNAL = process.env.STRAPI_INTERNAL_URL || "http://cms:1337";
 const PUBLIC = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost/cms";
@@ -67,6 +67,7 @@ export async function getProjects(): Promise<Project[]> {
   return data.map((p) => ({
     slug: p.slug, title: p.title, summary: p.summary,
     department: p.department ?? "", status: p.status ?? "Ongoing", image: p.imageUrl || p.cover?.url,
+    researchArea: p.researchArea, year: p.year, funder: p.funder,
   }));
 }
 
@@ -76,5 +77,29 @@ export async function getPublications(): Promise<Publication[]> {
   return data.map((p) => ({
     slug: p.slug, title: p.title, type: p.type ?? "Report",
     year: p.year ?? new Date().getFullYear(), fileUrl: p.fileUrl || p.file?.url,
+    abstract: p.abstract, authors: p.authors,
+    keywords: Array.isArray(p.keywords) ? p.keywords : typeof p.keywords === "string" ? p.keywords.split(",").map((k: string) => k.trim()).filter(Boolean) : undefined,
+    doi: p.doi, citation: p.citation,
+  }));
+}
+
+export async function getVacancies(): Promise<Vacancy[]> {
+  const data = await strapiFetch<Raw[]>(`vacancies?sort=closingDate:desc`);
+  if (!data || data.length === 0) return fallback.vacancies;
+  return data.map((v) => ({
+    slug: v.slug, title: v.title, department: v.department ?? "", category: v.category ?? "Professional",
+    location: v.location ?? "Dar es Salaam", description: v.description ?? "",
+    body: Array.isArray(v.body) ? v.body : undefined,
+    postedDate: v.postedDate ?? v.publishedAt, closingDate: v.closingDate, applyUrl: v.applyUrl,
+  }));
+}
+
+export async function getTenders(): Promise<Tender[]> {
+  const data = await strapiFetch<Raw[]>(`tenders?sort=closingDate:desc&populate=document`);
+  if (!data || data.length === 0) return fallback.tenders;
+  return data.map((t) => ({
+    slug: t.slug, title: t.title, reference: t.reference ?? "", category: t.category ?? "Goods",
+    description: t.description ?? "", postedDate: t.postedDate ?? t.publishedAt, closingDate: t.closingDate,
+    documentUrl: t.documentUrl || t.document?.url,
   }));
 }

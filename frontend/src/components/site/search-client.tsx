@@ -104,7 +104,7 @@ export function SearchClient() {
     runSearch(query || input, t);
   };
 
-  const filterTypes = ["News", "Publication", "Project", "Service", "Department", "Event", "Page"];
+  const filterTypes = ["News", "Publication", "Project", "Service", "Department", "Vacancy", "Tender", "Event", "Page"];
   const orderedFacets = filterTypes
     .map((t) => facets.find((f) => f.type === t))
     .filter((f): f is Facet => !!f && f.count > 0);

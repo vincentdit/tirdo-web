@@ -13,6 +13,11 @@
     "slug": { "type": "uid", "targetField": "title", "required": true },
     "type": { "type": "string", "default": "Report" },
     "year": { "type": "integer" },
+    "abstract": { "type": "text" },
+    "authors": { "type": "string" },
+    "keywords": { "type": "json" },
+    "doi": { "type": "string" },
+    "citation": { "type": "text" },
     "fileUrl": { "type": "string" },
     "file": { "type": "media", "multiple": false, "allowedTypes": ["files", "images"] }
   }

@@ -57,4 +57,12 @@ module.exports = {
   'api::page.page': [
     { title: 'Mission & Vision', slug: 'mission-vision', body: 'Vision: To be a centre of excellence in provision of innovative solutions for a competitive industrial sector. Mission: To support the development of competitive and sustainable industries through quality research and professional technical services.' },
   ],
+  'api::vacancy.vacancy': [
+    { title: 'Research Officer II — Energy Technology', slug: 'research-officer-energy', department: 'Energy Technology Division', category: 'Professional', location: 'Dar es Salaam', description: 'Support applied research on energy efficiency, renewable energy and cleaner production for Tanzanian industry.', body: ['Conduct laboratory and field research on energy technologies and industrial energy efficiency.', 'Prepare technical reports, proposals and publications; support consultancy and energy-audit assignments.'], postedDate: '2026-08-20', closingDate: '2026-09-30', applyUrl: 'https://portal.ajira.go.tz' },
+    { title: 'Laboratory Technician II', slug: 'laboratory-technician', department: 'Environmental Technology & Occupational Safety Division', category: 'Technical', location: 'Dar es Salaam', description: "Carry out sample preparation and analytical testing in TIRDO's accredited laboratories.", body: ['Prepare samples and operate analytical instruments under quality-assured procedures.', 'Maintain laboratory records and support accreditation and calibration activities.'], postedDate: '2026-08-20', closingDate: '2026-09-15', applyUrl: 'https://portal.ajira.go.tz' },
+  ],
+  'api::tender.tender': [
+    { title: 'Supply and Delivery of Laboratory Reagents and Consumables', slug: 'supply-laboratory-reagents-2026', reference: 'PA/023/2026-2027/HQ/G/01', category: 'Goods', description: "Supply and delivery of laboratory reagents and consumables for TIRDO's analytical laboratories for the 2026/2027 financial year.", postedDate: '2026-08-25', closingDate: '2026-09-25' },
+    { title: 'Renovation of Administration Office Block', slug: 'office-block-renovation-2026', reference: 'PA/023/2026-2027/HQ/W/03', category: 'Works', description: 'Renovation works for the administration office block at the TIRDO Complex, Msasani.', postedDate: '2026-08-10', closingDate: '2026-09-20' },
+  ],
 };

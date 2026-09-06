@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vacancies",
+  "info": {
+    "singularName": "vacancy",
+    "pluralName": "vacancies",
+    "displayName": "Vacancy",
+    "description": "Job and career vacancies (auto-archived after the closing date)"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "department": { "type": "string" },
+    "category": {
+      "type": "enumeration",
+      "enum": ["Professional", "Technical", "Administrative", "Internship"],
+      "default": "Professional"
+    },
+    "location": { "type": "string", "default": "Dar es Salaam" },
+    "description": { "type": "text" },
+    "body": { "type": "json" },
+    "postedDate": { "type": "date" },
+    "closingDate": { "type": "date", "required": true },
+    "applyUrl": { "type": "string" }
+  }
+}

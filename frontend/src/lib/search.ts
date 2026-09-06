@@ -12,7 +12,7 @@
 // fall back to a local content scan when OpenSearch is unavailable.
 // -----------------------------------------------------------------------
 import * as content from "./content";
-import { getNews, getProjects, getPublications } from "./strapi";
+import { getNews, getProjects, getPublications, getVacancies, getTenders } from "./strapi";
 
 export const OS_NODE = process.env.OPENSEARCH_NODE || "http://opensearch:9200";
 export const OS_INDEX = process.env.OPENSEARCH_INDEX || "tirdo-content";
@@ -79,10 +79,12 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
 ];
 
 export async function gatherDocuments(): Promise<SearchDoc[]> {
-  const [news, projects, publications] = await Promise.all([
+  const [news, projects, publications, vacancies, tenders] = await Promise.all([
     getNews(100).catch(() => content.news),
     getProjects().catch(() => content.projects),
     getPublications().catch(() => content.publications),
+    getVacancies().catch(() => content.vacancies),
+    getTenders().catch(() => content.tenders),
   ]);
 
   const docs: SearchDoc[] = [];
@@ -91,10 +93,16 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
     docs.push({ id: `news:${n.slug}`, title: n.title, type: "News", url: `/news/${n.slug}`, excerpt: n.excerpt, body: n.body, category: n.category, date: n.date });
 
   for (const p of projects)
-    docs.push({ id: `project:${p.slug}`, title: p.title, type: "Project", url: `/projects#${p.slug}`, excerpt: p.summary, category: p.department });
+    docs.push({ id: `project:${p.slug}`, title: p.title, type: "Project", url: `/projects#${p.slug}`, excerpt: p.summary, body: [content.researchAreaName(content.projectAreaSlug(p)), p.funder].filter(Boolean).join(" "), category: p.department, date: p.year ? String(p.year) : undefined });
 
   for (const p of publications)
-    docs.push({ id: `publication:${p.slug}`, title: p.title, type: "Publication", url: `/publications#${p.slug}`, excerpt: `${p.type} · ${p.year}`, category: p.type, date: String(p.year) });
+    docs.push({ id: `publication:${p.slug}`, title: p.title, type: "Publication", url: `/publications#${p.slug}`, excerpt: `${p.type} · ${p.year}`, body: [p.abstract, p.authors, ...(p.keywords ?? [])].filter(Boolean).join(" "), category: p.type, date: String(p.year) });
+
+  for (const v of vacancies)
+    docs.push({ id: `vacancy:${v.slug}`, title: v.title, type: "Vacancy", url: `/careers#${v.slug}`, excerpt: v.description, body: [v.department, ...(v.body ?? [])].filter(Boolean).join(" "), category: v.category, date: v.closingDate });
+
+  for (const t of tenders)
+    docs.push({ id: `tender:${t.slug}`, title: t.title, type: "Tender", url: `/tenders#${t.slug}`, excerpt: t.description, body: `${t.reference} ${t.category}`, category: t.category, date: t.closingDate });
 
   for (const s of content.services)
     docs.push({ id: `service:${s.slug}`, title: s.title, type: "Service", url: `/services/${s.slug}`, excerpt: s.description, body: s.body?.join(" ") });
@@ -182,27 +190,40 @@ export async function indexStatus(): Promise<{ exists: boolean; count: number }>
   }
 }
 
-// Populate the index on demand if it's missing or empty. Guarded so concurrent
-// requests don't all trigger a rebuild, and cached so warm requests skip the
-// status round-trip. Use reindexAll() (via /api/search/reindex) to refresh
+// A document only the frontend indexer creates. Its presence proves the index
+// holds the FULL document set (not just the partial set the CMS bootstrap
+// indexes), so search doesn't miss about pages, events, vacancies or tenders.
+const SENTINEL_ID = "about:mission-vision";
+
+// Populate the index on first use if the full frontend set isn't present.
+// Guarded so concurrent requests don't all rebuild, and cached so warm
+// requests skip the check. reindexAll() (via /api/search/reindex) refreshes
 // content after CMS changes.
 let reindexing: Promise<unknown> | null = null;
 let knownPopulated = false;
 export async function ensurePopulated(): Promise<void> {
   if (knownPopulated) return;
-  const status = await indexStatus();
-  if (status.exists && status.count > 0) {
-    knownPopulated = true;
-    return;
+  try {
+    const res = await osFetch(`/${OS_INDEX}/_doc/${encodeURIComponent(SENTINEL_ID)}`);
+    if (res.ok) {
+      const json = await res.json();
+      if (json.found) {
+        knownPopulated = true;
+        return;
+      }
+    }
+  } catch {
+    // OpenSearch unreachable — let the caller fall back to local.
+    throw new Error("opensearch unavailable");
   }
   if (!reindexing) reindexing = reindexAll().finally(() => (reindexing = null));
-  const res = (await reindexing) as { ok?: boolean; count?: number } | undefined;
-  if (res?.ok && (res.count ?? 0) > 0) knownPopulated = true;
+  const done = (await reindexing) as { ok?: boolean; count?: number } | undefined;
+  if (done?.ok && (done.count ?? 0) > 0) knownPopulated = true;
 }
 
 // ---- Query --------------------------------------------------------------
 
-const TYPES = ["News", "Publication", "Project", "Service", "Department", "Event", "Page"];
+const TYPES = ["News", "Publication", "Project", "Service", "Department", "Vacancy", "Tender", "Event", "Page"];
 
 export async function searchContent(
   q: string,

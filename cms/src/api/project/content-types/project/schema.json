@@ -19,6 +19,12 @@
       "enum": ["Ongoing", "Completed", "Featured"],
       "default": "Ongoing"
     },
+    "researchArea": {
+      "type": "enumeration",
+      "enum": ["energy", "environment", "food-biotechnology", "materials", "industrial-chemistry", "ict", "technology-transfer"]
+    },
+    "year": { "type": "integer" },
+    "funder": { "type": "string" },
     "imageUrl": { "type": "string" },
     "cover": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
   }

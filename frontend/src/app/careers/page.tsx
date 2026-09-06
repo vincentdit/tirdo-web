@@ -1,28 +1,43 @@
+import type { Metadata } from "next";
 import { Briefcase, ExternalLink } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { ButtonLink } from "@/components/ui/button";
+import { VacanciesExplorer } from "@/components/site/vacancies-explorer";
+import { getVacancies } from "@/lib/strapi";
 
-export const metadata = { title: "Careers" };
+export const metadata: Metadata = {
+  title: "Careers",
+  description: "Current vacancies and career opportunities at TIRDO, filterable by category.",
+  alternates: { canonical: "/careers" },
+};
 
-export default function CareersPage() {
+export default async function CareersPage() {
+  const vacancies = await getVacancies();
   return (
     <>
       <PageBanner title="Careers" subtitle="Build your career in industrial research and technology." crumbs={[{ label: "Careers" }]} />
       <section className="py-14">
         <div className="container-tirdo grid gap-10 lg:grid-cols-[1.5fr_1fr]">
-          <div className="space-y-4 text-foreground/80">
-            <p>
-              TIRDO brings together researchers, engineers, technologists and support professionals working on
-              real industrial challenges — from applied research and laboratory testing to energy, materials,
-              ICT and corporate services.
-            </p>
-            <p>
-              As a public institution, TIRDO advertises vacancies through the official Government recruitment
-              channels. Applications are submitted through the Public Service Recruitment Secretariat&apos;s
-              employment portal, and announcements are also posted here and in the national press.
-            </p>
-            <p>There are currently no open positions listed. New vacancies will be published here and managed through the CMS.</p>
+          <div className="space-y-6">
+            <div className="space-y-4 text-foreground/80">
+              <p>
+                TIRDO brings together researchers, engineers, technologists and support professionals working on
+                real industrial challenges — from applied research and laboratory testing to energy, materials,
+                ICT and corporate services.
+              </p>
+              <p>
+                As a public institution, TIRDO advertises vacancies through the official Government recruitment
+                channels. Applications are submitted through the Public Service Recruitment Secretariat&apos;s
+                employment portal, and announcements are also posted here and in the national press.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-4 text-lg font-bold text-primary">Current vacancies</h2>
+              <VacanciesExplorer vacancies={vacancies} />
+            </div>
           </div>
+
           <aside>
             <div className="rounded-xl border bg-secondary/40 p-6">
               <span className="mb-3 grid h-12 w-12 place-items-center rounded-lg bg-primary/10 text-primary">

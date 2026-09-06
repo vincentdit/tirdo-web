@@ -12,15 +12,19 @@ function client() {
 // Map a Strapi entity to a flat search document.
 function toDoc(uid, e) {
   const kind = uid.split('::')[1].split('.')[0];
-  const typeLabel = { article: 'News', project: 'Project', publication: 'Publication', service: 'Service', department: 'Department', page: 'Page' }[kind] || 'Content';
-  const urlBase = { article: '/news/', project: '/projects#', publication: '/publications', service: '/services/', department: '/departments/', page: '/' }[kind] || '/';
+  // id scheme + URLs kept in sync with the frontend indexer (lib/search.ts)
+  // so both indexers upsert the SAME documents instead of duplicating them.
+  const idKind = { article: 'news' }[kind] || kind;
+  const typeLabel = { article: 'News', project: 'Project', publication: 'Publication', service: 'Service', department: 'Department', page: 'Page', vacancy: 'Vacancy', tender: 'Tender' }[kind] || 'Content';
+  const urlBase = { article: '/news/', project: '/projects#', publication: '/publications#', service: '/services/', department: '/departments/', page: '/', vacancy: '/careers#', tender: '/tenders#' }[kind] || '/';
+  const body = Array.isArray(e.body) ? e.body.join(' ') : (e.body || '');
   return {
-    id: `${kind}-${e.slug || e.id}`,
+    id: `${idKind}:${e.slug || e.id}`,
     type: typeLabel,
     title: e.title,
     excerpt: e.excerpt || e.summary || e.description || e.blurb || '',
-    body: e.body || '',
-    url: kind === 'publication' ? '/publications' : `${urlBase}${e.slug || ''}`,
+    body,
+    url: `${urlBase}${e.slug || ''}`,
   };
 }
 
@@ -55,6 +59,8 @@ async function reindexAll(strapi) {
     'api::service.service',
     'api::department.department',
     'api::page.page',
+    'api::vacancy.vacancy',
+    'api::tender.tender',
   ];
 
   const body = [];

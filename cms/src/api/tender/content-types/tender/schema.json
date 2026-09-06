@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tenders",
+  "info": {
+    "singularName": "tender",
+    "pluralName": "tenders",
+    "displayName": "Tender",
+    "description": "Procurement notices and tenders (auto-archived after the closing date)"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "title", "required": true },
+    "reference": { "type": "string" },
+    "category": {
+      "type": "enumeration",
+      "enum": ["Goods", "Works", "Services", "Consultancy"],
+      "default": "Goods"
+    },
+    "description": { "type": "text" },
+    "postedDate": { "type": "date" },
+    "closingDate": { "type": "date", "required": true },
+    "documentUrl": { "type": "string" },
+    "document": { "type": "media", "multiple": false, "allowedTypes": ["files"] }
+  }
+}
