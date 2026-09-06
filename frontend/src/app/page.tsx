@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { HeroSlider } from "@/components/site/hero-slider";
@@ -5,6 +6,10 @@ import { Icon } from "@/components/site/icon";
 import { coreActivities, services, directorMessage } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
 import { getNews } from "@/lib/strapi";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function HomePage() {
   const news = await getNews(3);

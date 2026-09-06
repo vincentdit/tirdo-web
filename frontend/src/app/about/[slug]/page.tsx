@@ -22,7 +22,15 @@ export function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: { params: { slug: string } }) {
-  return { title: meta[params.slug]?.title ?? "About" };
+  const m = meta[params.slug];
+  const title = m?.title ?? "About";
+  const canonical = `/about/${params.slug}`;
+  return {
+    title,
+    description: m?.subtitle,
+    alternates: { canonical },
+    openGraph: { title, description: m?.subtitle, url: canonical, type: "article" },
+  };
 }
 
 function initials(name: string) {

@@ -12,7 +12,14 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const s = services.find((x) => x.slug === params.slug);
-  return { title: s?.title ?? "Service" };
+  const title = s?.title ?? "Service";
+  const canonical = `/services/${params.slug}`;
+  return {
+    title,
+    description: s?.description,
+    alternates: { canonical },
+    openGraph: { title, description: s?.description, url: canonical, type: "article" },
+  };
 }
 
 export default function ServicePage({ params }: { params: { slug: string } }) {

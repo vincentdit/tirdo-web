@@ -8,7 +8,21 @@ import { getNews, getNewsBySlug } from "@/lib/strapi";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const item = await getNewsBySlug(params.slug);
-  return { title: item?.title ?? "News" };
+  const title = item?.title ?? "News";
+  const canonical = `/news/${params.slug}`;
+  return {
+    title,
+    description: item?.excerpt,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description: item?.excerpt,
+      url: canonical,
+      type: "article",
+      images: item?.image ? [{ url: item.image }] : undefined,
+      publishedTime: item?.date,
+    },
+  };
 }
 
 export default async function NewsDetail({ params }: { params: { slug: string } }) {

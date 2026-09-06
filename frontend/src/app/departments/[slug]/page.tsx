@@ -12,7 +12,14 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const d = departments.find((x) => x.slug === params.slug);
-  return { title: d?.title ?? "Department" };
+  const title = d?.title ?? "Department";
+  const canonical = `/departments/${params.slug}`;
+  return {
+    title,
+    description: d?.blurb,
+    alternates: { canonical },
+    openGraph: { title, description: d?.blurb, url: canonical, type: "article" },
+  };
 }
 
 export default function DepartmentPage({ params }: { params: { slug: string } }) {
