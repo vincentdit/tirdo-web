@@ -44,6 +44,30 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit || true
 
+  security:
+    name: Security - dependency & secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: npm audit (frontend)
+        working-directory: frontend
+        run: npm audit --audit-level=high || true
+      - name: npm audit (cms)
+        working-directory: cms
+        run: npm audit --audit-level=high || true
+      - name: Trivy filesystem scan (vulns, secrets, misconfig)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: fs
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          # Report-only for now. Flip to '1' to fail the build on findings.
+          exit-code: '0'
+
   docker:
     name: Validate & build images
     runs-on: ubuntu-latest
