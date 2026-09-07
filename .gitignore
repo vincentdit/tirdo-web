@@ -20,9 +20,8 @@ cms/.tmp
 .DS_Store
 Thumbs.db
 
-
-# patch archives from remote edits
-*.tgz
-
-# Cowork/desktop-app export folder
-Claude outputs/
+# TLS certificates and ACME challenge artifacts (never commit)
+nginx/certs/*.pem
+nginx/acme/*
+!nginx/certs/.gitkeep
+!nginx/acme/.gitkeep

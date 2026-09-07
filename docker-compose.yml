@@ -302,9 +302,12 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"          # unused until HTTPS is enabled (scripts/tls-setup.sh)
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro   # TLS certificates (empty until enabled)
+      - ./nginx/acme:/var/www/acme:ro       # ACME http-01 challenge webroot
     depends_on:
       - frontend
     networks: [tirdo-net]
