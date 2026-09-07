@@ -23,10 +23,40 @@ jobs:
       - run: npm ci
       - run: npm run lint --if-present
       - run: npx tsc --noEmit
+      - run: npm test                       # vitest unit tests
       - run: npm run build
         env:
           NEXT_PUBLIC_STRAPI_URL: http://localhost/cms
           NEXT_PUBLIC_SITE_URL: http://localhost
+
+  e2e:
+    name: Frontend - e2e & accessibility (Playwright)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost
+          NEXT_PUBLIC_MATOMO_TRACK_URL: "off"
+      - run: npm run test:e2e               # smoke + axe (starts its own server)
+        env:
+          NEXT_PUBLIC_MATOMO_TRACK_URL: "off"
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: frontend/playwright-report
+          retention-days: 7
 
   cms:
     name: CMS - install & type-check
