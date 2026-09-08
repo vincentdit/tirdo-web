@@ -21,7 +21,7 @@ record the e-GA governance framework expects — update it as work lands.
 | FR-SEARCH | Global search (facets, suggest) | Done | `lib/search.ts`, `app/api/search/**`, `search-client.tsx` | unit: gatherDocuments; e2e: search |
 | FR-CONTACT | Contact & enquiry | Partial | `contact-form.tsx`, `app/api/contact` | e2e a11y `/contact` |
 | FR-CMS | Content management | Done | Strapi (`cms/`) content types | manual |
-| FR-I18N | Bilingual EN/Kiswahili (chrome) | Partial | `next-intl`, `messages/*.json` | e2e: language switch |
+| FR-I18N | Bilingual EN/Kiswahili | Partial | `next-intl` chrome + Strapi i18n on all content types, `strapi.mergeLocale` per-field EN fallback | unit: mergeLocale; e2e: language switch (content translation still to author) |
 | FR-TECH | Technology catalogue | Not started | — | — |
 | FR-LAB | Laboratory services + LIMS gateway | Not started | — | — |
 | FR-CON | Consultancy | Not started | — | — |
@@ -42,8 +42,8 @@ record the e-GA governance framework expects — update it as work lands.
 | NFR-CI | CI/CD | Done | `.github/workflows/ci.yml` (lint, tsc, unit, e2e, security, build) | CI runs |
 | NFR-TEST | Testing / QA | Partial | Vitest + Playwright + axe | this suite |
 | NFR-AVL | Availability / monitoring | Not started | healthchecks only | — |
-| NFR-WAF | Web application firewall | Not started | — | — |
-| NFR-MFA | Admin MFA | Not started | — | — |
+| NFR-WAF | Web application firewall | Partial | Opt-in OWASP CRS proxy (`docker-compose.waf.yml`, `nginx/waf`), DetectionOnly | `docker compose config`; runtime validate on host (`docs/WAF.md`) |
+| NFR-MFA | Admin MFA | Partial | Keycloak TOTP (`scripts/keycloak-mfa.sh`); Strapi/MinIO/Matomo/OpenSearch documented | `bash -n`, shellcheck; enrol + enforce on host (`docs/MFA.md`) |
 | NFR-VAPT | Pen test | Not started | — | — |
 
 ## How to use
