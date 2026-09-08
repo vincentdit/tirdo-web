@@ -60,16 +60,17 @@
       "research": "Research",
       "energyAuditing": "Energy Auditing",
       "feasibility": "Feasibility Studies",
-      "consultancy": "Consultancy & Technical Services",
-      "laboratory": "Laboratory Analytical Services",
-      "training": "Training & Skill Development"
+      "consultancy": "Consultancy & Advisory",
+      "laboratory": "Laboratory Services",
+      "training": "Training & Skills Development"
     },
     "researchMenu": {
       "ongoing": "Ongoing Projects",
       "tHub": "T-Hub Innovation",
       "iic": "Industrial Information Centre",
       "products": "Research Products",
-      "publications": "Publications"
+      "publications": "Publications",
+      "technology": "Technology Catalogue"
     },
     "mediaMenu": {
       "news": "News & Announcements",

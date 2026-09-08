@@ -6,6 +6,13 @@ import {
   researchAreas,
   vacancies,
   tenders,
+  technologies,
+  technologySectors,
+  technologySectorName,
+  technologyMaturities,
+  laboratory,
+  consultancy,
+  training,
   type Project,
 } from "@/lib/content";
 
@@ -87,5 +94,54 @@ describe("sample content integrity", () => {
       expect(slugs.has(t.slug)).toBe(false);
       slugs.add(t.slug);
     }
+  });
+});
+
+
+describe("technology catalogue (FR-TECH)", () => {
+  it("entries have unique slugs, a known sector and maturity", () => {
+    const slugs = new Set<string>();
+    const sectors = new Set(technologySectors.map((s) => s.slug));
+    for (const t of technologies) {
+      expect(t.slug).toBeTruthy();
+      expect(t.title).toBeTruthy();
+      expect(t.summary).toBeTruthy();
+      expect(sectors.has(t.sector), `unknown sector ${t.sector}`).toBe(true);
+      expect(technologyMaturities).toContain(t.maturity);
+      expect(slugs.has(t.slug)).toBe(false);
+      slugs.add(t.slug);
+    }
+  });
+
+  it("technologySectorName resolves known slugs and rejects unknown", () => {
+    for (const s of technologySectors) expect(technologySectorName(s.slug)).toBe(s.name);
+    expect(technologySectorName("nope")).toBeUndefined();
+    expect(technologySectorName(undefined)).toBeUndefined();
+  });
+
+  it("any relatedServiceSlug is a non-empty string", () => {
+    for (const t of technologies) if (t.relatedServiceSlug) expect(typeof t.relatedServiceSlug).toBe("string");
+  });
+});
+
+describe("section content (FR-LAB / FR-CON / FR-TRN)", () => {
+  it("laboratory has intro, accreditation, test groups and a process", () => {
+    expect(laboratory.intro.length).toBeGreaterThan(0);
+    expect(laboratory.accreditation).toBeTruthy();
+    expect(laboratory.groups.length).toBeGreaterThan(0);
+    for (const g of laboratory.groups) expect(g.tests.length).toBeGreaterThan(0);
+    expect(laboratory.process.length).toBe(4);
+  });
+
+  it("consultancy has service lines with icons and a process", () => {
+    expect(consultancy.lines.length).toBeGreaterThan(0);
+    for (const l of consultancy.lines) { expect(l.title).toBeTruthy(); expect(l.icon).toBeTruthy(); }
+    expect(consultancy.process.length).toBe(4);
+  });
+
+  it("training has courses and a process", () => {
+    expect(training.courses.length).toBeGreaterThan(0);
+    for (const c of training.courses) { expect(c.title).toBeTruthy(); expect(c.area).toBeTruthy(); }
+    expect(training.process.length).toBe(4);
   });
 });

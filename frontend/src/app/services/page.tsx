@@ -4,6 +4,9 @@ import { Icon } from "@/components/site/icon";
 import { Card, CardContent } from "@/components/ui/card";
 import { services } from "@/lib/content";
 
+// Services that have a richer dedicated section.
+const SECTION_ROUTES: Record<string, string> = { consultancy: "/consultancy", laboratory: "/laboratory", training: "/training" };
+
 export const metadata = { title: "Services" };
 
 export default function ServicesPage() {
@@ -13,7 +16,7 @@ export default function ServicesPage() {
       <section className="py-14">
         <div className="container-tirdo grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((s) => (
-            <Link key={s.slug} href={`/services/${s.slug}`}>
+            <Link key={s.slug} href={SECTION_ROUTES[s.slug] ?? `/services/${s.slug}`}>
               <Card className="group h-full transition-all hover:shadow-md">
                 <CardContent className="p-6">
                   <span className="mb-4 grid h-12 w-12 place-items-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">

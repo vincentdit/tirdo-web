@@ -6,6 +6,8 @@ import { Icon } from "@/components/site/icon";
 import { ButtonLink } from "@/components/ui/button";
 import { services } from "@/lib/content";
 
+const SECTION_ROUTES: Record<string, string> = { consultancy: "/consultancy", laboratory: "/laboratory", training: "/training" };
+
 export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
 }
@@ -13,7 +15,7 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const s = services.find((x) => x.slug === params.slug);
   const title = s?.title ?? "Service";
-  const canonical = `/services/${params.slug}`;
+  const canonical = SECTION_ROUTES[params.slug] ?? `/services/${params.slug}`;
   return {
     title,
     description: s?.description,
@@ -32,6 +34,12 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
       <section className="py-14">
         <div className="container-tirdo grid gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div className="space-y-4 text-foreground/80">
+            {SECTION_ROUTES[svc.slug] && (
+              <Link href={SECTION_ROUTES[svc.slug]} className="flex items-center justify-between gap-3 rounded-lg border-l-4 border-accent bg-secondary/40 p-4 text-sm">
+                <span className="font-medium text-primary">Explore the full {svc.title} section &mdash; capabilities, process and online portal.</span>
+                <span className="shrink-0 font-semibold text-brand-teal">View section &rarr;</span>
+              </Link>
+            )}
             <span className="grid h-14 w-14 place-items-center rounded-xl bg-accent/15 text-brand-teal">
               <Icon name={svc.icon} className="h-7 w-7" />
             </span>

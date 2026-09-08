@@ -60,16 +60,17 @@
       "research": "Utafiti",
       "energyAuditing": "Ukaguzi wa Nishati",
       "feasibility": "Tafiti za Uwezekano",
-      "consultancy": "Ushauri na Huduma za Kiufundi",
-      "laboratory": "Huduma za Uchambuzi wa Maabara",
-      "training": "Mafunzo na Uendelezaji wa Ujuzi"
+      "consultancy": "Ushauri na Ushauri wa Kiufundi",
+      "laboratory": "Huduma za Maabara",
+      "training": "Mafunzo na Ukuzaji wa Ujuzi"
     },
     "researchMenu": {
       "ongoing": "Miradi Inayoendelea",
       "tHub": "Ubunifu wa T-Hub",
       "iic": "Kituo cha Taarifa za Viwanda",
       "products": "Bidhaa za Utafiti",
-      "publications": "Machapisho"
+      "publications": "Machapisho",
+      "technology": "Katalogi ya Teknolojia"
     },
     "mediaMenu": {
       "news": "Habari na Matangazo",

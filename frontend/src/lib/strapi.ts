@@ -12,7 +12,7 @@
 // -----------------------------------------------------------------------
 import { cookies } from "next/headers";
 import * as fallback from "./content";
-import type { NewsItem, Project, Publication, Vacancy, Tender } from "./content";
+import type { NewsItem, Project, Publication, Vacancy, Tender, Technology } from "./content";
 import { isLocale, defaultLocale } from "@/i18n/config";
 
 const INTERNAL = process.env.STRAPI_INTERNAL_URL || "http://cms:1337";
@@ -148,6 +148,23 @@ export async function getTenders(locale = activeLocale()): Promise<Tender[]> {
       slug: t.slug, title: t.title, reference: t.reference ?? "", category: t.category ?? "Goods",
       description: t.description ?? "", postedDate: t.postedDate ?? t.publishedAt, closingDate: t.closingDate,
       documentUrl: t.documentUrl || t.document?.url,
+    };
+  });
+}
+
+
+export async function getTechnologies(locale = activeLocale()): Promise<Technology[]> {
+  const data = await strapiFetch<Raw[]>(`technologies?${L}&populate[cover]=true`);
+  if (!data || data.length === 0) return fallback.technologies;
+  return data.map((raw) => {
+    const t = mergeLocale(raw, locale);
+    return {
+      slug: t.slug, title: t.title, summary: t.summary ?? "",
+      sector: t.sector ?? "materials", maturity: t.maturity ?? "Commercial",
+      body: Array.isArray(t.body) ? t.body : typeof t.body === "string" && t.body ? [t.body] : undefined,
+      benefits: Array.isArray(t.benefits) ? t.benefits : undefined,
+      applications: Array.isArray(t.applications) ? t.applications : undefined,
+      image: t.imageUrl || t.cover?.url, relatedServiceSlug: t.relatedServiceSlug,
     };
   });
 }

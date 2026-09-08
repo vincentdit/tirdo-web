@@ -3,7 +3,7 @@ import { AxeBuilder } from "@axe-core/playwright";
 
 // Accessibility regression guard (WCAG 2.1 A/AA). Keeps the axe 81->0 result
 // from regressing as pages change. See docs/ACCESSIBILITY.md.
-const PAGES = ["/", "/about", "/departments", "/services", "/publications", "/careers", "/tenders", "/contact", "/search"];
+const PAGES = ["/", "/about", "/departments", "/services", "/technology", "/laboratory", "/consultancy", "/training", "/publications", "/careers", "/tenders", "/contact", "/search"];
 
 for (const path of PAGES) {
   test(`no WCAG 2.1 A/AA violations on ${path}`, async ({ page }) => {

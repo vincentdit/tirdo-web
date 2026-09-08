@@ -19,13 +19,13 @@ record the e-GA governance framework expects — update it as work lands.
 | FR-CAR | Vacancies (taxonomy, auto-archive) | Done | `vacancies-explorer.tsx`, `isOpen()` | unit: isOpen; e2e: careers |
 | FR-TEN | Tenders (taxonomy, auto-archive) | Done | `tenders-explorer.tsx`, `isOpen()` | unit: isOpen; e2e: tenders |
 | FR-SEARCH | Global search (facets, suggest) | Done | `lib/search.ts`, `app/api/search/**`, `search-client.tsx` | unit: gatherDocuments; e2e: search |
-| FR-CONTACT | Contact & enquiry | Partial | `contact-form.tsx`, `app/api/contact` | e2e a11y `/contact` |
+| FR-CONTACT | Contact & enquiry | Done | `contact-form.tsx` (honeypot), `app/api/contact` (validation), Strapi `contact-message` + email lifecycle | e2e a11y `/contact` |
 | FR-CMS | Content management | Done | Strapi (`cms/`) content types | manual |
 | FR-I18N | Bilingual EN/Kiswahili | Partial | `next-intl` chrome + Strapi i18n on all content types, `strapi.mergeLocale` per-field EN fallback | unit: mergeLocale; e2e: language switch (content translation still to author) |
-| FR-TECH | Technology catalogue | Not started | — | — |
-| FR-LAB | Laboratory services + LIMS gateway | Not started | — | — |
-| FR-CON | Consultancy | Not started | — | — |
-| FR-TRN | Training | Not started | — | — |
+| FR-TECH | Technology catalogue | Done | `app/technology/**`, `technology-explorer.tsx`, CMS `technology` type, `getTechnologies` | unit: catalogue integrity; e2e: catalogue + detail |
+| FR-LAB | Laboratory services + LIMS gateway | Done | `app/laboratory/page.tsx`, `gateway.tsx` (NILIMS) | unit: lab content; e2e: `/laboratory` + a11y |
+| FR-CON | Consultancy | Done | `app/consultancy/page.tsx`, `gateway.tsx` (CIAP) | unit: consultancy content; e2e: `/consultancy` + a11y |
+| FR-TRN | Training | Done | `app/training/page.tsx`, `gateway.tsx` (TeLTP) | unit: training content; e2e: `/training` + a11y |
 | FR-AUD | Audit trail of admin actions | Done | `cms/src/audit.js`, `/api/audit-log/verify` | chain logic test |
 
 ## Non-functional

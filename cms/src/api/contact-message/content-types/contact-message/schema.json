@@ -7,12 +7,34 @@
     "displayName": "Contact Message",
     "description": "Messages submitted through the website contact form"
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "attributes": {
-    "name": { "type": "string", "required": true },
-    "email": { "type": "email", "required": true },
-    "subject": { "type": "string" },
-    "message": { "type": "text", "required": true },
-    "handled": { "type": "boolean", "default": false }
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "phone": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "message": {
+      "type": "text",
+      "required": true
+    },
+    "handled": {
+      "type": "boolean",
+      "default": false
+    }
   }
 }

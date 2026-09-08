@@ -848,3 +848,289 @@ export function isOpen(closingDate: string, now: Date = new Date()): boolean {
   d.setHours(23, 59, 59, 999);
   return d.getTime() >= now.getTime();
 }
+
+// -----------------------------------------------------------------------
+// Technology catalogue (FR-TECH) — proven TIRDO technologies available for
+// transfer, licensing and adoption by industry, SMEs and communities.
+// -----------------------------------------------------------------------
+
+export type TechSector = { slug: string; name: string };
+
+export const technologySectors: TechSector[] = [
+  { slug: "energy", name: "Energy" },
+  { slug: "food-biotechnology", name: "Food & Biotechnology" },
+  { slug: "materials", name: "Materials & Engineering" },
+  { slug: "environment", name: "Environment" },
+  { slug: "textile-leather", name: "Textile & Leather" },
+  { slug: "ict", name: "ICT & Digital" },
+];
+
+export const technologyMaturities = ["Concept", "Pilot", "Commercial", "Mature"] as const;
+export type TechMaturity = (typeof technologyMaturities)[number];
+
+export type Technology = {
+  slug: string;
+  title: string;
+  summary: string;
+  sector: string; // technologySectors slug
+  maturity: TechMaturity;
+  body?: string[];
+  benefits?: string[];
+  applications?: string[];
+  image?: string;
+  relatedServiceSlug?: string;
+};
+
+export const technologies: Technology[] = [
+  {
+    slug: "biomass-briquettes",
+    title: "Biomass Briquette Production",
+    summary: "Converts agricultural and forestry residues into affordable, clean-burning briquettes — a direct substitute for wood charcoal.",
+    sector: "energy",
+    maturity: "Commercial",
+    image: `${RES}/H1D6ScYYF7ZdoRK9q5V8fxut6gRVKKVeSQaTWjKU.png`,
+    body: [
+      "TIRDO's briquetting technology carbonises and compacts biomass waste — rice husks, sawdust, coffee husks, bagasse and charcoal fines — into uniform briquettes with a high, consistent calorific value. The process covers feedstock preparation, carbonisation, binding, compaction and drying, and can be scaled from community groups to SME production lines.",
+      "The technology has been packaged with training, a producers' handbook and start-up support, and is being adopted across Tanzania as a cleaner cooking fuel that reduces deforestation and household emissions.",
+    ],
+    benefits: [
+      "Cuts fuel costs and reliance on wood charcoal",
+      "Reduces deforestation and greenhouse-gas emissions",
+      "Creates income and jobs along the collection–production chain",
+      "Uses locally available agricultural residues",
+    ],
+    applications: ["Household and institutional cooking", "Bakeries, restaurants and food processors", "Community and SME fuel enterprises"],
+    relatedServiceSlug: "training",
+  },
+  {
+    slug: "improved-cook-stoves",
+    title: "Improved & Institutional Cook Stoves",
+    summary: "Fuel-efficient stove designs matched to briquette and biomass fuels for households and institutions.",
+    sector: "energy",
+    maturity: "Mature",
+    body: [
+      "TIRDO designs and tests improved cook stoves that raise combustion efficiency and cut fuel use, indoor smoke and cooking time. Designs range from single-pot household stoves to large institutional stoves for schools and canteens, and are performance-tested in TIRDO's energy laboratory.",
+      "The stoves pair naturally with the briquette technology to deliver a complete clean-cooking solution.",
+    ],
+    benefits: ["Lower fuel consumption and cost", "Reduced indoor air pollution", "Faster, safer cooking"],
+    applications: ["Households", "Schools, colleges and institutions", "Restaurants and food vendors"],
+  },
+  {
+    slug: "essential-oils",
+    title: "Essential Oils Extraction",
+    summary: "Improved steam-distillation and extraction technology that turns local botanicals into high-value essential oils.",
+    sector: "food-biotechnology",
+    maturity: "Commercial",
+    image: `${RES}/feHRWQMR9OJXOpyL21RzVcnWNQ9xzn2ATG2RKDLj.jpg`,
+    body: [
+      "TIRDO has developed and optimised extraction technology for producing essential oils from locally grown botanicals, improving yield and product quality while linking farmers to industrial buyers. The package covers raw-material handling, distillation, quality testing and value-chain linkage.",
+    ],
+    benefits: ["Adds value to local agricultural crops", "Opens export and cosmetics-industry markets", "Raises farmer incomes"],
+    applications: ["Cosmetics and personal care", "Food flavouring and fragrance", "Pharmaceutical inputs"],
+  },
+  {
+    slug: "mushroom-spawn",
+    title: "Mushroom Spawn Production",
+    summary: "Laboratory production of high-quality mushroom spawn supplied to farmers to support commercial mushroom cultivation.",
+    sector: "food-biotechnology",
+    maturity: "Commercial",
+    body: [
+      "TIRDO's biotechnology laboratory produces clean, high-viability mushroom spawn and provides the accompanying cultivation know-how, supporting a growing mushroom-farming sector as a source of nutrition and income.",
+    ],
+    benefits: ["Reliable, contamination-free spawn supply", "Supports nutrition and household income", "Backed by TIRDO cultivation training"],
+    applications: ["Smallholder and commercial mushroom farms", "Agribusiness and food SMEs"],
+  },
+  {
+    slug: "leather-processing",
+    title: "Leather Processing & Tanning Technology",
+    summary: "Cleaner tanning, finishing and leather-goods techniques that add value to Tanzania's hides and skins.",
+    sector: "textile-leather",
+    maturity: "Mature",
+    body: [
+      "TIRDO's textile and leather division develops and transfers cleaner leather-processing and tanning technologies, quality-assurance methods and leather-goods techniques, adding value to hides and skins while reducing the environmental load of the tanning process.",
+    ],
+    benefits: ["Higher-value finished leather", "Cleaner, lower-effluent processing", "Skills for artisans and SMEs"],
+    applications: ["Tanneries and leather-goods makers", "Cottage and SME leather enterprises"],
+    relatedServiceSlug: "consultancy",
+  },
+  {
+    slug: "ndt-services",
+    title: "Non-Destructive Testing (NDT)",
+    summary: "Ultrasonic, radiographic, magnetic-particle and penetrant inspection of welds, pipelines and pressure vessels.",
+    sector: "materials",
+    maturity: "Commercial",
+    image: `${CI}/cCiap7vvzT3PcCrqVYJe99reAp4pnPJVZ5SnDDBV.jpg`,
+    body: [
+      "TIRDO provides a full suite of non-destructive testing to international standards — ultrasonic, radiographic, magnetic-particle, liquid-penetrant, remote-visual and eddy-current inspection — for welded structures, pipelines, pressure vessels and civil and aeronautical applications.",
+      "TIRDO has applied this capability on major national assignments, including quality assurance on tens of kilometres of gas pipeline.",
+    ],
+    benefits: ["Assures structural integrity and safety", "Standards-based, defensible inspection reports", "Avoids costly failures and downtime"],
+    applications: ["Oil, gas and pipeline construction", "Manufacturing and fabrication", "Infrastructure and aviation"],
+    relatedServiceSlug: "consultancy",
+  },
+  {
+    slug: "coal-characterization",
+    title: "Coal Characterization & Beneficiation",
+    summary: "Proximate, ultimate and calorific analysis and beneficiation guidance from the national coal reference laboratory.",
+    sector: "materials",
+    maturity: "Mature",
+    body: [
+      "Declared the national backstop reference laboratory for coal-quality assessment, TIRDO characterises coal for proximate, ultimate and heating-value parameters and advises on beneficiation and industrial use, supporting the mining and energy sectors.",
+    ],
+    benefits: ["Authoritative national reference testing", "Informs coal use, pricing and beneficiation", "Supports mining and energy investment"],
+    applications: ["Mining companies", "Cement, steel and power industries", "Regulators and investors"],
+    relatedServiceSlug: "laboratory",
+  },
+  {
+    slug: "plastic-recycling",
+    title: "Plastic Waste Recycling",
+    summary: "Collection, sorting and reprocessing technology that turns plastic waste into usable raw material and products.",
+    sector: "environment",
+    maturity: "Commercial",
+    body: [
+      "Developed with UNIDO, TIRDO's plastic-recycling technology covers collection, sorting, washing, shredding and reprocessing of plastic waste into usable material, and has been transferred through training to hundreds of people, creating jobs across the recycling value chain.",
+    ],
+    benefits: ["Diverts plastic from the environment", "Creates recycling-chain jobs and enterprises", "Supplies low-cost recycled raw material"],
+    applications: ["Waste-management enterprises", "Plastic-product manufacturers", "Municipal and community recyclers"],
+  },
+  {
+    slug: "onsite-wastewater-treatment",
+    title: "Onsite Wastewater Treatment",
+    summary: "Cleaner-production and onsite wastewater-treatment systems for the leather, textile and food industries.",
+    sector: "environment",
+    maturity: "Pilot",
+    body: [
+      "TIRDO researches and deploys conventional and onsite wastewater-treatment approaches and cleaner-production methods that add value to industrial waste streams while reducing pollution loads from tanneries, textile mills and food processors.",
+    ],
+    benefits: ["Meets effluent and environmental standards", "Recovers value from waste streams", "Reduces pollution and compliance risk"],
+    applications: ["Tanneries and textile mills", "Food and beverage processors", "Industrial estates"],
+    relatedServiceSlug: "laboratory",
+  },
+  {
+    slug: "gs1-traceability",
+    title: "GS1 Product Traceability Systems",
+    summary: "Barcode-based traceability across agro value chains, from farm to market, underpinning quality and export readiness.",
+    sector: "ict",
+    maturity: "Commercial",
+    body: [
+      "TIRDO implemented traceability systems across agricultural value chains — coffee, cashew, tea and seafood — work that led to the establishment of GS1 Tanzania and barcode-based traceability for Tanzanian products, improving quality assurance and export competitiveness.",
+    ],
+    benefits: ["Farm-to-market traceability", "Improves export readiness and trust", "Supports recalls and quality control"],
+    applications: ["Agro-exporters and cooperatives", "Food and beverage manufacturers", "Retail and logistics"],
+    relatedServiceSlug: "consultancy",
+  },
+  {
+    slug: "industrial-energy-management",
+    title: "Industrial Energy Management (ISO 50001)",
+    summary: "Energy-audit and management-system methodology that helps plants cut energy cost and carbon.",
+    sector: "energy",
+    maturity: "Mature",
+    image: `${RES}/oE73KEynZEZ2mPY8pm9YD39qgwsjTVgtHrC44f7q.png`,
+    body: [
+      "TIRDO helps industry implement energy management aligned to ISO 50001 — baseline audits, performance testing of ovens, boilers, furnaces and solar systems, target-setting and monitoring — cutting energy costs and emissions across Tanzanian industry.",
+    ],
+    benefits: ["Lower energy cost and carbon footprint", "Certified, standards-based audits", "Actionable efficiency roadmap"],
+    applications: ["Manufacturing plants", "Commercial buildings", "Institutions and utilities"],
+    relatedServiceSlug: "energy-auditing",
+  },
+];
+
+export function technologySectorName(slug: string | undefined): string | undefined {
+  return technologySectors.find((s) => s.slug === slug)?.name;
+}
+
+// -----------------------------------------------------------------------
+// Laboratory services (FR-LAB) — accredited testing, with a gateway to the
+// National Industrial Laboratory Information Management System (NILIMS).
+// -----------------------------------------------------------------------
+
+export type LabGroup = { name: string; tests: string[] };
+
+export const laboratory: {
+  intro: string[];
+  accreditation: string;
+  groups: LabGroup[];
+  process: { title: string; text: string }[];
+} = {
+  intro: [
+    "TIRDO operates specialised, standards-based laboratories serving industry, government, SMEs and the public. Testing spans food and microbiology, industrial chemistry, materials, energy and the environment — supporting quality assurance, regulatory compliance and product development.",
+    "Samples and results are managed through NILIMS, TIRDO's National Industrial Laboratory Information Management System, which lets clients register samples, track progress and receive results online.",
+  ],
+  accreditation:
+    "TIRDO's food laboratory has operated since 1995 and has been accredited since 2009. Laboratories work to recognised international standards (including ISO/IEC 17025 methods) with quality-assured procedures, calibrated instruments and qualified analysts.",
+  groups: [
+    { name: "Food & Microbiology", tests: ["Physicochemical testing of food", "Microbiological testing (fish, cereals, legumes, meat, dairy, honey)", "Water-quality determination", "Micronutrient and proximate analysis"] },
+    { name: "Industrial & Analytical Chemistry", tests: ["Physicochemical quality of raw materials and products", "Heavy-metals analysis", "Micronutrients in food, fertilizers and salt", "Industrial-waste characterization"] },
+    { name: "Materials & Engineering", tests: ["Destructive testing (hardness, tensile, torsion)", "Non-destructive testing (UT, RT, MT, PT, eddy-current)", "Coal proximate, ultimate and calorific analysis"] },
+    { name: "Energy", tests: ["Industrial energy audits", "Performance testing of ovens, boilers, furnaces and solar systems", "Fuel and biomass calorific testing"] },
+    { name: "Environment & Occupational Safety", tests: ["Air quality (particulates, gases, emissions)", "Noise, light and vibration", "Wastewater and potable-water analysis", "Environmental impact assessment and audit"] },
+  ],
+  process: [
+    { title: "Register the sample", text: "Create a request in NILIMS (or at the TIRDO front desk) describing the sample and tests required." },
+    { title: "Submit & pay", text: "Deliver the sample to TIRDO; a job number and cost estimate are issued and tracked in NILIMS." },
+    { title: "Analysis", text: "Accredited analysts run the requested tests under quality-assured procedures." },
+    { title: "Receive results", text: "Download the test report from NILIMS or collect a certified copy from TIRDO." },
+  ],
+};
+
+// -----------------------------------------------------------------------
+// Consultancy & advisory (FR-CON) — technical advisory service lines, with a
+// gateway to CIAP (the Consultancy & Industrial Advisory Portal).
+// -----------------------------------------------------------------------
+
+export const consultancy: {
+  intro: string[];
+  lines: { title: string; description: string; icon: string }[];
+  process: { title: string; text: string }[];
+} = {
+  intro: [
+    "TIRDO is a multidisciplinary technical partner to industry, government and development partners — combining accredited laboratories, engineering expertise and decades of field experience to solve real industrial problems.",
+    "Consultancy engagements are requested and managed through CIAP, TIRDO's Consultancy & Industrial Advisory Portal, which handles the workflow from client request through proposal, delivery and closure.",
+  ],
+  lines: [
+    { title: "Quality Assurance & NDT", description: "Non-destructive testing and inspection of welds, pipelines and pressure vessels to international standards.", icon: "ShieldCheck" },
+    { title: "Energy Audits & Efficiency", description: "Certified industrial energy audits, performance testing and ISO 50001 energy-management support.", icon: "Zap" },
+    { title: "Feasibility & Investment Studies", description: "Technical and economic feasibility for new ventures and expansions, with risk and market analysis.", icon: "ClipboardCheck" },
+    { title: "Environmental Services", description: "Environmental monitoring, impact assessment and audits, and cleaner-production advice.", icon: "Leaf" },
+    { title: "Materials & Process Engineering", description: "Materials selection, characterization and process improvement for manufacturers.", icon: "Cog" },
+    { title: "Food Safety & Analysis", description: "Microbiological and physicochemical testing and food-safety systems (GMP, GHP, HACCP).", icon: "TestTube" },
+  ],
+  process: [
+    { title: "Submit a request", text: "Describe your requirement through CIAP or the enquiry form." },
+    { title: "Scoping & proposal", text: "TIRDO experts scope the work and issue a technical and cost proposal." },
+    { title: "Delivery", text: "A multidisciplinary team delivers the assignment, backed by accredited laboratories." },
+    { title: "Report & closure", text: "You receive an actionable technical report; the engagement is closed out in CIAP." },
+  ],
+};
+
+// -----------------------------------------------------------------------
+// Training & skills development (FR-TRN) — short-course catalogue, with a
+// gateway to TeLTP (the TIRDO e-Learning & Training Platform).
+// -----------------------------------------------------------------------
+
+export type Course = { title: string; area: string; duration: string; mode: string; description: string };
+
+export const training: {
+  intro: string[];
+  courses: Course[];
+  process: { title: string; text: string }[];
+} = {
+  intro: [
+    "TIRDO delivers tailored short courses and capacity-building programmes for industrialists, SMEs and the public, combining laboratory capability with practical field experience to build skills that improve productivity, quality and safety.",
+    "Courses are published, and enrolment managed, through TeLTP — the TIRDO e-Learning & Training Platform — which hosts schedules, registration and learning materials.",
+  ],
+  courses: [
+    { title: "Biomass Briquette Production", area: "Energy", duration: "3–5 days", mode: "Hands-on", description: "Producing clean-burning briquettes from agricultural residues as an alternative to charcoal." },
+    { title: "Industrial Energy Efficiency", area: "Energy", duration: "3 days", mode: "Classroom + plant", description: "Energy auditing, ISO 50001 concepts and practical efficiency measures for industry." },
+    { title: "Food Processing, Safety & HACCP", area: "Food & Biotechnology", duration: "5 days", mode: "Classroom + lab", description: "GMP, GHP and HACCP for safe, compliant food processing and packaging." },
+    { title: "Non-Destructive Testing (NDT)", area: "Materials", duration: "5–10 days", mode: "Hands-on", description: "Ultrasonic, radiographic, magnetic-particle and penetrant inspection techniques." },
+    { title: "Leather, Spinning & Weaving", area: "Textile & Leather", duration: "5 days", mode: "Hands-on", description: "Leather production, hand-loom spinning and weaving technologies for artisans and SMEs." },
+    { title: "Environmental Monitoring & Compliance", area: "Environment", duration: "3 days", mode: "Classroom + field", description: "Air, water and noise monitoring and environmental compliance for industry." },
+  ],
+  process: [
+    { title: "Browse courses", text: "Find scheduled and on-demand short courses on TeLTP." },
+    { title: "Register", text: "Enrol and pay online, or request a customised in-house course." },
+    { title: "Learn", text: "Attend hands-on and classroom sessions backed by TIRDO's laboratories and experts." },
+    { title: "Get certified", text: "Receive a TIRDO certificate of completion and follow-up support." },
+  ],
+};

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/seo";
-import { departments, services, projects, publications } from "@/lib/content";
+import { departments, services, projects, publications, technologies } from "@/lib/content";
 import { getNews } from "@/lib/strapi";
 
 // Served at /sitemap.xml. Static routes plus every dynamic detail page
@@ -14,6 +14,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/about", priority: 0.8, freq: "monthly" },
     { path: "/departments", priority: 0.8, freq: "monthly" },
     { path: "/services", priority: 0.8, freq: "monthly" },
+    { path: "/technology", priority: 0.7, freq: "monthly" },
+    { path: "/laboratory", priority: 0.7, freq: "monthly" },
+    { path: "/consultancy", priority: 0.7, freq: "monthly" },
+    { path: "/training", priority: 0.7, freq: "monthly" },
     { path: "/projects", priority: 0.7, freq: "weekly" },
     { path: "/publications", priority: 0.7, freq: "weekly" },
     { path: "/news", priority: 0.8, freq: "daily" },
@@ -61,6 +65,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...technologies.map((t) => ({
+      url: absoluteUrl(`/technology/${t.slug}`),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
     })),
     ...projects.map((p) => ({
       url: absoluteUrl(`/projects#${p.slug}`),

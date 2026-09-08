@@ -1,6 +1,8 @@
 'use strict';
 
 // When a contact message is submitted, email a notification to TIRDO staff.
+// Best-effort: if the email provider isn't configured this fails silently and
+// the message is still persisted (and visible in the CMS).
 module.exports = {
   async afterCreate(event) {
     const { result } = event;
@@ -12,14 +14,18 @@ module.exports = {
         subject: `Website contact: ${result.subject || '(no subject)'}`,
         text:
           `A new message was submitted through the TIRDO website contact form.\n\n` +
-          `Name:    ${result.name}\n` +
-          `Email:   ${result.email}\n` +
-          `Subject: ${result.subject || '(none)'}\n\n` +
+          `Name:         ${result.name}\n` +
+          `Email:        ${result.email}\n` +
+          `Phone:        ${result.phone || '(none)'}\n` +
+          `Organization: ${result.organization || '(none)'}\n` +
+          `Subject:      ${result.subject || '(none)'}\n\n` +
           `${result.message}\n`,
         html:
           `<h3>New website contact message</h3>` +
           `<p><strong>Name:</strong> ${result.name}<br>` +
           `<strong>Email:</strong> ${result.email}<br>` +
+          `<strong>Phone:</strong> ${result.phone || '(none)'}<br>` +
+          `<strong>Organization:</strong> ${result.organization || '(none)'}<br>` +
           `<strong>Subject:</strong> ${result.subject || '(none)'}</p>` +
           `<p style="white-space:pre-wrap">${result.message}</p>`,
       });

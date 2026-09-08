@@ -131,9 +131,9 @@ export const mainNav: NavItem[] = [
       { title: "Research", key: "servicesMenu.research", href: "/services/research" },
       { title: "Energy Auditing", key: "servicesMenu.energyAuditing", href: "/services/energy-auditing" },
       { title: "Feasibility Studies", key: "servicesMenu.feasibility", href: "/services/feasibility-studies" },
-      { title: "Consultancy & Technical Services", key: "servicesMenu.consultancy", href: "/services/consultancy" },
-      { title: "Laboratory Analytical Services", key: "servicesMenu.laboratory", href: "/services/laboratory" },
-      { title: "Training & Skill Development", key: "servicesMenu.training", href: "/services/training" },
+      { title: "Consultancy & Advisory", key: "servicesMenu.consultancy", href: "/consultancy" },
+      { title: "Laboratory Services", key: "servicesMenu.laboratory", href: "/laboratory" },
+      { title: "Training & Skills Development", key: "servicesMenu.training", href: "/training" },
     ],
   },
   {
@@ -143,6 +143,7 @@ export const mainNav: NavItem[] = [
     children: [
       { title: "Ongoing Projects", key: "researchMenu.ongoing", href: "/projects" },
       { title: "T-Hub Innovation", key: "researchMenu.tHub", href: "/t-hub" },
+      { title: "Technology Catalogue", key: "researchMenu.technology", href: "/technology" },
       { title: "Industrial Information Centre", key: "researchMenu.iic", href: "/industrial-information-centre" },
       { title: "Research Products", key: "researchMenu.products", href: "/projects#products" },
       { title: "Publications", key: "researchMenu.publications", href: "/publications" },
@@ -163,6 +164,15 @@ export const mainNav: NavItem[] = [
   { title: "Contact Us", key: "contact", href: "/contact" },
 ];
 
+// External TIRDO systems the public site links out to (gateways). Set the
+// production URLs via NEXT_PUBLIC_* env vars; when unset the gateway falls back
+// to the on-site e-Services SSO hub so the call-to-action is never a dead link.
+export const portals = {
+  nilims: process.env.NEXT_PUBLIC_NILIMS_URL || "/e-services",
+  ciap: process.env.NEXT_PUBLIC_CIAP_URL || "/e-services",
+  teltp: process.env.NEXT_PUBLIC_TELTP_URL || "/e-services",
+};
+
 // Highlighted portal button in the header (gold).
 export const portal = { title: "e-Services", key: "eServices", href: "/e-services" };
 
@@ -171,7 +181,7 @@ export const quickAccess = [
   { title: "Contract Research", href: "/services/research", icon: "FlaskConical" },
   { title: "Publications", href: "/publications", icon: "BookOpen" },
   { title: "Energy Auditing", href: "/services/energy-auditing", icon: "Zap" },
-  { title: "T-Hub Innovation", href: "/t-hub", icon: "Rocket" },
+  { title: "Technology Catalogue", href: "/technology", icon: "Cpu" },
   { title: "e-Services", href: "/e-services", icon: "MonitorSmartphone" },
   { title: "Careers", href: "/careers", icon: "Briefcase" },
 ];

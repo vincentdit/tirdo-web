@@ -3,7 +3,7 @@ import { ArrowRight, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
-import type { NewsItem, Project } from "@/lib/content";
+import { technologySectorName, type NewsItem, type Project, type Technology } from "@/lib/content";
 
 export function NewsCard({ item }: { item: NewsItem }) {
   const href = item.sourceUrl || `/news/${item.slug}`;
@@ -58,6 +58,35 @@ export function ProjectCard({ item }: { item: Project }) {
         <div className="mb-1 text-xs font-medium uppercase tracking-wide text-brand-teal">{item.department}</div>
         <h3 className="mb-2 font-semibold text-primary">{item.title}</h3>
         <p className="text-sm text-muted-foreground">{item.summary}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
+
+export function TechnologyCard({ item }: { item: Technology }) {
+  return (
+    <Card className="group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-lg">
+      <div className="relative aspect-[16/10] bg-primary/10">
+        {item.image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        ) : (
+          <div className="grid h-full place-items-center bg-gradient-to-br from-primary/20 to-accent/20 text-primary/40">
+            <span className="text-3xl font-black">TIRDO</span>
+          </div>
+        )}
+        <Badge variant="accent" className="absolute right-3 top-3">{item.maturity}</Badge>
+      </div>
+      <CardContent className="flex flex-1 flex-col p-5">
+        <div className="mb-1 text-xs font-medium uppercase tracking-wide text-brand-teal">{technologySectorName(item.sector) ?? "Technology"}</div>
+        <h3 className="mb-2 font-semibold text-primary">
+          <Link href={`/technology/${item.slug}`} className="hover:underline">{item.title}</Link>
+        </h3>
+        <p className="mb-4 flex-1 text-sm text-muted-foreground">{item.summary}</p>
+        <Link href={`/technology/${item.slug}`} className="inline-flex items-center gap-1 text-sm font-semibold text-brand-teal hover:gap-2">
+          Learn more <ArrowRight className="h-4 w-4 transition-all" />
+        </Link>
       </CardContent>
     </Card>
   );

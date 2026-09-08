@@ -12,7 +12,7 @@
 // fall back to a local content scan when OpenSearch is unavailable.
 // -----------------------------------------------------------------------
 import * as content from "./content";
-import { getNews, getProjects, getPublications, getVacancies, getTenders } from "./strapi";
+import { getNews, getProjects, getPublications, getVacancies, getTenders, getTechnologies } from "./strapi";
 
 export const OS_NODE = process.env.OPENSEARCH_NODE || "http://opensearch:9200";
 export const OS_INDEX = process.env.OPENSEARCH_INDEX || "tirdo-content";
@@ -64,6 +64,10 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
   { title: "About TIRDO", url: "/about", excerpt: "Mandate, vision, governance and organization structure of TIRDO." },
   { title: "Departments", url: "/departments", excerpt: "Research, engineering and technology development divisions." },
   { title: "Services", url: "/services", excerpt: "Industrial research, testing, consultancy and training services." },
+  { title: "Technology Catalogue", url: "/technology", excerpt: "Proven TIRDO technologies available for transfer, licensing and adoption." },
+  { title: "Laboratory Services", url: "/laboratory", excerpt: "Accredited food, chemistry, materials, energy and environmental testing (NILIMS)." },
+  { title: "Consultancy & Advisory", url: "/consultancy", excerpt: "Multidisciplinary technical consultancy and advisory services (CIAP)." },
+  { title: "Training & Skills Development", url: "/training", excerpt: "Short courses and capacity building for industry and SMEs (TeLTP)." },
   { title: "Research & Innovation", url: "/projects", excerpt: "Ongoing projects, research products and innovation." },
   { title: "T-Hub Innovation", url: "/t-hub", excerpt: "TIRDO technology and business incubation hub." },
   { title: "Industrial Information Centre", url: "/industrial-information-centre", excerpt: "Industrial and technological information services." },
@@ -80,12 +84,13 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
 
 export async function gatherDocuments(): Promise<SearchDoc[]> {
   // Index the default-locale (English) content for a stable single index.
-  const [news, projects, publications, vacancies, tenders] = await Promise.all([
+  const [news, projects, publications, vacancies, tenders, technologies] = await Promise.all([
     getNews(100, "en").catch(() => content.news),
     getProjects("en").catch(() => content.projects),
     getPublications("en").catch(() => content.publications),
     getVacancies("en").catch(() => content.vacancies),
     getTenders("en").catch(() => content.tenders),
+    getTechnologies("en").catch(() => content.technologies),
   ]);
 
   const docs: SearchDoc[] = [];
@@ -107,6 +112,13 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
 
   for (const s of content.services)
     docs.push({ id: `service:${s.slug}`, title: s.title, type: "Service", url: `/services/${s.slug}`, excerpt: s.description, body: s.body?.join(" ") });
+
+  for (const t of technologies)
+    docs.push({
+      id: `technology:${t.slug}`, title: t.title, type: "Technology", url: `/technology/${t.slug}`,
+      excerpt: t.summary, body: [...(t.body ?? []), ...(t.benefits ?? []), ...(t.applications ?? [])].join(" "),
+      category: content.technologySectorName(t.sector),
+    });
 
   for (const d of content.departments)
     docs.push({

@@ -1,13 +1,14 @@
 import {
   FlaskConical, Cog, Cpu, LineChart, Zap, BookOpen, Rocket, Briefcase,
   MonitorSmartphone, ClipboardCheck, Users, TestTube, GraduationCap,
-  Building2, Leaf, Wrench, type LucideIcon,
+  Building2, Leaf, Wrench, ShieldCheck, Microscope, Network, Handshake,
+  type LucideIcon,
 } from "lucide-react";
 
 const map: Record<string, LucideIcon> = {
   FlaskConical, Cog, Cpu, LineChart, Zap, BookOpen, Rocket, Briefcase,
   MonitorSmartphone, ClipboardCheck, Users, TestTube, GraduationCap,
-  Building2, Leaf, Wrench,
+  Building2, Leaf, Wrench, ShieldCheck, Microscope, Network, Handshake,
 };
 
 export function Icon({ name, className }: { name: string; className?: string }) {

@@ -50,9 +50,24 @@ export function ContactForm() {
           <input id="cf-email" name="email" type="email" required autoComplete="email" className={input} />
         </div>
       </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="cf-phone" className="mb-1 block text-sm font-medium">Phone <span className="font-normal text-muted-foreground">(optional)</span></label>
+          <input id="cf-phone" name="phone" autoComplete="tel" className={input} />
+        </div>
+        <div>
+          <label htmlFor="cf-org" className="mb-1 block text-sm font-medium">Organization <span className="font-normal text-muted-foreground">(optional)</span></label>
+          <input id="cf-org" name="organization" autoComplete="organization" className={input} />
+        </div>
+      </div>
       <div>
         <label htmlFor="cf-subject" className="mb-1 block text-sm font-medium">Subject</label>
         <input id="cf-subject" name="subject" required className={input} />
+      </div>
+      {/* Honeypot: hidden from users; bots that fill it are dropped server-side. */}
+      <div aria-hidden="true" className="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="cf-company">Company</label>
+        <input id="cf-company" name="company" tabIndex={-1} autoComplete="off" />
       </div>
       <div>
         <label htmlFor="cf-message" className="mb-1 block text-sm font-medium">Message</label>
