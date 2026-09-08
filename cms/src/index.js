@@ -14,7 +14,10 @@ module.exports = {
     // 1) Open up the public REST API for read access + contact submissions.
     await setPublicPermissions(strapi);
 
-    // 2) Seed demo content on an empty database (idempotent).
+    // 2) Ensure the Kiswahili locale exists (English is the default).
+    await ensureLocale(strapi, 'sw', 'Kiswahili (sw)');
+
+    // 3) Seed demo content on an empty database (idempotent).
     if (process.env.SEED_DATA === 'true') {
       await seed(strapi);
     }
@@ -28,6 +31,19 @@ module.exports = {
     }
   },
 };
+
+async function ensureLocale(strapi, code, name) {
+  try {
+    const locales = strapi.plugin('i18n').service('locales');
+    const existing = await locales.findByCode(code);
+    if (!existing) {
+      await locales.create({ code, name });
+      strapi.log.info(`[i18n] created locale ${code}`);
+    }
+  } catch (e) {
+    strapi.log.warn(`[i18n] could not ensure locale ${code}: ${e.message}`);
+  }
+}
 
 async function setPublicPermissions(strapi) {
   const publicRole = await strapi

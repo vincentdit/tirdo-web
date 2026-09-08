@@ -7,25 +7,124 @@
     "displayName": "Research Project",
     "description": "Ongoing and featured research projects"
   },
-  "options": { "draftAndPublish": true },
+  "options": {
+    "draftAndPublish": true
+  },
   "attributes": {
-    "title": { "type": "string", "required": true },
-    "slug": { "type": "uid", "targetField": "title", "required": true },
-    "summary": { "type": "text" },
-    "body": { "type": "richtext" },
-    "department": { "type": "string" },
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "summary": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "body": {
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "department": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "status": {
       "type": "enumeration",
-      "enum": ["Ongoing", "Completed", "Featured"],
-      "default": "Ongoing"
+      "enum": [
+        "Ongoing",
+        "Completed",
+        "Featured"
+      ],
+      "default": "Ongoing",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
     },
     "researchArea": {
       "type": "enumeration",
-      "enum": ["energy", "environment", "food-biotechnology", "materials", "industrial-chemistry", "ict", "technology-transfer"]
+      "enum": [
+        "energy",
+        "environment",
+        "food-biotechnology",
+        "materials",
+        "industrial-chemistry",
+        "ict",
+        "technology-transfer"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
     },
-    "year": { "type": "integer" },
-    "funder": { "type": "string" },
-    "imageUrl": { "type": "string" },
-    "cover": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
+    "year": {
+      "type": "integer",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "funder": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "imageUrl": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    }
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
   }
 }

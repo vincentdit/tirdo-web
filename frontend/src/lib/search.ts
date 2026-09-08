@@ -79,12 +79,13 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
 ];
 
 export async function gatherDocuments(): Promise<SearchDoc[]> {
+  // Index the default-locale (English) content for a stable single index.
   const [news, projects, publications, vacancies, tenders] = await Promise.all([
-    getNews(100).catch(() => content.news),
-    getProjects().catch(() => content.projects),
-    getPublications().catch(() => content.publications),
-    getVacancies().catch(() => content.vacancies),
-    getTenders().catch(() => content.tenders),
+    getNews(100, "en").catch(() => content.news),
+    getProjects("en").catch(() => content.projects),
+    getPublications("en").catch(() => content.publications),
+    getVacancies("en").catch(() => content.vacancies),
+    getTenders("en").catch(() => content.tenders),
   ]);
 
   const docs: SearchDoc[] = [];

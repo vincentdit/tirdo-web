@@ -7,20 +7,101 @@
     "displayName": "Tender",
     "description": "Procurement notices and tenders (auto-archived after the closing date)"
   },
-  "options": { "draftAndPublish": true },
+  "options": {
+    "draftAndPublish": true
+  },
   "attributes": {
-    "title": { "type": "string", "required": true },
-    "slug": { "type": "uid", "targetField": "title", "required": true },
-    "reference": { "type": "string" },
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "reference": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "category": {
       "type": "enumeration",
-      "enum": ["Goods", "Works", "Services", "Consultancy"],
-      "default": "Goods"
+      "enum": [
+        "Goods",
+        "Works",
+        "Services",
+        "Consultancy"
+      ],
+      "default": "Goods",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
     },
-    "description": { "type": "text" },
-    "postedDate": { "type": "date" },
-    "closingDate": { "type": "date", "required": true },
-    "documentUrl": { "type": "string" },
-    "document": { "type": "media", "multiple": false, "allowedTypes": ["files"] }
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "postedDate": {
+      "type": "date",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "closingDate": {
+      "type": "date",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "documentUrl": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "document": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "files"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    }
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
   }
 }

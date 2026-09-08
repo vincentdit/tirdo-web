@@ -81,6 +81,9 @@ async function reindexAll(strapi) {
 // Index / remove a single entity (used by lifecycle hooks).
 async function indexOne(uid, entity) {
   try {
+    // Only the default locale (English) is indexed; editing a translation must
+    // not overwrite the English search document (they share a slug/id).
+    if (entity && entity.locale && entity.locale !== 'en') return;
     const os = client();
     await ensureIndex(os);
     const doc = toDoc(uid, entity);
