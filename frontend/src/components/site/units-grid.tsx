@@ -11,7 +11,7 @@ export function UnitsGrid({ units }: { units: ManagementUnit[] }) {
           <div className="h-44 w-40 overflow-hidden rounded-lg border border-black/5 shadow-sm">
             {u.photo ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={u.photo} alt={u.head ?? u.name} className="h-full w-full object-cover" />
+              <img loading="lazy" decoding="async" src={u.photo} alt={u.head ?? u.name} className="h-full w-full object-cover" />
             ) : (
               <div className="grid h-full w-full place-items-center bg-gradient-to-b from-brand-pale to-secondary/70 text-brand-teal/40">
                 <User className="h-12 w-12" />

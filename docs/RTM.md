@@ -36,12 +36,12 @@ record the e-GA governance framework expects — update it as work lands.
 | NFR-TLS | HTTPS / TLS | Partial | Opt-in TLS edge (`nginx/tls`, `scripts/tls-setup.sh`) | `nginx -t` with cert |
 | NFR-ACC | Accessibility (WCAG 2.1 AA) | Done | contrast/label/motion fixes | e2e axe: 0 violations |
 | NFR-SEO | SEO | Done | `sitemap.ts`, `robots.ts`, `lib/seo`, canonicals | unit: seo; e2e: robots/sitemap |
-| NFR-PERF | Performance | Partial | SSR + local assets, gzip | — |
+| NFR-PERF | Performance | Partial | SSR + standalone, lazy images, immutable `/media` cache, gzip | Lighthouse CI job + `lighthouserc.json` budgets (`docs/PERFORMANCE.md`) |
 | NFR-BKP | Backups | Partial | `scripts/backup.sh` / `restore.sh` | shellcheck; manual restore |
 | NFR-DR | Disaster recovery | Partial | `docs/BACKUP-DR.md` runbook | quarterly test restore |
 | NFR-CI | CI/CD | Done | `.github/workflows/ci.yml` (lint, tsc, unit, e2e, security, build) | CI runs |
 | NFR-TEST | Testing / QA | Partial | Vitest + Playwright + axe | this suite |
-| NFR-AVL | Availability / monitoring | Not started | healthchecks only | — |
+| NFR-AVL | Availability / monitoring | Partial | `/api/health` + `/api/healthz`, frontend + service healthchecks, opt-in Uptime Kuma + cAdvisor | `docker compose config`; validate on host (`docs/MONITORING.md`) |
 | NFR-WAF | Web application firewall | Partial | Opt-in OWASP CRS proxy (`docker-compose.waf.yml`, `nginx/waf`), DetectionOnly | `docker compose config`; runtime validate on host (`docs/WAF.md`) |
 | NFR-MFA | Admin MFA | Partial | Keycloak TOTP (`scripts/keycloak-mfa.sh`); Strapi/MinIO/Matomo/OpenSearch documented | `bash -n`, shellcheck; enrol + enforce on host (`docs/MFA.md`) |
 | NFR-VAPT | Pen test | Not started | — | — |

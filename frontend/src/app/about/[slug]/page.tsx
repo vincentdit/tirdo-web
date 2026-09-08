@@ -44,7 +44,7 @@ function PortraitCard({ l, featured = false }: { l: Leader; featured?: boolean }
       <div className={`overflow-hidden rounded-lg border border-black/5 shadow-sm ${featured ? "h-56 w-48" : "h-44 w-40"}`}>
         {l.photo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={l.photo} alt={l.name} className="h-full w-full object-cover" />
+          <img loading="lazy" decoding="async" src={l.photo} alt={l.name} className="h-full w-full object-cover" />
         ) : (
           <div className="grid h-full w-full place-items-center bg-gradient-to-b from-brand-pale to-secondary/70 text-3xl font-bold text-brand-teal/50">
             {initials(l.name)}

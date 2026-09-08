@@ -101,7 +101,7 @@ export default function THubPage() {
                 <div className="mb-4 flex h-14 items-center">
                   {c.logo ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={c.logo} alt={c.name} className="max-h-14 max-w-[140px] object-contain" />
+                    <img loading="lazy" decoding="async" src={c.logo} alt={c.name} className="max-h-14 max-w-[140px] object-contain" />
                   ) : (
                     <span className="text-xl font-bold text-brand-teal">{c.name}</span>
                   )}

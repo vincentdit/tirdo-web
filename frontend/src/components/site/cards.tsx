@@ -14,7 +14,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
       <div className="relative aspect-[16/9] overflow-hidden bg-primary/10">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img loading="lazy" decoding="async" src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
         ) : (
           <div className="grid h-full place-items-center bg-gradient-to-br from-primary/15 to-accent/15 text-primary/40">
             <span className="text-4xl font-black">TIRDO</span>
@@ -44,7 +44,7 @@ export function ProjectCard({ item }: { item: Project }) {
       <div className="relative aspect-[16/10] bg-primary/10">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img loading="lazy" decoding="async" src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
         ) : (
           <div className="grid h-full place-items-center bg-gradient-to-br from-primary/20 to-primary-dark/20 text-primary/40">
             <span className="text-3xl font-black">{item.department.split(" ")[0]}</span>
@@ -70,7 +70,7 @@ export function TechnologyCard({ item }: { item: Technology }) {
       <div className="relative aspect-[16/10] bg-primary/10">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img loading="lazy" decoding="async" src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
         ) : (
           <div className="grid h-full place-items-center bg-gradient-to-br from-primary/20 to-accent/20 text-primary/40">
             <span className="text-3xl font-black">TIRDO</span>

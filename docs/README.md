@@ -13,6 +13,7 @@ The documentation set for the TIRDO public website & digital services portal.
   the remaining security tasks.
 - [WAF.md](WAF.md) — opt-in ModSecurity + OWASP CRS web application firewall.
 - [MFA.md](MFA.md) — multi-factor auth for Keycloak, CMS and other admin consoles.
+- [MONITORING.md](MONITORING.md) — health endpoints and the opt-in uptime/metrics stack.
 - [MATOMO.md](MATOMO.md) — analytics install and the first-party proxy.
 
 ## Using the system
@@ -24,6 +25,7 @@ The documentation set for the TIRDO public website & digital services portal.
 ## Engineering
 
 - [TESTING.md](TESTING.md) — unit, e2e and accessibility tests; how to run them.
+- [PERFORMANCE.md](PERFORMANCE.md) — performance measures and the Lighthouse CI harness.
 - [RTM.md](RTM.md) — requirements-traceability matrix (spec → implementation →
   test).
 - [ACCESSIBILITY.md](ACCESSIBILITY.md) — WCAG 2.1 AA conformance and how to

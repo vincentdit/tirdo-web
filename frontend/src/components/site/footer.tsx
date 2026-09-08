@@ -33,7 +33,7 @@ export function Footer() {
       <div className="container-tirdo grid gap-8 py-16 md:grid-cols-2 lg:grid-cols-[1.7fr_1fr_1fr_1.2fr_1.15fr]">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={assets.logo} alt="TIRDO" className="w-[76px] bg-white p-1.5" />
+          <img loading="lazy" decoding="async" src={assets.logo} alt="TIRDO" className="w-[76px] bg-white p-1.5" />
           <p className="mt-4 max-w-[280px] text-sm leading-7">
             {t("blurb")}
           </p>

@@ -4,3 +4,6 @@
 /playwright-report/
 /blob-report/
 /.last-run.json
+
+# Lighthouse CI output
+.lighthouseci/

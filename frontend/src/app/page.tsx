@@ -110,7 +110,7 @@ export default async function HomePage() {
         <div className="container-tirdo grid items-center gap-10 md:grid-cols-[38%_1fr] md:gap-16">
           <div className="h-[360px] overflow-hidden md:h-[460px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={directorMessage.photo} alt={directorMessage.name} className="h-full w-full object-cover object-top" />
+            <img loading="lazy" decoding="async" src={directorMessage.photo} alt={directorMessage.name} className="h-full w-full object-cover object-top" />
           </div>
           <div className="py-12 md:py-14">
             <p className="eyebrow mb-3 text-brand-gold">Leadership message</p>
@@ -142,7 +142,7 @@ export default async function HomePage() {
           {latest && (
             <Link href={latest.sourceUrl || `/news/${latest.slug}`} target={latest.sourceUrl ? "_blank" : undefined} rel={latest.sourceUrl ? "noreferrer" : undefined} className="group relative h-[350px] overflow-hidden text-white">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={latest.image} alt={latest.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img loading="lazy" decoding="async" src={latest.image} alt={latest.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
               <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,40,62,0.85),transparent_65%)]" />
               <div className="absolute bottom-0 z-10 p-6">
                 <span className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-gold">{latest.category} · {formatDate(latest.date)}</span>

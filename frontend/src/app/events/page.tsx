@@ -21,7 +21,7 @@ export default function EventsPage() {
               <div className="relative aspect-video bg-primary/10 sm:aspect-auto">
                 {e.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={e.image} alt={e.title} className="h-full w-full object-cover" />
+                  <img loading="lazy" decoding="async" src={e.image} alt={e.title} className="h-full w-full object-cover" />
                 ) : (
                   <div className="h-full w-full bg-gradient-to-br from-primary/15 to-accent/15" />
                 )}

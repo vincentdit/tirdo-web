@@ -46,7 +46,7 @@ export default async function TechnologyDetailPage({ params }: { params: { slug:
             </div>
             {tech.image && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={tech.image} alt={tech.title} className="aspect-[16/9] w-full rounded-xl object-cover" />
+              <img loading="lazy" decoding="async" src={tech.image} alt={tech.title} className="aspect-[16/9] w-full rounded-xl object-cover" />
             )}
             <p className="text-lg">{tech.summary}</p>
             {(tech.body ?? []).map((p, i) => <p key={i}>{p}</p>)}
