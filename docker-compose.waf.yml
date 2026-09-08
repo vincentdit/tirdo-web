@@ -1,0 +1,46 @@
+# -----------------------------------------------------------------------
+# OPT-IN Web Application Firewall (ModSecurity v3 + OWASP Core Rule Set).
+#
+# Fronts the existing app Nginx with an OWASP CRS proxy, so the app edge
+# config (analytics proxy, rate limits, headers, internal :8081) is untouched.
+# The WAF starts in DetectionOnly mode — it logs would-be blocks but does NOT
+# block — so it is safe to switch on and tune before enforcing.
+#
+# Enable:
+#   docker compose -f docker-compose.yml -f docker-compose.waf.yml up -d
+# Disable (back to plain Nginx on :80):
+#   docker compose up -d --force-recreate nginx    # (without the -f override)
+#
+# Requires Docker Compose >= 2.24 (for `!reset`). See docs/WAF.md — validate
+# on your host and adjust the image tag / listen port / include path to the
+# version you pull, then flip MODSEC_RULE_ENGINE to On once tuned.
+# -----------------------------------------------------------------------
+services:
+  waf:
+    image: owasp/modsecurity-crs:4-nginx-alpine
+    container_name: tirdo-waf
+    restart: unless-stopped
+    environment:
+      BACKEND: http://nginx:80          # proxy to the app Nginx (unchanged)
+      PORT: "80"                        # listen port inside the container
+      MODSEC_RULE_ENGINE: DetectionOnly # DetectionOnly -> log only; set On to block
+      PARANOIA: "1"                     # CRS paranoia level (1 = fewest false positives)
+      ANOMALY_INBOUND: "5"
+      ANOMALY_OUTBOUND: "4"
+      MODSEC_AUDIT_ENGINE: RelevantOnly
+      MODSEC_AUDIT_LOG_FORMAT: JSON
+      MODSEC_AUDIT_LOG: /var/log/modsecurity/audit.log
+      # Trust the real client IP (X-Forwarded-For) from the app if chained.
+      REAL_IP_HEADER: X-Forwarded-For
+    ports:
+      - "80:80"
+    volumes:
+      # Project-specific CRS tuning / false-positive exclusions (loaded after CRS).
+      - ./nginx/waf/modsec-exclusions.conf:/etc/modsecurity.d/zzz-tirdo-exclusions.conf:ro
+    depends_on:
+      - nginx
+    networks: [tirdo-net]
+
+  # The app Nginx stops publishing to the host; the WAF fronts it now.
+  nginx:
+    ports: !reset []

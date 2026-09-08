@@ -11,6 +11,8 @@ The documentation set for the TIRDO public website & digital services portal.
   runbook (RPO/RTO).
 - [SECURITY.md](SECURITY.md) — edge hardening (headers, rate limits, CSP) and
   the remaining security tasks.
+- [WAF.md](WAF.md) — opt-in ModSecurity + OWASP CRS web application firewall.
+- [MFA.md](MFA.md) — multi-factor auth for Keycloak, CMS and other admin consoles.
 - [MATOMO.md](MATOMO.md) — analytics install and the first-party proxy.
 
 ## Using the system
