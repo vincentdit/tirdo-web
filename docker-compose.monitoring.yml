@@ -8,6 +8,9 @@
 # Then open Uptime Kuma (http://<host>:3001), create the admin account, and add
 # HTTP monitors for the endpoints listed in docs/MONITORING.md.
 #
+# Host ports are overridable to avoid collisions (e.g. if 8092 is taken):
+#   set UPTIME_KUMA_PORT / CADVISOR_PORT in .env.
+#
 # Not runnable in the build environment — validate on your host.
 # ---------------------------------------------------------------------------
 services:
@@ -18,7 +21,7 @@ services:
     volumes:
       - uptime_kuma_data:/app/data
     ports:
-      - "3001:3001"
+      - "${UPTIME_KUMA_PORT:-3001}:3001"
     networks: [tirdo-net]
 
   cadvisor:
@@ -33,7 +36,7 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
     ports:
-      - "8090:8080"
+      - "${CADVISOR_PORT:-8092}:8080"
     networks: [tirdo-net]
 
 volumes:

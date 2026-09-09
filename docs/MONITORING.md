@@ -37,7 +37,10 @@ This starts two extra containers, both on the `tirdo-net` network:
 
 - **Uptime Kuma** (`:3001`) — HTTP/host uptime monitoring, a public status
   page, and notifications (email, Slack, Telegram, webhooks, …).
-- **cAdvisor** (`:8090`) — per-container CPU, memory, network and disk metrics.
+- **cAdvisor** (`:8092`) — per-container CPU, memory, network and disk metrics.
+
+Both host ports are overridable via `UPTIME_KUMA_PORT` / `CADVISOR_PORT` in
+`.env` if they collide with something already bound on the host.
 
 Restrict both ports to a trusted network or put them behind authentication —
 they are operator tools, not public services.
