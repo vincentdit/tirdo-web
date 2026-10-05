@@ -1134,3 +1134,60 @@ export const training: {
     { title: "Get certified", text: "Receive a TIRDO certificate of completion and follow-up support." },
   ],
 };
+
+// -----------------------------------------------------------------------
+// Stakeholder feedback & Customer Service Charter (TIRDO Stakeholders
+// Relation Management System). Feedback submissions are stored in the CMS
+// 'feedback' type; the charter below is institutional content.
+// -----------------------------------------------------------------------
+
+// Service areas a stakeholder can give feedback on (feedback form dropdown).
+export const serviceAreas: string[] = [
+  "Research",
+  "Energy Auditing",
+  "Feasibility Studies",
+  "Consultancy & Advisory",
+  "Laboratory Services",
+  "Training & Skills Development",
+  "Technology Transfer",
+  "Industrial Information Centre",
+  "General / Other",
+];
+
+export const feedbackTypes = ["Compliment", "Complaint", "Suggestion", "Enquiry"] as const;
+export type FeedbackType = (typeof feedbackTypes)[number];
+
+export type CharterStandard = { service: string; standard: string; turnaround: string };
+
+export const serviceCharter: {
+  intro: string[];
+  standards: CharterStandard[];
+  rights: string[];
+  responsibilities: string[];
+} = {
+  intro: [
+    "This Customer Service Charter sets out the standards of service that stakeholders — industry, government, SMEs, development partners and the public — can expect from the Tanzania Industrial Research and Development Organization (TIRDO), and how we measure and improve our services through your feedback.",
+    "TIRDO is committed to timely, professional and courteous service. Where we fall short of these standards, we want to know — your feedback drives how we improve.",
+  ],
+  standards: [
+    { service: "General enquiries", standard: "Acknowledge every enquiry and respond with the information requested or a clear next step.", turnaround: "Within 3 working days" },
+    { service: "Service & consultancy requests", standard: "Acknowledge the request and issue a technical and cost proposal.", turnaround: "Within 7 working days" },
+    { service: "Laboratory testing (NILIMS)", standard: "Register the sample, confirm the job and cost, and issue results on completion.", turnaround: "Results within 10–21 working days by test type" },
+    { service: "Training enrolment (TeLTP)", standard: "Confirm registration and share the schedule and joining details.", turnaround: "Within 5 working days" },
+    { service: "Tender & procurement queries", standard: "Respond to clarifications during the tender window.", turnaround: "Within 3 working days" },
+    { service: "Complaints", standard: "Acknowledge the complaint, investigate, and communicate the outcome.", turnaround: "Acknowledge in 2 days; resolve within 14 working days" },
+  ],
+  rights: [
+    "Be served promptly, professionally and with courtesy.",
+    "Receive accurate information and a clear explanation of fees and timelines.",
+    "Have your work handled confidentially and to recognised standards.",
+    "Give feedback or complain without prejudice, and receive a response.",
+    "Be served in English or Kiswahili.",
+  ],
+  responsibilities: [
+    "Provide complete and accurate information with your request.",
+    "Meet agreed timelines, fees and sample or document requirements.",
+    "Treat TIRDO staff with courtesy.",
+    "Use the feedback channels to help us improve.",
+  ],
+};

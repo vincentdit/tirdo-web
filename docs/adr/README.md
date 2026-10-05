@@ -10,6 +10,7 @@ New decisions get the next number and are appended here.
 | [0002](0002-defer-nestjs-backend.md) | Defer the NestJS backend; use Next.js API routes for now | Accepted (pending ratification) |
 | [0003](0003-i18n-cookie-based-phase1.md) | Cookie-based i18n in Phase I; prefixed routes later | Accepted |
 | [0004](0004-first-party-analytics-proxy.md) | First-party Matomo proxy | Accepted |
+- [0005 — Stakeholder feedback & Customer Service Charter](0005-stakeholder-feedback-charter.md)
 
 ADRs 0001 and 0002 record the two variations from the specified stack and are
 the items flagged for governance sign-off in the gap analysis.

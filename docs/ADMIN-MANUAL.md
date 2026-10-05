@@ -93,3 +93,24 @@ trail covers the Community Edition.)
   keywords, DOI, upload the PDF → Publish.
 - **Unpublish**: open the entry → **Unpublish** (it disappears from the site but
   stays in the CMS and the audit log).
+
+## Stakeholder feedback
+
+Feedback submitted through the website's **Give Feedback** page is stored under
+**Feedback** in the CMS (Content Manager → Feedback). Each entry has the
+stakeholder's name, email, organisation, the **service area**, a **rating**
+(1–5), a **feedback type** (Compliment / Complaint / Suggestion / Enquiry), the
+message, a **handled** flag and a **response** field. A notification email is
+also sent to the configured inbox (`FEEDBACK_RECIPIENT`, falling back to
+`CONTACT_RECIPIENT` / `info@tirdo.or.tz`).
+
+Workflow: open a new entry, action it, record the outcome in **response**, then
+tick **handled**. The public Analytics page shows only aggregate metrics
+(average rating, totals, counts by type) via `GET /api/feedback-summary` — never
+individual feedback, which stays private to the CMS. Every change is recorded in
+the audit log.
+
+The **Customer Service Charter** shown at `/service-charter` (standards,
+turnaround times, rights and responsibilities) currently lives in the site
+content file; ask the ICT team to update it, or to promote it to an editable
+CMS type if you need to change it yourself.

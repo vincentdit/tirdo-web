@@ -83,3 +83,16 @@ session (admin panel) or a Strapi **API token** (Settings → API Tokens) sent a
   is a planned "should-have" (see `docs/RTM.md`).
 - Rate limits: `/api/*` and the contact endpoint are throttled at the Nginx
   edge; tune in `nginx/conf.d/default.conf`.
+
+## Feedback (Stakeholders Relation Management)
+
+- `POST /api/feedback` (frontend route) — submit stakeholder feedback. JSON body:
+  `name`, `email`, `message` (required); `organization`, `serviceArea`,
+  `subject`, `feedbackType` (Compliment|Complaint|Suggestion|Enquiry),
+  `rating` (1–5) optional. Validates input and drops honeypot submissions; always
+  returns `{ ok: true }` on acceptance. Persists to Strapi `POST /api/feedbacks`,
+  which emails staff via a lifecycle hook.
+- `GET /api/feedback-summary` (Strapi, public, aggregate-only) — returns
+  `{ total, average, ratedCount, handled, byType, byRating }`. No personal data;
+  used by the public Analytics page. Individual feedback is **not** publicly
+  readable (only `create` is granted to the public role).

@@ -27,6 +27,8 @@ record the e-GA governance framework expects — update it as work lands.
 | FR-CON | Consultancy | Done | `app/consultancy/page.tsx`, `gateway.tsx` (CIAP) | unit: consultancy content; e2e: `/consultancy` + a11y |
 | FR-TRN | Training | Done | `app/training/page.tsx`, `gateway.tsx` (TeLTP) | unit: training content; e2e: `/training` + a11y |
 | FR-AUD | Audit trail of admin actions | Done | `cms/src/audit.js`, `/api/audit-log/verify` | chain logic test |
+| FR-FEEDBACK | Stakeholder feedback & service rating | Done | `feedback-form.tsx`, `app/api/feedback`, Strapi `feedback` type + email lifecycle + `/api/feedback-summary`, Analytics panel | manual; e2e `/feedback` |
+| FR-CHARTER | Customer Service Charter | Done | `app/service-charter/page.tsx`, `serviceCharter` in `content.ts` | manual; e2e `/service-charter` |
 
 ## Non-functional
 

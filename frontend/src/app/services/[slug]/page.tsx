@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { FeedbackCTA } from "@/components/site/feedback-cta";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
@@ -73,6 +74,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
                 </ul>
               </div>
             </div>
+            <div className="mt-6"><FeedbackCTA service={svc.title} /></div>
           </aside>
         </div>
       </section>

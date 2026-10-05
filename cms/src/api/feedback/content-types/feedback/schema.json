@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "feedbacks",
+  "info": {
+    "singularName": "feedback",
+    "pluralName": "feedbacks",
+    "displayName": "Feedback",
+    "description": "Stakeholder feedback and service ratings submitted through the website"
+  },
+  "options": { "draftAndPublish": false },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "email": { "type": "email", "required": true },
+    "organization": { "type": "string" },
+    "serviceArea": { "type": "string" },
+    "rating": { "type": "integer", "min": 1, "max": 5 },
+    "feedbackType": {
+      "type": "enumeration",
+      "enum": ["Compliment", "Complaint", "Suggestion", "Enquiry"],
+      "default": "Suggestion"
+    },
+    "subject": { "type": "string" },
+    "message": { "type": "text", "required": true },
+    "handled": { "type": "boolean", "default": false },
+    "response": { "type": "text" }
+  }
+}

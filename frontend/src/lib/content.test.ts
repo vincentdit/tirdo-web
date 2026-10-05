@@ -13,6 +13,9 @@ import {
   laboratory,
   consultancy,
   training,
+  serviceCharter,
+  serviceAreas,
+  feedbackTypes,
   type Project,
 } from "@/lib/content";
 
@@ -143,5 +146,26 @@ describe("section content (FR-LAB / FR-CON / FR-TRN)", () => {
     expect(training.courses.length).toBeGreaterThan(0);
     for (const c of training.courses) { expect(c.title).toBeTruthy(); expect(c.area).toBeTruthy(); }
     expect(training.process.length).toBe(4);
+  });
+});
+
+
+describe("feedback & service charter (FR-FEEDBACK / FR-CHARTER)", () => {
+  it("service areas and feedback types are non-empty", () => {
+    expect(serviceAreas.length).toBeGreaterThan(0);
+    for (const a of serviceAreas) expect(a).toBeTruthy();
+    expect(feedbackTypes).toContain("Complaint");
+    expect(feedbackTypes.length).toBe(4);
+  });
+  it("service charter has intro, standards with turnarounds, rights and responsibilities", () => {
+    expect(serviceCharter.intro.length).toBeGreaterThan(0);
+    expect(serviceCharter.standards.length).toBeGreaterThan(0);
+    for (const s of serviceCharter.standards) {
+      expect(s.service).toBeTruthy();
+      expect(s.standard).toBeTruthy();
+      expect(s.turnaround).toBeTruthy();
+    }
+    expect(serviceCharter.rights.length).toBeGreaterThan(0);
+    expect(serviceCharter.responsibilities.length).toBeGreaterThan(0);
   });
 });

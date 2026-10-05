@@ -1,6 +1,14 @@
 'use strict';
 
-const seedData = require('./seed-data');
+// Prefer the generated real-content seed (produced by cms/scripts/gen-seed.mjs
+// from frontend/src/lib/content.ts); fall back to the bundled demo seed when it
+// hasn't been generated yet.
+let seedData;
+try {
+  seedData = require('./seed-data.generated.json');
+} catch {
+  seedData = require('./seed-data');
+}
 const { auditMiddleware } = require('./audit');
 
 module.exports = {
@@ -58,6 +66,9 @@ async function setPublicPermissions(strapi) {
   }
   perms['api::contact-message.contact-message'] = {
     controllers: { 'contact-message': { create: { enabled: true } } },
+  };
+  perms['api::feedback.feedback'] = {
+    controllers: { feedback: { create: { enabled: true } } },
   };
 
   // Grant each action to the public role if not already present.

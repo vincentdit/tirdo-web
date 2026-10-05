@@ -1,0 +1,548 @@
+{
+  "api::article.article": [
+    {
+      "title": "TIRDO and STAMICO sign agreement for strategic minerals research",
+      "slug": "tirdo-stamico-minerals-research-agreement",
+      "excerpt": "TIRDO and the State Mining Corporation (STAMICO) have signed a research collaboration agreement on strategic minerals, strengthening value addition and beneficiation of Tanzania's mineral resources.",
+      "category": "Research Collaboration",
+      "date": "2025-11-12",
+      "imageUrl": "/media/news/eS05a9Ewg0Zp9bxOaIbmJpkipvJVRhpzToa8Pz1u.jpg",
+      "sourceUrl": "https://www.tirdo.or.tz/newsapp/en/article_details/15"
+    },
+    {
+      "title": "Hands-on training in alternative charcoal production",
+      "slug": "hands-on-training-alternative-charcoal-production",
+      "excerpt": "TIRDO conducted practical training on producing alternative charcoal (biomass briquettes) as a cleaner cooking fuel, supporting jobs and reducing pressure on forests.",
+      "category": "Training",
+      "date": "2025-10-10",
+      "imageUrl": "/media/news/q2cMG2Q6dwvZqhDC5vXf8vJTzX6LT4DBgJKj1OEd.jpg",
+      "sourceUrl": "https://www.tirdo.or.tz/newsapp/en/article_details/14"
+    },
+    {
+      "title": "Alternative charcoal: a pathway to environmental conservation",
+      "slug": "alternative-charcoal-environmental-conservation",
+      "excerpt": "Alternative charcoal is a saviour for the environment. TIRDO's biomass briquette technology offers a sustainable substitute for wood charcoal and helps mitigate climate change.",
+      "category": "Innovation",
+      "date": "2024-10-08",
+      "imageUrl": "/media/news/2KFt3PRz9DRWIww6TBbfl0IcDvKXWfxOAXYHHGah.jpg",
+      "sourceUrl": "https://www.tirdo.or.tz/newsapp/en/article_details/12"
+    },
+    {
+      "title": "Hon. Dr. Selemani Jafo visits TIRDO and directs completion of the industrial opportunities system",
+      "slug": "hon-dr-selemani-jafo-visits-tirdo",
+      "excerpt": "During a visit to TIRDO, Hon. Dr. Selemani Jafo (MP) directed the completion of the national system for identifying industrial opportunities, to better guide investment and value addition.",
+      "category": "Announcement",
+      "date": "2024-07-22",
+      "imageUrl": "/media/news/Bi9KLvoqbRxTjvSEKZnmGtp9DcH41MmFbkdOLFuV.jpg",
+      "sourceUrl": "https://www.tirdo.or.tz/newsapp/en/article_details/11"
+    }
+  ],
+  "api::department.department": [
+    {
+      "title": "Environmental Technology & Occupational Safety Division",
+      "slug": "environment",
+      "group": "Industrial Research",
+      "blurb": "Environmental monitoring, pollution control and cleaner production.",
+      "body": "The Environmental Technologies and Occupational Safety Division carries out industrial research and development, environmental management, and occupational health and safety within industrial settings — minimising pollution while maintaining safe, efficient production.\n\nIts research emphasises value addition to industrial waste, conventional and onsite wastewater treatment, and cleaner production in the leather and textile industries. The division offers environmental monitoring for industry, government and private clients: air quality (particulates, metals, gas emissions), noise and light, wastewater and potable water analysis, environmental impact assessments and audits, and sludge quality — applied across the steel, tobacco, cement, beverage, brewing and mining sectors."
+    },
+    {
+      "title": "Food Processing & Biotechnology Division",
+      "slug": "food-biotechnology",
+      "group": "Industrial Research",
+      "blurb": "Food processing, preservation, value addition and bioprocess research.",
+      "body": "The Food and Biotechnology Division comprises food processing, microbiology and biotechnology sections, delivering research, development and analytical services for a rapidly expanding food industry.\n\nIts accredited food laboratory (established 1995, accredited in 2009) performs chemical, physical and microbiological testing on fish, cereals, legumes, meat, dairy and honey, and water-quality determinations. The division also produces mushroom spawn for farmers and trains industrialists and SMEs on food processing, packaging, safety, GMP, GHP and HACCP."
+    },
+    {
+      "title": "Agro processing Industrial Chemistry Division",
+      "slug": "industrial-chemistry",
+      "group": "Industrial Research",
+      "blurb": "Chemical analysis, formulation and process chemistry for industry.",
+      "body": "The Agro-Processing and Industrial Chemistry Division promotes the use of local raw materials for industrial production through value addition, spanning medicinal and synthetic chemistry, nanotechnology and new materials, analytical and environmental chemistry, and natural products.\n\nIts well-equipped laboratory provides physicochemical quality testing of raw materials, products and industrial wastes; proximate analysis of foods; micronutrient determination in food, fertilizers and salt; heavy-metals analysis; and technical problem-solving for agro-processing industries and SMEs."
+    },
+    {
+      "title": "Energy Technology Division",
+      "slug": "energy",
+      "group": "Engineering Development",
+      "blurb": "Renewable energy, energy efficiency and industrial energy systems.",
+      "body": "The Energy Technologies Division develops sustainable energy solutions across research, technical services and capacity building — from coal characterization and biofuels to improved cooking and renewable energy systems using biomass and agricultural waste.\n\nIt helps organisations implement energy management aligned to ISO 50001, and performs performance testing of energy systems (ovens, furnaces, solar PV, boilers), industrial energy audits, renewable-energy technology development, and skills training, managing projects from feasibility studies through commissioning."
+    },
+    {
+      "title": "Engineering Material Technology Division",
+      "slug": "materials",
+      "group": "Engineering Development",
+      "blurb": "Materials testing, characterization and development of local materials.",
+      "body": "The Material Science and Technologies Section develops and specifies materials by cost and performance across metals, ceramics, polymers, biomaterials and composites, including secondary metallurgy for steel rolling mills and foundries, sponge-iron development, and coking-coal characterization.\n\nIt provides both destructive testing (hardness, tensile, torsion) and a broad range of non-destructive testing — ultrasonic, magnetic particle, liquid penetrant, radiographic, remote visual and eddy-current inspection — for civil, aeronautical and systems-engineering applications."
+    },
+    {
+      "title": "Textile & Leather Technologies Division",
+      "slug": "textile-leather",
+      "group": "Engineering Development",
+      "blurb": "Textile, leather and garment technology and quality improvement.",
+      "body": "The Textile and Leather Technologies Division advances cleaner, competitive production and quality assurance across the textile and leather value chains, while adding value to waste streams. Its R&D covers collagen and natural fibres, non-woven and woven fabric technologies, and organic materials for textiles.\n\nServices include quality assurance for yarn, fabrics and leather; laboratory analysis; training in leather production, spinning and weaving; hand-loom and semi-leather recycling support; and turn-key consulting for manufacturers."
+    },
+    {
+      "title": "Information & Communication Technologies Division",
+      "slug": "ict",
+      "group": "ICT & Technology Development",
+      "blurb": "Software systems, cybersecurity, networks and industrial ICT solutions.",
+      "body": "The Information & Communication Technologies Division applies ICT within the organisation and provides technical advisory support to industry. Its research spans cybersecurity and forensics, sensor and mobile application development, and e-waste management.\n\nOn the consultancy side it supports SME ICT operations, industrial research and innovation databases, advanced computing in education, and ideation portals."
+    },
+    {
+      "title": "Electronics & Instrumentation Technologies Division",
+      "slug": "instrumentation",
+      "group": "ICT & Technology Development",
+      "blurb": "Design, calibration and maintenance of scientific instruments.",
+      "body": "The Electronics and Instrumentation Technologies Division develops, controls and transfers expertise in electronics and instrumentation — designing, simulating and testing electronic circuits, and calibrating and maintaining instruments so measurements are accurate and reliable.\n\nIt offers mechanical, electrical, pipette, flow, temperature and pressure calibration, and the installation, maintenance and repair of analytical instruments including HPLCs, gas chromatographs and spectrophotometers."
+    },
+    {
+      "title": "Technology Transfer & Pilot Plants Division",
+      "slug": "technology-transfer",
+      "group": "ICT & Technology Development",
+      "blurb": "Commercialization and diffusion of proven technologies to industry.",
+      "body": "The Technology Transfer and Pilot Plants Unit bridges research and practical application, ensuring TIRDO's innovations reach industry to solve productivity challenges.\n\nIt assesses the commercial potential of research, conducts market analysis, protects intellectual property (patents and trademarks), incubates start-ups from TIRDO innovations, and trains researchers on IP, technology transfer and commercialization."
+    },
+    {
+      "title": "Human Resources & Admin",
+      "slug": "human-resources-administration",
+      "group": "Human Resources & Admin",
+      "blurb": "Human resources, administration and estate services that keep TIRDO running.",
+      "body": "The Human Resources & Administration Department provides the people and support services that enable TIRDO to deliver its mandate — recruitment, staff development and welfare, records and correspondence, transport, security, and the upkeep of TIRDO's buildings and estate.\n\nIt develops and implements human-resource policies and administrative systems, supports performance management and training, and ensures a safe, well-run working environment across the organisation.\n\n**Human Resource Division**: Personnel, Training\n\n**Administration Division**: Office Management, Transport, Maintenance, Security\n\n**Estate Division**: Building & Estate Maintenance, Carpentry"
+    },
+    {
+      "title": "Finance",
+      "slug": "finance",
+      "group": "Finance",
+      "blurb": "Financial management, budgeting, accounting and revenue control.",
+      "body": "The Finance Department is the institutional hub for financial management and advisory services. It coordinates the preparation and implementation of the Corporate Strategic Plan, Annual Budget and financial regulations, and ensures proper accounting and control of revenue and expenditure alongside the preparation of annual financial statements.\n\nIt develops financial systems and procedures, manages organisational cash flow, coordinates with suppliers and tax authorities, and provides technical advice on finance, accounts and business-process optimisation — helping TIRDO operate efficiently and transparently.\n\n**Store Section**\n\n**Pre-Audit Section**\n\n**Costing & Expenditure Section**\n\n**Revenue Section**"
+    }
+  ],
+  "api::service.service": [
+    {
+      "title": "Research",
+      "slug": "research",
+      "description": "Applied and contract industrial research for industry, government and development partners.",
+      "icon": "FlaskConical",
+      "body": "TIRDO provides applied research focused on local material utilization — evaluating, developing and integrating locally available materials into industrial processes. This covers material evaluation to assess suitability for different industries, optimization of material properties for specific applications, and experimentation to test incorporation into existing or new manufacturing processes.\n\nThe organization also researches industrial techniques and technologies to advise government and industry on adopting domestic and foreign approaches within Tanzania's context — bridging scientific knowledge with practical industrial application to strengthen local industries and support economic development."
+    },
+    {
+      "title": "Energy Auditing",
+      "slug": "energy-auditing",
+      "description": "Certified industrial energy audits that cut costs and emissions across plants.",
+      "icon": "Zap",
+      "body": "TIRDO delivers energy auditing as a systematic inspection and analysis service that identifies consumption patterns and efficiency opportunities. Its certified auditors follow ASHRAE and ISO standards, backed by state-of-the-art laboratory facilities, serving industries, commercial buildings and households across Tanzania and the East African Community.\n\nThe service helps organisations determine their carbon footprint, set reduction targets and evaluate renewable-energy alternatives. Beyond standard audits, the laboratory performs performance testing on ovens, boilers, solar dryers and cook stoves — helping businesses cut costs and strengthen their environmental, social and governance foundations."
+    },
+    {
+      "title": "Feasibility Studies",
+      "slug": "feasibility-studies",
+      "description": "Technical and economic feasibility for new industrial ventures and expansions.",
+      "icon": "ClipboardCheck",
+      "body": "TIRDO conducts comprehensive feasibility studies for establishing new ventures or expanding operations — covering project definition and scope, market-demand analysis, technical evaluation of resources and infrastructure, financial cost projections, and risk identification. It also assesses resource availability for raw materials and labour and performs environmental and social impact assessments.\n\nBy providing thorough pre-project analysis and detailed recommendations on viability, TIRDO helps businesses make well-informed investment decisions, minimise financial risk and optimise resource allocation before significant capital is committed."
+    },
+    {
+      "title": "Consultancy & Technical Services",
+      "slug": "consultancy",
+      "description": "Expert advisory in engineering, environment, materials and process improvement.",
+      "icon": "Users",
+      "body": "TIRDO offers comprehensive technical support across sectors: quality assurance using non-destructive testing (NDT) for welded vessels and pipelines, energy-efficiency audits and performance testing, coal materials analysis, food microbiological testing, environmental monitoring, and chemical analytical services for raw materials and industrial products.\n\nIts clients span manufacturing facilities, commercial centres and households — food producers, chemical processors, environmental consultants and energy-focused enterprises — supported through accredited laboratories. TIRDO also assists industrial establishments during process development and factory set-up as a multidisciplinary technical partner."
+    },
+    {
+      "title": "Laboratory Analytical Services",
+      "slug": "laboratory",
+      "description": "Accredited testing and analysis of materials, food, water, textiles and industrial products.",
+      "icon": "TestTube",
+      "body": "TIRDO operates specialised, accredited laboratories across food and microbiology, industrial chemistry, materials, energy and environment. Services include physicochemical and microbiological testing of food and water, heavy-metal and micronutrient analysis, coal quality assessment, and destructive and non-destructive testing of materials.\n\nIndustries, government institutions, SMEs and the public rely on these laboratories for reliable, standards-based results that support quality assurance, regulatory compliance and product development."
+    },
+    {
+      "title": "Training & Skill Development",
+      "slug": "training",
+      "description": "Tailored short courses and capacity building for industry professionals.",
+      "icon": "GraduationCap",
+      "body": "TIRDO delivers tailored short courses and capacity-building programmes for industrialists, SMEs and the public — spanning food processing, packaging and safety (GMP, GHP, HACCP), energy efficiency and clean-technology production, non-destructive testing, and leather, spinning and weaving technologies.\n\nTraining combines TIRDO's laboratory capability with field experience, equipping participants with practical skills that improve productivity, quality and safety across Tanzanian industry."
+    }
+  ],
+  "api::project.project": [
+    {
+      "title": "Essential Oils Production",
+      "slug": "essential-oils",
+      "summary": "TIRDO has implemented improved extraction technology to produce high-value essential oils from local botanicals, linking farmers to industrial buyers.",
+      "department": "Food & Biotechnology",
+      "status": "Featured",
+      "researchArea": "food-biotechnology",
+      "imageUrl": "/media/resources/feHRWQMR9OJXOpyL21RzVcnWNQ9xzn2ATG2RKDLj.jpg"
+    },
+    {
+      "title": "Biomass Briquette Production",
+      "slug": "biomass-briquettes",
+      "summary": "This project converts agricultural residues into affordable, clean-burning briquettes as an alternative to charcoal, reducing deforestation and emissions.",
+      "department": "Energy",
+      "status": "Featured",
+      "researchArea": "energy",
+      "imageUrl": "/media/resources/H1D6ScYYF7ZdoRK9q5V8fxut6gRVKKVeSQaTWjKU.png"
+    },
+    {
+      "title": "Industrial Mapping Project",
+      "slug": "industrial-mapping",
+      "summary": "Since 2013, TIRDO has mapped Tanzania's industries to identify opportunities, gaps and priorities for industrial development and investment.",
+      "department": "Technology Transfer",
+      "status": "Ongoing",
+      "researchArea": "technology-transfer",
+      "imageUrl": "/media/resources/rulXDuQQtR41OMCyxi0UpFChGCupyDdXYHxHEfZz.png"
+    },
+    {
+      "title": "Industrial Energy Efficiency Action Plan",
+      "slug": "energy-efficiency-action-plan",
+      "summary": "Supported by the European Union, this project develops and rolls out energy-efficiency action plans to cut costs and emissions in Tanzanian industry.",
+      "department": "Energy",
+      "status": "Ongoing",
+      "researchArea": "energy",
+      "imageUrl": "/media/resources/oE73KEynZEZ2mPY8pm9YD39qgwsjTVgtHrC44f7q.png"
+    }
+  ],
+  "api::publication.publication": [
+    {
+      "title": "TIRDO Financial Statements for the Year Ended 30th June 2025",
+      "slug": "financial-statements-2025",
+      "type": "Financial Report",
+      "year": 2025,
+      "fileUrl": "/media/publications/eQoyhgUlJc8U0uHefva0m7HnoJNfbnGQR4Xt8Y1K.pdf"
+    },
+    {
+      "title": "Cleaner Cooking Solutions: Optimizing Biomass Briquettes to Replace Charcoal and Mitigate Climate Change in Tanzania",
+      "slug": "cleaner-cooking-briquettes",
+      "type": "Research Publication",
+      "year": 2025,
+      "fileUrl": "/media/publications/kgkHrHRHmlgiGpaliNrZMxskiHS5YGw3xdfb49LE.pdf"
+    },
+    {
+      "title": "Biomass Briquettes Production Handbook",
+      "slug": "briquettes-production-handbook",
+      "type": "Technical Handbook",
+      "year": 2024,
+      "fileUrl": "/media/publications/lE59YikFaoV4aaS21uVayYUuhMfere0HrxalV3bP.pdf"
+    },
+    {
+      "title": "Climate Change Adaptation and Mitigation: Profile of Biomass Briquette Producers in Tanzania",
+      "slug": "briquette-producers-profile",
+      "type": "Research Study",
+      "year": 2024,
+      "fileUrl": "/media/publications/pwagpql6HXK1HkwFEWp331n4DaEdBzFEd1AyKGiq.pdf"
+    },
+    {
+      "title": "Climate Change Adaptation and Mitigation: Factors Influencing the Adoption of Biomass Briquettes in Tanzania",
+      "slug": "briquette-adoption-factors",
+      "type": "Research Study",
+      "year": 2024,
+      "fileUrl": "/media/publications/Tlu2YWpLr1LWpnEUIStuV7Sq8rv2bsJHcfict0S4.pdf"
+    },
+    {
+      "title": "TIRDO Profile",
+      "slug": "tirdo-profile",
+      "type": "Organizational Profile",
+      "year": 2024,
+      "fileUrl": "/media/publications/nvZj843NupUupmJT8zklTIGLloyomwPdZx7zaQ00.pdf"
+    },
+    {
+      "title": "TIRDO Financial Statements for the Year Ended 30th June 2024",
+      "slug": "financial-statements-2024",
+      "type": "Financial Report",
+      "year": 2024,
+      "fileUrl": "/media/publications/GlJkkH6ITUnN4puxePVw9KkYKKFlKWcJdirJ9m08.pdf"
+    },
+    {
+      "title": "TIRDO Financial Statements for the Year Ended 30th June 2023",
+      "slug": "financial-statements-2023",
+      "type": "Financial Report",
+      "year": 2023,
+      "fileUrl": "/media/publications/TIWzfCpIR5FViS8j2huHhAsXcaIcfvxNAQywQ5Px.pdf"
+    },
+    {
+      "title": "The Tanzania Industrial Research and Development Organization Act, 1979",
+      "slug": "tirdo-act-1979",
+      "type": "Legislation",
+      "year": 1979,
+      "fileUrl": "/media/publications/Z00lhvaYrG94XYwS3hDUQBGdMZn6VbTPrcGIWeKr.pdf"
+    }
+  ],
+  "api::technology.technology": [
+    {
+      "title": "Biomass Briquette Production",
+      "slug": "biomass-briquettes",
+      "summary": "Converts agricultural and forestry residues into affordable, clean-burning briquettes — a direct substitute for wood charcoal.",
+      "sector": "energy",
+      "maturity": "Commercial",
+      "body": "TIRDO's briquetting technology carbonises and compacts biomass waste — rice husks, sawdust, coffee husks, bagasse and charcoal fines — into uniform briquettes with a high, consistent calorific value. The process covers feedstock preparation, carbonisation, binding, compaction and drying, and can be scaled from community groups to SME production lines.\n\nThe technology has been packaged with training, a producers' handbook and start-up support, and is being adopted across Tanzania as a cleaner cooking fuel that reduces deforestation and household emissions.",
+      "benefits": [
+        "Cuts fuel costs and reliance on wood charcoal",
+        "Reduces deforestation and greenhouse-gas emissions",
+        "Creates income and jobs along the collection–production chain",
+        "Uses locally available agricultural residues"
+      ],
+      "applications": [
+        "Household and institutional cooking",
+        "Bakeries, restaurants and food processors",
+        "Community and SME fuel enterprises"
+      ],
+      "relatedServiceSlug": "training",
+      "imageUrl": "/media/resources/H1D6ScYYF7ZdoRK9q5V8fxut6gRVKKVeSQaTWjKU.png"
+    },
+    {
+      "title": "Improved & Institutional Cook Stoves",
+      "slug": "improved-cook-stoves",
+      "summary": "Fuel-efficient stove designs matched to briquette and biomass fuels for households and institutions.",
+      "sector": "energy",
+      "maturity": "Mature",
+      "body": "TIRDO designs and tests improved cook stoves that raise combustion efficiency and cut fuel use, indoor smoke and cooking time. Designs range from single-pot household stoves to large institutional stoves for schools and canteens, and are performance-tested in TIRDO's energy laboratory.\n\nThe stoves pair naturally with the briquette technology to deliver a complete clean-cooking solution.",
+      "benefits": [
+        "Lower fuel consumption and cost",
+        "Reduced indoor air pollution",
+        "Faster, safer cooking"
+      ],
+      "applications": [
+        "Households",
+        "Schools, colleges and institutions",
+        "Restaurants and food vendors"
+      ]
+    },
+    {
+      "title": "Essential Oils Extraction",
+      "slug": "essential-oils",
+      "summary": "Improved steam-distillation and extraction technology that turns local botanicals into high-value essential oils.",
+      "sector": "food-biotechnology",
+      "maturity": "Commercial",
+      "body": "TIRDO has developed and optimised extraction technology for producing essential oils from locally grown botanicals, improving yield and product quality while linking farmers to industrial buyers. The package covers raw-material handling, distillation, quality testing and value-chain linkage.",
+      "benefits": [
+        "Adds value to local agricultural crops",
+        "Opens export and cosmetics-industry markets",
+        "Raises farmer incomes"
+      ],
+      "applications": [
+        "Cosmetics and personal care",
+        "Food flavouring and fragrance",
+        "Pharmaceutical inputs"
+      ],
+      "imageUrl": "/media/resources/feHRWQMR9OJXOpyL21RzVcnWNQ9xzn2ATG2RKDLj.jpg"
+    },
+    {
+      "title": "Mushroom Spawn Production",
+      "slug": "mushroom-spawn",
+      "summary": "Laboratory production of high-quality mushroom spawn supplied to farmers to support commercial mushroom cultivation.",
+      "sector": "food-biotechnology",
+      "maturity": "Commercial",
+      "body": "TIRDO's biotechnology laboratory produces clean, high-viability mushroom spawn and provides the accompanying cultivation know-how, supporting a growing mushroom-farming sector as a source of nutrition and income.",
+      "benefits": [
+        "Reliable, contamination-free spawn supply",
+        "Supports nutrition and household income",
+        "Backed by TIRDO cultivation training"
+      ],
+      "applications": [
+        "Smallholder and commercial mushroom farms",
+        "Agribusiness and food SMEs"
+      ]
+    },
+    {
+      "title": "Leather Processing & Tanning Technology",
+      "slug": "leather-processing",
+      "summary": "Cleaner tanning, finishing and leather-goods techniques that add value to Tanzania's hides and skins.",
+      "sector": "textile-leather",
+      "maturity": "Mature",
+      "body": "TIRDO's textile and leather division develops and transfers cleaner leather-processing and tanning technologies, quality-assurance methods and leather-goods techniques, adding value to hides and skins while reducing the environmental load of the tanning process.",
+      "benefits": [
+        "Higher-value finished leather",
+        "Cleaner, lower-effluent processing",
+        "Skills for artisans and SMEs"
+      ],
+      "applications": [
+        "Tanneries and leather-goods makers",
+        "Cottage and SME leather enterprises"
+      ],
+      "relatedServiceSlug": "consultancy"
+    },
+    {
+      "title": "Non-Destructive Testing (NDT)",
+      "slug": "ndt-services",
+      "summary": "Ultrasonic, radiographic, magnetic-particle and penetrant inspection of welds, pipelines and pressure vessels.",
+      "sector": "materials",
+      "maturity": "Commercial",
+      "body": "TIRDO provides a full suite of non-destructive testing to international standards — ultrasonic, radiographic, magnetic-particle, liquid-penetrant, remote-visual and eddy-current inspection — for welded structures, pipelines, pressure vessels and civil and aeronautical applications.\n\nTIRDO has applied this capability on major national assignments, including quality assurance on tens of kilometres of gas pipeline.",
+      "benefits": [
+        "Assures structural integrity and safety",
+        "Standards-based, defensible inspection reports",
+        "Avoids costly failures and downtime"
+      ],
+      "applications": [
+        "Oil, gas and pipeline construction",
+        "Manufacturing and fabrication",
+        "Infrastructure and aviation"
+      ],
+      "relatedServiceSlug": "consultancy",
+      "imageUrl": "/media/carousel-items/cCiap7vvzT3PcCrqVYJe99reAp4pnPJVZ5SnDDBV.jpg"
+    },
+    {
+      "title": "Coal Characterization & Beneficiation",
+      "slug": "coal-characterization",
+      "summary": "Proximate, ultimate and calorific analysis and beneficiation guidance from the national coal reference laboratory.",
+      "sector": "materials",
+      "maturity": "Mature",
+      "body": "Declared the national backstop reference laboratory for coal-quality assessment, TIRDO characterises coal for proximate, ultimate and heating-value parameters and advises on beneficiation and industrial use, supporting the mining and energy sectors.",
+      "benefits": [
+        "Authoritative national reference testing",
+        "Informs coal use, pricing and beneficiation",
+        "Supports mining and energy investment"
+      ],
+      "applications": [
+        "Mining companies",
+        "Cement, steel and power industries",
+        "Regulators and investors"
+      ],
+      "relatedServiceSlug": "laboratory"
+    },
+    {
+      "title": "Plastic Waste Recycling",
+      "slug": "plastic-recycling",
+      "summary": "Collection, sorting and reprocessing technology that turns plastic waste into usable raw material and products.",
+      "sector": "environment",
+      "maturity": "Commercial",
+      "body": "Developed with UNIDO, TIRDO's plastic-recycling technology covers collection, sorting, washing, shredding and reprocessing of plastic waste into usable material, and has been transferred through training to hundreds of people, creating jobs across the recycling value chain.",
+      "benefits": [
+        "Diverts plastic from the environment",
+        "Creates recycling-chain jobs and enterprises",
+        "Supplies low-cost recycled raw material"
+      ],
+      "applications": [
+        "Waste-management enterprises",
+        "Plastic-product manufacturers",
+        "Municipal and community recyclers"
+      ]
+    },
+    {
+      "title": "Onsite Wastewater Treatment",
+      "slug": "onsite-wastewater-treatment",
+      "summary": "Cleaner-production and onsite wastewater-treatment systems for the leather, textile and food industries.",
+      "sector": "environment",
+      "maturity": "Pilot",
+      "body": "TIRDO researches and deploys conventional and onsite wastewater-treatment approaches and cleaner-production methods that add value to industrial waste streams while reducing pollution loads from tanneries, textile mills and food processors.",
+      "benefits": [
+        "Meets effluent and environmental standards",
+        "Recovers value from waste streams",
+        "Reduces pollution and compliance risk"
+      ],
+      "applications": [
+        "Tanneries and textile mills",
+        "Food and beverage processors",
+        "Industrial estates"
+      ],
+      "relatedServiceSlug": "laboratory"
+    },
+    {
+      "title": "GS1 Product Traceability Systems",
+      "slug": "gs1-traceability",
+      "summary": "Barcode-based traceability across agro value chains, from farm to market, underpinning quality and export readiness.",
+      "sector": "ict",
+      "maturity": "Commercial",
+      "body": "TIRDO implemented traceability systems across agricultural value chains — coffee, cashew, tea and seafood — work that led to the establishment of GS1 Tanzania and barcode-based traceability for Tanzanian products, improving quality assurance and export competitiveness.",
+      "benefits": [
+        "Farm-to-market traceability",
+        "Improves export readiness and trust",
+        "Supports recalls and quality control"
+      ],
+      "applications": [
+        "Agro-exporters and cooperatives",
+        "Food and beverage manufacturers",
+        "Retail and logistics"
+      ],
+      "relatedServiceSlug": "consultancy"
+    },
+    {
+      "title": "Industrial Energy Management (ISO 50001)",
+      "slug": "industrial-energy-management",
+      "summary": "Energy-audit and management-system methodology that helps plants cut energy cost and carbon.",
+      "sector": "energy",
+      "maturity": "Mature",
+      "body": "TIRDO helps industry implement energy management aligned to ISO 50001 — baseline audits, performance testing of ovens, boilers, furnaces and solar systems, target-setting and monitoring — cutting energy costs and emissions across Tanzanian industry.",
+      "benefits": [
+        "Lower energy cost and carbon footprint",
+        "Certified, standards-based audits",
+        "Actionable efficiency roadmap"
+      ],
+      "applications": [
+        "Manufacturing plants",
+        "Commercial buildings",
+        "Institutions and utilities"
+      ],
+      "relatedServiceSlug": "energy-auditing",
+      "imageUrl": "/media/resources/oE73KEynZEZ2mPY8pm9YD39qgwsjTVgtHrC44f7q.png"
+    }
+  ],
+  "api::vacancy.vacancy": [
+    {
+      "title": "Research Officer II — Energy Technology",
+      "slug": "research-officer-energy",
+      "department": "Energy Technology Division",
+      "category": "Professional",
+      "location": "Dar es Salaam",
+      "description": "Support applied research on energy efficiency, renewable energy and cleaner production for Tanzanian industry.",
+      "body": [
+        "Conduct laboratory and field research on energy technologies and industrial energy efficiency.",
+        "Prepare technical reports, proposals and publications; support consultancy and energy-audit assignments."
+      ],
+      "postedDate": "2026-08-20",
+      "closingDate": "2026-09-30",
+      "applyUrl": "https://portal.ajira.go.tz"
+    },
+    {
+      "title": "Laboratory Technician II",
+      "slug": "laboratory-technician",
+      "department": "Environmental Technology & Occupational Safety Division",
+      "category": "Technical",
+      "location": "Dar es Salaam",
+      "description": "Carry out sample preparation and analytical testing in TIRDO's accredited laboratories.",
+      "body": [
+        "Prepare samples and operate analytical instruments under quality-assured procedures.",
+        "Maintain laboratory records and support accreditation and calibration activities."
+      ],
+      "postedDate": "2026-08-20",
+      "closingDate": "2026-09-15",
+      "applyUrl": "https://portal.ajira.go.tz"
+    },
+    {
+      "title": "ICT Officer II",
+      "slug": "ict-officer",
+      "department": "Information & Communication Technologies Division",
+      "category": "Professional",
+      "location": "Dar es Salaam",
+      "description": "Support TIRDO's information systems, network infrastructure and digital services.",
+      "postedDate": "2026-06-01",
+      "closingDate": "2026-07-15",
+      "applyUrl": "https://portal.ajira.go.tz"
+    }
+  ],
+  "api::tender.tender": [
+    {
+      "title": "Supply and Delivery of Laboratory Reagents and Consumables",
+      "slug": "supply-laboratory-reagents-2026",
+      "reference": "PA/023/2026-2027/HQ/G/01",
+      "category": "Goods",
+      "description": "Supply and delivery of laboratory reagents and consumables for TIRDO's analytical laboratories for the 2026/2027 financial year.",
+      "postedDate": "2026-08-25",
+      "closingDate": "2026-09-25"
+    },
+    {
+      "title": "Renovation of Administration Office Block",
+      "slug": "office-block-renovation-2026",
+      "reference": "PA/023/2026-2027/HQ/W/03",
+      "category": "Works",
+      "description": "Renovation works for the administration office block at the TIRDO Complex, Msasani.",
+      "postedDate": "2026-08-10",
+      "closingDate": "2026-09-20"
+    },
+    {
+      "title": "Consultancy for Institutional Energy Audit",
+      "slug": "consultancy-energy-audit-2026",
+      "reference": "PA/023/2026-2027/HQ/C/02",
+      "category": "Consultancy",
+      "description": "Provision of consultancy services for an institutional energy audit and efficiency improvement plan.",
+      "postedDate": "2026-05-15",
+      "closingDate": "2026-06-30"
+    }
+  ]
+}

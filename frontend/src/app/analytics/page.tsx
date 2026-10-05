@@ -1,6 +1,7 @@
 import { PageBanner } from "@/components/site/page-banner";
 import { ChartCard, KpiCard, StatTile, TrendArea, BarList, Donut } from "@/components/analytics/charts";
 import { getDashboard } from "@/lib/matomo-api";
+import { getFeedbackSummary } from "@/lib/feedback";
 
 export const metadata = { title: "Analytics" };
 // Render at request time so the runtime Matomo token is used (not build time).
@@ -11,6 +12,8 @@ const fmt = (n: number | null | undefined) => (typeof n === "number" ? n.toLocal
 export default async function AnalyticsPage() {
   const d = await getDashboard();
   const s = d.summary;
+  const fb = await getFeedbackSummary();
+  const fbTypes = fb ? Object.entries(fb.byType).map(([label, value]) => ({ label, value })) : [];
 
   return (
     <>
@@ -75,6 +78,28 @@ export default async function AnalyticsPage() {
               </p>
             </>
           )}
+
+          {/* Service feedback — stakeholder ratings (independent of Matomo) */}
+          <div>
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand-teal">Service feedback</h2>
+            {fb && fb.total > 0 ? (
+              <div className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <StatTile label="Average rating" value={fb.average != null ? `${fb.average} / 5` : "—"} hint={`${fb.ratedCount} rating${fb.ratedCount === 1 ? "" : "s"}`} />
+                  <StatTile label="Total feedback" value={fmt(fb.total)} hint="All stakeholder feedback" />
+                  <StatTile label="Resolved" value={fmt(fb.handled)} hint="Marked handled by staff" />
+                </div>
+                <ChartCard title="Feedback by type" subtitle="Compliments, complaints, suggestions and enquiries">
+                  <BarList data={fbTypes} unit="items" />
+                </ChartCard>
+              </div>
+            ) : (
+              <div className="rounded-xl border bg-secondary/40 p-6 text-sm text-muted-foreground">
+                No stakeholder feedback has been submitted yet.{" "}
+                <a className="font-medium text-brand-teal hover:underline" href="/feedback">Give feedback</a> to help TIRDO measure its services.
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </>

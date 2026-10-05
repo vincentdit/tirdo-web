@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FeedbackCTA } from "@/components/site/feedback-cta";
 import { PageBanner } from "@/components/site/page-banner";
 import { SectionHeading } from "@/components/site/section-heading";
 import { PortalGateway } from "@/components/site/gateway";
@@ -82,6 +83,11 @@ export default function LaboratoryPage() {
             href={portals.nilims}
             features={["Online sample registration", "Real-time job tracking", "Digital test reports", "Client history and re-orders"]}
           />
+        </div>
+      </section>
+      <section className="py-10">
+        <div className="container-tirdo max-w-3xl">
+          <FeedbackCTA service="Laboratory Services" />
         </div>
       </section>
     </>

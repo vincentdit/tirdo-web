@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { FeedbackCTA } from "@/components/site/feedback-cta";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
@@ -102,6 +103,7 @@ export default async function TechnologyDetailPage({ params }: { params: { slug:
                 ))}
               </ul>
             </div>
+            <div className="mt-2"><FeedbackCTA service={tech.title} /></div>
           </aside>
         </div>
       </section>

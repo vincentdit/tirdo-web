@@ -16,6 +16,17 @@ The documentation set for the TIRDO public website & digital services portal.
 - [MONITORING.md](MONITORING.md) — health endpoints and the opt-in uptime/metrics stack.
 - [MATOMO.md](MATOMO.md) — analytics install and the first-party proxy.
 
+## Go-live
+
+- [GO-LIVE.md](GO-LIVE.md) — ordered launch runbook (provision → seed → TLS →
+  security → smoke test → monitoring → restore drill → UAT → cutover).
+- [UAT-CHECKLIST.md](UAT-CHECKLIST.md) — user-acceptance testing checklist and
+  sign-off.
+- [../cms/scripts/README.md](../cms/scripts/README.md) — seed the real content
+  into the CMS (`gen-seed.mjs`).
+- [translations/sw-content.md](translations/sw-content.md) — draft Kiswahili
+  content for review.
+
 ## Using the system
 
 - [ADMIN-MANUAL.md](ADMIN-MANUAL.md) — CMS administrator & editor guide.
@@ -37,8 +48,10 @@ The documentation set for the TIRDO public website & digital services portal.
 
 ## Status
 
-The [RTM](RTM.md) tracks each requirement's status. Current gaps that need
-business/infrastructure decisions rather than code: production hosting + real
-TLS certificate, a WAF, admin MFA, an independent VAPT, a tested production
-restore, UAT with business representatives, migrating real content, and
-translating long-form page bodies.
+The [RTM](RTM.md) tracks each requirement's status. All spec features are
+built; the WAF, admin MFA and monitoring are scaffolded and opt-in, a content
+seed and draft Kiswahili translations are ready. What remains needs
+infrastructure or business action rather than feature code: production hosting +
+a real TLS certificate, an independent VAPT, a tested production restore, UAT
+sign-off, and loading the real content/translations into the CMS. Follow
+[GO-LIVE.md](GO-LIVE.md).

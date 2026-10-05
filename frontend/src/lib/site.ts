@@ -86,6 +86,7 @@ export const mainNav: NavItem[] = [
       { title: "Administration", key: "aboutMenu.administration", href: "/about/administration" },
       { title: "Success Stories", key: "aboutMenu.successStories", href: "/about/success-stories" },
       { title: "COMSATS Centre", key: "aboutMenu.comsats", href: "/about/comsats" },
+      { title: "Customer Service Charter", key: "aboutMenu.serviceCharter", href: "/service-charter" },
     ],
   },
   {
@@ -194,6 +195,8 @@ export const footerLinks = {
     { title: "Publications", href: "/publications" },
     { title: "News & Events", href: "/news" },
     { title: "Careers", href: "/careers" },
+    { title: "Customer Service Charter", href: "/service-charter" },
+    { title: "Give Feedback", href: "/feedback" },
   ],
   related: [
     { title: "Ministry of Investment, Industry & Trade", href: "https://www.viwanda.go.tz" },

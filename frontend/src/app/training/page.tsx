@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FeedbackCTA } from "@/components/site/feedback-cta";
 import Link from "next/link";
 import { PageBanner } from "@/components/site/page-banner";
 import { SectionHeading } from "@/components/site/section-heading";
@@ -81,6 +82,11 @@ export default function TrainingPage() {
             href={portals.teltp}
             features={["Course catalogue and schedules", "Online registration and payment", "Learning materials and resources", "Certificates of completion"]}
           />
+        </div>
+      </section>
+      <section className="py-10">
+        <div className="container-tirdo max-w-3xl">
+          <FeedbackCTA service="Training & Skills Development" />
         </div>
       </section>
     </>

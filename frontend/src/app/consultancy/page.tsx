@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FeedbackCTA } from "@/components/site/feedback-cta";
 import { PageBanner } from "@/components/site/page-banner";
 import { SectionHeading } from "@/components/site/section-heading";
 import { PortalGateway } from "@/components/site/gateway";
@@ -69,6 +70,11 @@ export default function ConsultancyPage() {
             href={portals.ciap}
             features={["Submit and scope requests", "Track proposals and approvals", "Manage deliverables and reports", "Engagement history and closure"]}
           />
+        </div>
+      </section>
+      <section className="py-10">
+        <div className="container-tirdo max-w-3xl">
+          <FeedbackCTA service="Consultancy & Advisory" />
         </div>
       </section>
     </>

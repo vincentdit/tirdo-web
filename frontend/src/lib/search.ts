@@ -80,6 +80,8 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
   { title: "Tenders", url: "/tenders", excerpt: "Procurement notices and tender opportunities." },
   { title: "e-Services", url: "/e-services", excerpt: "Online client services and staff portals." },
   { title: "Contact Us", url: "/contact", excerpt: "Address, phone, email and enquiry form." },
+  { title: "Customer Service Charter", url: "/service-charter", excerpt: "TIRDO service standards, turnaround times and your rights as a stakeholder." },
+  { title: "Give Feedback", url: "/feedback", excerpt: "Rate and give feedback on TIRDO services; compliments, complaints and suggestions." },
 ];
 
 export async function gatherDocuments(): Promise<SearchDoc[]> {
