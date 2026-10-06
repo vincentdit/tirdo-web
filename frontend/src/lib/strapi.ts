@@ -168,3 +168,35 @@ export async function getTechnologies(locale = activeLocale()): Promise<Technolo
     };
   });
 }
+
+// Customer Service Charter (editable single-type). Falls back to the bundled
+// content.ts charter when the CMS single-type is empty/unreachable. Repeatable
+// components come back as arrays of objects ({text} or {service,standard,turnaround}).
+export type Charter = {
+  intro: string[];
+  standards: { service: string; standard: string; turnaround: string }[];
+  rights: string[];
+  responsibilities: string[];
+};
+
+export async function getServiceCharter(locale = activeLocale()): Promise<Charter> {
+  const texts = (arr: unknown): string[] =>
+    Array.isArray(arr) ? arr.map((x: Raw) => x?.text).filter((v): v is string => !!v) : [];
+  const d =
+    (await strapiFetch<Raw>(`service-charter?populate=*&locale=${locale}`)) ||
+    (locale !== defaultLocale ? await strapiFetch<Raw>(`service-charter?populate=*&locale=${defaultLocale}`) : null);
+
+  if (!d || !Array.isArray(d.standards) || d.standards.length === 0) {
+    return fallback.serviceCharter as Charter;
+  }
+  const fb = fallback.serviceCharter;
+  const intro = texts(d.intro);
+  const rights = texts(d.rights);
+  const responsibilities = texts(d.responsibilities);
+  return {
+    intro: intro.length ? intro : fb.intro,
+    standards: d.standards.map((s: Raw) => ({ service: s.service, standard: s.standard, turnaround: s.turnaround ?? "" })),
+    rights: rights.length ? rights : fb.rights,
+    responsibilities: responsibilities.length ? responsibilities : fb.responsibilities,
+  };
+}

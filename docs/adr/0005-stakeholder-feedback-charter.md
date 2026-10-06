@@ -42,6 +42,7 @@ rather than building a separate application:
 - A full stakeholder-relationship system (stakeholder database, case
   assignment, SLA tracking, follow-up workflow) remains a possible separate
   system; this website layer can feed it later.
-- The charter content currently lives in `content.ts` (like the laboratory /
-  consultancy / training sections); it can be promoted to a CMS single-type if
-  staff need to edit it without a deploy.
+- The charter is an editable CMS **single-type** (`service-charter`, with
+  `charter.standard` / `charter.item` components, i18n-localized), read by the
+  `/service-charter` page via `getServiceCharter()` with the `content.ts`
+  charter as the fallback when the single-type is empty.

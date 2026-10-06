@@ -110,7 +110,10 @@ tick **handled**. The public Analytics page shows only aggregate metrics
 individual feedback, which stays private to the CMS. Every change is recorded in
 the audit log.
 
-The **Customer Service Charter** shown at `/service-charter` (standards,
-turnaround times, rights and responsibilities) currently lives in the site
-content file; ask the ICT team to update it, or to promote it to an editable
-CMS type if you need to change it yourself.
+The **Customer Service Charter** shown at `/service-charter` is editable in
+the CMS: Content Manager -> **Customer Service Charter** (a single type). Edit
+the intro, the service **Standards** (service / standard / turnaround rows),
+**Rights** and **Responsibilities**, then **Save** and **Publish**. Use the
+locale switch to maintain the **Kiswahili (sw)** version. If the single type is
+left empty, the site shows the built-in default charter as a fallback, so the
+page is never blank.

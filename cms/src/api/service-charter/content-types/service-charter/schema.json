@@ -1,0 +1,18 @@
+{
+  "kind": "singleType",
+  "collectionName": "service_charters",
+  "info": {
+    "singularName": "service-charter",
+    "pluralName": "service-charters",
+    "displayName": "Customer Service Charter",
+    "description": "Editable service standards, rights and responsibilities shown at /service-charter"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": { "i18n": { "localized": true } },
+  "attributes": {
+    "intro": { "type": "component", "repeatable": true, "component": "charter.item", "pluginOptions": { "i18n": { "localized": true } } },
+    "standards": { "type": "component", "repeatable": true, "component": "charter.standard", "pluginOptions": { "i18n": { "localized": true } } },
+    "rights": { "type": "component", "repeatable": true, "component": "charter.item", "pluginOptions": { "i18n": { "localized": true } } },
+    "responsibilities": { "type": "component", "repeatable": true, "component": "charter.item", "pluginOptions": { "i18n": { "localized": true } } }
+  }
+}

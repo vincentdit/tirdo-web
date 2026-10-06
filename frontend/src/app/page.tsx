@@ -160,6 +160,22 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+      <section className="bg-brand-teal py-16 text-white">
+        <div className="container-tirdo flex flex-col items-center gap-4 text-center">
+          <h2 className="text-2xl font-bold sm:text-3xl">Used a TIRDO service? Tell us how we did.</h2>
+          <p className="max-w-2xl text-white/90">
+            Your feedback helps TIRDO measure and improve its services. See what we commit to in our Customer Service Charter.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <Link href="/feedback" className="inline-flex items-center gap-2 rounded-md bg-brand-gold px-5 py-2.5 text-sm font-bold text-brand-ink transition hover:brightness-95">
+              Give feedback <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link href="/service-charter" className="inline-flex items-center gap-2 rounded-md border border-white/40 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
+              Customer Service Charter
+            </Link>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

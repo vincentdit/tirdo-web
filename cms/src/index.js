@@ -70,6 +70,9 @@ async function setPublicPermissions(strapi) {
   perms['api::feedback.feedback'] = {
     controllers: { feedback: { create: { enabled: true } } },
   };
+  perms['api::service-charter.service-charter'] = {
+    controllers: { 'service-charter': { find: { enabled: true } } },
+  };
 
   // Grant each action to the public role if not already present.
   for (const [uid, cfg] of Object.entries(perms)) {

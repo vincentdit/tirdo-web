@@ -3,7 +3,7 @@ import { CheckCircle2, MessageSquare } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { SectionHeading } from "@/components/site/section-heading";
 import { ButtonLink } from "@/components/ui/button";
-import { serviceCharter } from "@/lib/content";
+import { getServiceCharter } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   title: "Customer Service Charter",
@@ -11,7 +11,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/service-charter" },
 };
 
-export default function ServiceCharterPage() {
+export default async function ServiceCharterPage() {
+  const serviceCharter = await getServiceCharter();
   return (
     <>
       <PageBanner

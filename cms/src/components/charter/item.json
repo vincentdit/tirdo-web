@@ -1,0 +1,8 @@
+{
+  "collectionName": "components_charter_items",
+  "info": { "displayName": "Charter Item", "icon": "list" },
+  "options": {},
+  "attributes": {
+    "text": { "type": "text", "required": true }
+  }
+}

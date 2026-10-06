@@ -1,0 +1,10 @@
+{
+  "collectionName": "components_charter_standards",
+  "info": { "displayName": "Charter Standard", "icon": "check" },
+  "options": {},
+  "attributes": {
+    "service": { "type": "string", "required": true },
+    "standard": { "type": "text", "required": true },
+    "turnaround": { "type": "string" }
+  }
+}
