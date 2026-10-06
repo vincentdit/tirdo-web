@@ -170,3 +170,45 @@ localizations on each entry rather than in code:
 
 The English text remains the fallback until each entry's Kiswahili localization
 is filled in, so the site is never blank while translation is in progress.
+
+---
+
+## Customer Service Charter — Mkataba wa Huduma kwa Wateja
+
+> Draft for native-speaker review. Source: `serviceCharter` in
+> `frontend/src/lib/content.ts` and the `/service-charter` page.
+
+### Utangulizi (intro)
+
+- Mkataba huu wa Huduma kwa Wateja unaainisha viwango vya huduma ambavyo wadau — viwanda, serikali, wajasiriamali wadogo na wa kati, washirika wa maendeleo na umma — wanaweza kutegemea kutoka Shirika la Utafiti na Maendeleo ya Viwanda Tanzania (TIRDO), na jinsi tunavyopima na kuboresha huduma zetu kupitia maoni yenu.
+- TIRDO imejizatiti kutoa huduma kwa wakati, kwa weledi na kwa heshima. Pale tunaposhindwa kufikia viwango hivi, tunapenda kufahamu — maoni yenu ndiyo msingi wa namna tunavyoboresha.
+
+### Viwango vya huduma (service standards)
+
+| Huduma | Kiwango chetu | Muda |
+|---|---|---|
+| Maswali ya jumla | Kupokea kila ombi na kujibu kwa taarifa iliyoombwa au kueleza hatua inayofuata kwa uwazi. | Ndani ya siku 3 za kazi |
+| Maombi ya huduma na ushauri | Kupokea ombi na kutoa andiko la kiufundi pamoja na gharama. | Ndani ya siku 7 za kazi |
+| Upimaji wa maabara (NILIMS) | Kusajili sampuli, kuthibitisha kazi na gharama, na kutoa majibu baada ya kukamilika. | Majibu ndani ya siku 10–21 za kazi kulingana na aina ya kipimo |
+| Usajili wa mafunzo (TeLTP) | Kuthibitisha usajili na kutoa ratiba na taarifa za kujiunga. | Ndani ya siku 5 za kazi |
+| Maswali ya zabuni na manunuzi | Kujibu maombi ya ufafanuzi katika kipindi cha zabuni. | Ndani ya siku 3 za kazi |
+| Malalamiko | Kupokea lalamiko, kulifanyia uchunguzi, na kutoa taarifa ya matokeo. | Kupokea ndani ya siku 2; kutatua ndani ya siku 14 za kazi |
+
+### Haki zako (your rights)
+
+- Kuhudumiwa kwa haraka, kwa weledi na kwa heshima.
+- Kupata taarifa sahihi na maelezo ya wazi kuhusu ada na muda.
+- Kazi yako kushughulikiwa kwa usiri na kwa kuzingatia viwango vinavyotambulika.
+- Kutoa maoni au kulalamika bila kuathirika, na kupata majibu.
+- Kuhudumiwa kwa Kiingereza au Kiswahili.
+
+### Wajibu wako (your responsibilities)
+
+- Kutoa taarifa kamili na sahihi pamoja na ombi lako.
+- Kuzingatia muda, ada na mahitaji ya sampuli au nyaraka yaliyokubaliwa.
+- Kuwaheshimu wafanyakazi wa TIRDO.
+- Kutumia njia za kutoa maoni ili kutusaidia kuboresha.
+
+### Wito (feedback CTA)
+
+- Tusaidie kufikia viwango hivi — toa maoni yako: pongezi, lalamiko au pendekezo.
