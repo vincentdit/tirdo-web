@@ -25,6 +25,9 @@ module.exports = {
     // 2) Ensure the Kiswahili locale exists (English is the default).
     await ensureLocale(strapi, 'sw', 'Kiswahili (sw)');
 
+    // 2b) Pre-populate the Customer Service Charter single type (EN + SW) if empty.
+    await seedCharter(strapi);
+
     // 3) Seed demo content on an empty database (idempotent).
     if (process.env.SEED_DATA === 'true') {
       await seed(strapi);
@@ -90,6 +93,25 @@ async function setPublicPermissions(strapi) {
     }
   }
   strapi.log.info('[bootstrap] public API permissions ensured');
+}
+
+// Pre-populate the Customer Service Charter single type with EN + SW content on
+// first boot, so management opens a filled-in form instead of a blank one.
+// Idempotent: skips if the single type already has content.
+async function seedCharter(strapi) {
+  const uid = 'api::service-charter.service-charter';
+  try {
+    const charter = require('./charter-seed');
+    const existing = await strapi.documents(uid).findMany({ locale: 'en' });
+    if (Array.isArray(existing) && existing.length > 0) return;
+    const created = await strapi.documents(uid).create({ data: charter.en, status: 'published' });
+    if (created && created.documentId) {
+      await strapi.documents(uid).update({ documentId: created.documentId, locale: 'sw', data: charter.sw, status: 'published' });
+    }
+    strapi.log.info('[seed] Customer Service Charter populated (en + sw)');
+  } catch (e) {
+    strapi.log.warn('[seed] charter seed skipped: ' + e.message);
+  }
 }
 
 async function seed(strapi) {
