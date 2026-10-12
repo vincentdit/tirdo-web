@@ -57,8 +57,8 @@ const engineeringCol = {
   headingKey: "headings.engineeringDevelopment",
   items: [
     { title: "Energy Technologies Division", key: "divisions.energy", href: "/departments/energy" },
-    { title: "Engineering Material Technology Division", key: "divisions.materials", href: "/departments/materials" },
-    { title: "Textile & Leather Technologies Division", key: "divisions.textileLeather", href: "/departments/textile-leather" },
+    { title: "Material Science and Technologies Division", key: "divisions.materials", href: "/departments/materials" },
+    { title: "Textile and Leather Technologies Division", key: "divisions.textileLeather", href: "/departments/textile-leather" },
   ],
 };
 const ictCol = {
@@ -67,7 +67,7 @@ const ictCol = {
   items: [
     { title: "Information & Communication Technologies Division", key: "divisions.ict", href: "/departments/ict" },
     { title: "Electronics & Instrumentation Technologies Division", key: "divisions.instrumentation", href: "/departments/instrumentation" },
-    { title: "Technology Transfer & Pilot Plants Division", key: "divisions.techTransfer", href: "/departments/technology-transfer" },
+    { title: "Technology Transfer and Pilot Plants Division", key: "divisions.techTransfer", href: "/departments/technology-transfer" },
   ],
 };
 

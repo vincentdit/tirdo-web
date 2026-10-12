@@ -40,11 +40,11 @@
       "foodBiotech": "Food and Biotechnology Division",
       "industrialChemistry": "Agro processing Industrial Chemistry Division",
       "energy": "Energy Technologies Division",
-      "materials": "Engineering Material Technology Division",
-      "textileLeather": "Textile & Leather Technologies Division",
+      "materials": "Material Science and Technologies Division",
+      "textileLeather": "Textile and Leather Technologies Division",
       "ict": "Information & Communication Technologies Division",
       "instrumentation": "Electronics & Instrumentation Technologies Division",
-      "techTransfer": "Technology Transfer & Pilot Plants Division"
+      "techTransfer": "Technology Transfer and Pilot Plants Division"
     },
     "finance": {
       "store": "Store Section",

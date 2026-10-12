@@ -408,24 +408,95 @@ export const departments: Department[] = [
   },
   {
     slug: "materials",
-    title: "Engineering Material Technology Division",
+    title: "Material Science and Technologies Division",
     group: "Engineering Development",
     blurb: "Materials testing, characterization and development of local materials.",
     head: "Eng. Liberatus Chizuzu",
+    headRole: "Head of Material Science and Technologies Section",
+    headPhoto: "/media/administration/liberatus-chizuzu.png",
     body: [
-      "The Material Science and Technologies Section develops and specifies materials by cost and performance across metals, ceramics, polymers, biomaterials and composites, including secondary metallurgy for steel rolling mills and foundries, sponge-iron development, and coking-coal characterization.",
-      "It provides both destructive testing (hardness, tensile, torsion) and a broad range of non-destructive testing — ultrasonic, magnetic particle, liquid penetrant, radiographic, remote visual and eddy-current inspection — for civil, aeronautical and systems-engineering applications.",
+      "The division develops and specifies materials by cost and performance, understands the limits of a material and how its properties change, and creates new materials with better properties. Materials covered include metals, ceramics, polymers, biomaterials and composites.",
+    ],
+    panels: [
+      {
+        title: "Research and development",
+        points: [
+          {
+            label: "Metallurgical research",
+            items: [
+              "Introduction of secondary metallurgy practices in steel rolling mills and foundries.",
+              "Development of sponge iron for rolling mills and foundries.",
+            ],
+          },
+          {
+            label: "Coke for iron and steel",
+            items: [
+              "Characterization of coking coal.",
+              "Coal blending.",
+              "Coal for coke technologies.",
+            ],
+          },
+        ],
+      },
+      {
+        title: "Inspection services and consultancy",
+        intro: "The division has portable equipment and instruments for non-destructive testing.",
+        points: [
+          {
+            label: "Destructive testing",
+            text: "Destructive testing finds the exact point of failure of materials, components or machines. The tested item is stressed until it deforms or breaks, so tested parts cannot be reused in regular operation.",
+            items: [
+              "Hardness testing.",
+              "Tensile (elongation) testing.",
+              "Torsion testing.",
+            ],
+          },
+          {
+            label: "Non-destructive testing",
+            text: "Non-destructive testing identifies defects and examines material and structural properties without causing damage. Methods in standard use in civil, aeronautical and systems engineering include ultrasonic testing, magnetic particle inspection, liquid penetrant testing, radiographic testing, remote visual inspection and eddy-current testing.",
+            items: [
+              "Eddy-current testing.",
+              "Eddy-current inspection.",
+            ],
+          },
+        ],
+      },
     ],
   },
   {
     slug: "textile-leather",
-    title: "Textile & Leather Technologies Division",
+    title: "Textile and Leather Technologies Division",
     group: "Engineering Development",
     blurb: "Textile, leather and garment technology and quality improvement.",
     head: "Eng. Athanas Ntawanga",
+    headRole: "Head of Textile and Leather Technologies Division",
     body: [
-      "The Textile and Leather Technologies Division advances cleaner, competitive production and quality assurance across the textile and leather value chains, while adding value to waste streams. Its R&D covers collagen and natural fibres, non-woven and woven fabric technologies, and organic materials for textiles.",
-      "Services include quality assurance for yarn, fabrics and leather; laboratory analysis; training in leather production, spinning and weaving; hand-loom and semi-leather recycling support; and turn-key consulting for manufacturers.",
+      "The Textile and Leather Technologies Division develops cleaner, competitive technologies for textile and leather production, assures quality along the textile and leather value chain, and adds value to leather and textile waste.",
+    ],
+    panels: [
+      {
+        title: "Research and development",
+        items: [
+          "Product development using collagen and natural fibres.",
+          "Leather and textile product development.",
+          "Non-woven fabric production technologies.",
+          "Woven fabric structure design.",
+          "Development of organic materials for the textile and leather industries.",
+          "Production optimisation for the textile and leather industries.",
+        ],
+      },
+      {
+        title: "Consultancies",
+        items: [
+          "Yarn, fabric and leather quality assurance.",
+          "Laboratory services for textile and leather materials.",
+          "Research on the latest textile machine technologies.",
+          "Training in leather, spinning and weaving production.",
+          "Training in the use of semi-leather recycling.",
+          "Hand-loom production.",
+          "Turn-key consultancy for textile and leather industries, including Karanga Leather Industries.",
+        ],
+      },
     ],
   },
   {
@@ -434,9 +505,30 @@ export const departments: Department[] = [
     group: "ICT & Technology Development",
     blurb: "Software systems, cybersecurity, networks and industrial ICT solutions.",
     head: "Ms. Elizabeth Mtegwa",
+    headRole: "Head of ICT Section",
+    headPhoto: "/media/administration/elizabeth-mtegwa.jpg",
     body: [
-      "The Information & Communication Technologies Division applies ICT within the organisation and provides technical advisory support to industry. Its research spans cybersecurity and forensics, sensor and mobile application development, and e-waste management.",
-      "On the consultancy side it supports SME ICT operations, industrial research and innovation databases, advanced computing in education, and ideation portals.",
+      "The division provides expertise and services on the application of ICT within TIRDO, and technical advice and support to industries and other stakeholders on ICT issues.",
+    ],
+    panels: [
+      {
+        title: "Research and development",
+        items: [
+          "Cybersecurity and forensics.",
+          "Sensor applications.",
+          "Mobile applications.",
+          "E-waste management.",
+        ],
+      },
+      {
+        title: "Consultancies",
+        items: [
+          "Industrial research, innovation and technology databases.",
+          "Use of ICT in SME operations.",
+          "Advanced computer applications in teaching.",
+          "Ideation portal.",
+        ],
+      },
     ],
   },
   {
@@ -445,19 +537,73 @@ export const departments: Department[] = [
     group: "ICT & Technology Development",
     blurb: "Design, calibration and maintenance of scientific instruments.",
     head: "Ms. Ester Lazaro",
+    headRole: "Head of Electronics and Instrumentation Technology Section",
+    headPhoto: "/media/administration/ester-lazaro.png",
     body: [
-      "The Electronics and Instrumentation Technologies Division develops, controls and transfers expertise in electronics and instrumentation — designing, simulating and testing electronic circuits, and calibrating and maintaining instruments so measurements are accurate and reliable.",
-      "It offers mechanical, electrical, pipette, flow, temperature and pressure calibration, and the installation, maintenance and repair of analytical instruments including HPLCs, gas chromatographs and spectrophotometers.",
+      "The division develops, controls and transfers technical expertise in electronics and instrumentation to meet the changing needs of industry. Its work covers electronic circuit design, simulation, testing, calibration and maintenance of electronic devices.",
+      "Mission: to ensure measurements taken by instruments are accurate and reliable.",
+      "Vision: to become a centre of excellence in instrumentation and electronics for industrial research.",
+    ],
+    panels: [
+      {
+        title: "What the division does",
+        points: [
+          {
+            label: "Electronics design",
+            text: "Circuit design selects and connects physical devices so they meet performance and environmental specifications, including work that supports digital transformation.",
+          },
+          {
+            label: "Calibration",
+            text: "Instruments are configured so results stay within an acceptable range, and factors that cause inaccurate measurements are reduced or removed.",
+            items: [
+              "Mechanical calibration.",
+              "Electrical calibration.",
+              "Pipette calibration.",
+              "Flow calibration.",
+              "Temperature calibration.",
+              "Pressure calibration.",
+            ],
+          },
+          {
+            label: "Installation and maintenance",
+            text: "The section installs, maintains and repairs electronic equipment — circuits, components and related systems used in communications, telemetering, power systems, metering and remote control — so laboratory and industrial processes can be maintained, prevented from failing, improved and managed.",
+            items: [
+              "Analytical instruments, including HPLCs and gas chromatographs.",
+              "Dissolution instrumentation and UV-VIS.",
+              "Spectrophotometers.",
+              "TOC analysers.",
+            ],
+          },
+        ],
+      },
     ],
   },
   {
     slug: "technology-transfer",
-    title: "Technology Transfer & Pilot Plants Division",
+    title: "Technology Transfer and Pilot Plants Division",
     group: "ICT & Technology Development",
     blurb: "Commercialization and diffusion of proven technologies to industry.",
+    head: "Ms. Martha Mhongole",
+    headRole: "Head of Technology Transfer and Pilot Plants Section",
+    headPhoto: "/media/administration/martha-mhongole.png",
     body: [
-      "The Technology Transfer and Pilot Plants Unit bridges research and practical application, ensuring TIRDO's innovations reach industry to solve productivity challenges.",
-      "It assesses the commercial potential of research, conducts market analysis, protects intellectual property (patents and trademarks), incubates start-ups from TIRDO innovations, and trains researchers on IP, technology transfer and commercialization.",
+      "The Technology Transfer and Pilot Plants Unit bridges research and practical application. It makes TIRDO's innovations, knowledge and technologies available to users, especially industry, so they can address limits on industrial productivity.",
+    ],
+    panels: [
+      {
+        title: "Functions",
+        items: [
+          "Manage and monitor the technologies, innovations and inventions developed at TIRDO.",
+          "Assess the commercial potential of inventions, technologies and research findings.",
+          "Identify potential markets, industries and applications for developed technologies and inventions.",
+          "Identify and protect intellectual property from research, including patents, copyrights and trademarks.",
+          "Conduct market research on the feasibility and demand for new technologies.",
+          "Help form start-up companies, with guidance, mentorship and resources for researchers spinning off their innovations.",
+          "Foster collaboration between researchers and industry partners.",
+          "Train researchers on intellectual property, technology transfer and commercialisation.",
+          "Build relationships with partners, investors and industry stakeholders to increase the visibility of TIRDO's innovations.",
+        ],
+      },
     ],
   },
   {
@@ -466,14 +612,14 @@ export const departments: Department[] = [
     group: "Human Resources & Admin",
     blurb: "Human resources, administration and estate services that keep TIRDO running.",
     head: "Mr. Emilian S. Bundala",
+    headRole: "Director of Human Resource and Administration",
     body: [
-      "The Human Resources & Administration Department provides the people and support services that enable TIRDO to deliver its mandate — recruitment, staff development and welfare, records and correspondence, transport, security, and the upkeep of TIRDO's buildings and estate.",
-      "It develops and implements human-resource policies and administrative systems, supports performance management and training, and ensures a safe, well-run working environment across the organisation.",
+      "The Human Resources and Administration Department is led by the Director of Human Resource and Administration. It is organised into the Human Resource Division, the Administration Division and the Estate Division.",
     ],
     sections: [
-      { name: "Human Resource Division", items: ["Personnel", "Training"] },
-      { name: "Administration Division", items: ["Office Management", "Transport", "Maintenance", "Security"] },
-      { name: "Estate Division", items: ["Building & Estate Maintenance", "Carpentry"] },
+      { name: "Human Resource Division" },
+      { name: "Administration Division" },
+      { name: "Estate Division" },
     ],
   },
   {
@@ -482,9 +628,26 @@ export const departments: Department[] = [
     group: "Finance",
     blurb: "Financial management, budgeting, accounting and revenue control.",
     head: "Mr. David J. Kisiwa",
+    headRole: "Director of Finance",
     body: [
-      "The Finance Department is the institutional hub for financial management and advisory services. It coordinates the preparation and implementation of the Corporate Strategic Plan, Annual Budget and financial regulations, and ensures proper accounting and control of revenue and expenditure alongside the preparation of annual financial statements.",
-      "It develops financial systems and procedures, manages organisational cash flow, coordinates with suppliers and tax authorities, and provides technical advice on finance, accounts and business-process optimisation — helping TIRDO operate efficiently and transparently.",
+      "The Finance Department provides expertise and services on finance and accounts to the institution.",
+    ],
+    panels: [
+      {
+        title: "Functions",
+        items: [
+          "Coordinate preparation, review and implementation of the Corporate Strategic Plan, action plan and annual budget.",
+          "Review management tools such as financial regulations, accounting policy and manuals, and the records, information and data required by public-service policies and regulations.",
+          "Develop, examine and evaluate financial and accounting systems and procedures, including financial regulations that keep the system reliable and sound.",
+          "Ensure proper accounting and control of revenue and expenditure, and coordinate preparation of the annual financial statements.",
+          "Advise on organisational efficiency and business-process improvement, and promote the institution's development programmes and activities.",
+          "Provide technical advice on finance and accounts, information and communication technology, estate management and marketing.",
+          "Establish and implement a system for managing financial and physical resources.",
+          "Ensure proper management of the institution's cash flow.",
+          "Coordinate the financial actors around the institution: suppliers, legal and administrative advisers, and tax services.",
+          "Ensure cross-cutting issues are addressed in strategic plans and annual work plans.",
+        ],
+      },
     ],
     sections: [
       { name: "Store Section" },
@@ -679,10 +842,11 @@ export const management: Leader[] = [
   { name: "Dr. Ivy Matoju", role: "Head, Food and Biotechnology" },
   { name: "Ms. Jacqueline Mwendwa", role: "Head, Industrial Chemistry" },
   { name: "Eng. Hossen Iddi Kayumba", role: "Head, Energy Technologies", photo: "/media/administration/hossen-kayumba.png" },
-  { name: "Eng. Liberatus Chizuzu", role: "Head, Material Science & Technology" },
+  { name: "Eng. Liberatus Chizuzu", role: "Head, Material Science & Technology", photo: "/media/administration/liberatus-chizuzu.png" },
   { name: "Eng. Athanas Ntawanga", role: "Head, Textile & Leather Technologies" },
-  { name: "Ms. Elizabeth Mtegwa", role: "Head, ICT" },
-  { name: "Ms. Ester Lazaro", role: "Head, Electronics & Instrumentation" },
+  { name: "Ms. Elizabeth Mtegwa", role: "Head, ICT", photo: "/media/administration/elizabeth-mtegwa.jpg" },
+  { name: "Ms. Ester Lazaro", role: "Head, Electronics & Instrumentation", photo: "/media/administration/ester-lazaro.png" },
+  { name: "Ms. Martha Mhongole", role: "Head, Technology Transfer and Pilot Plants", photo: "/media/administration/martha-mhongole.png" },
 ];
 
 export type OrgUnit = { name: string; role?: string; head?: string };
