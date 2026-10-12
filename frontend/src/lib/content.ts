@@ -172,36 +172,121 @@ export const services: ServiceItem[] = [
 ];
 
 export type DeptSection = { name: string; items?: string[] };
+export type DeptFocus = { title: string; intro?: string; paragraphs?: string[]; items?: string[]; note?: string };
 export type Department = {
   slug: string;
   title: string;
   group: string;
   blurb: string;
   head?: string;
+  headRole?: string;
+  headPhoto?: string;
   body: string[];
   sections?: DeptSection[];
+  focus?: DeptFocus[];
+  panels?: DeptFocus[];
+  achievements?: string[];
 };
 
 export const departments: Department[] = [
   {
     slug: "environment",
-    title: "Environmental Technology & Occupational Safety Division",
+    title: "Environmental Technologies and Occupational Safety Division",
     group: "Industrial Research",
     blurb: "Environmental monitoring, pollution control and cleaner production.",
     head: "Ms. Kunda Sikazwe",
+    headRole: "Head of Environment Section",
+    headPhoto: "/media/administration/kunda-sikazwe.png",
     body: [
-      "The Environmental Technologies and Occupational Safety Division carries out industrial research and development, environmental management, and occupational health and safety within industrial settings — minimising pollution while maintaining safe, efficient production.",
-      "Its research emphasises value addition to industrial waste, conventional and onsite wastewater treatment, and cleaner production in the leather and textile industries. The division offers environmental monitoring for industry, government and private clients: air quality (particulates, metals, gas emissions), noise and light, wastewater and potable water analysis, environmental impact assessments and audits, and sludge quality — applied across the steel, tobacco, cement, beverage, brewing and mining sectors.",
+      "The Environmental Technologies and Occupational Safety Division works on industrial research and development, environmental management, and occupational health and safety on the industrial work floor — supporting improved production and the well-being of industrial staff.",
+    ],
+    focus: [
+      {
+        title: "Research and Development",
+        intro: "Research and development is the core activity of the division. Research programmes include:",
+        items: [
+          "Value addition to industrial waste streams.",
+          "Conventional wastewater treatment systems.",
+          "Onsite wastewater treatment systems.",
+          "Cleaner production in leather and textile industries.",
+        ],
+      },
+      {
+        title: "Consultancy and technical services to industries",
+        paragraphs: [
+          "Advice to industries on how to manage their resources for optimum production while ensuring minimal environmental pollution.",
+          "The division offers indoor and outdoor environmental quality monitoring for industries, government institutions and individual customers.",
+          "Environmental quality monitoring covers air quality (particulate matter and gas emissions), noise level, light intensity, ground vibration, heat, wastewater and potable water quality.",
+          "Other services include environmental impact assessment and environmental auditing.",
+        ],
+      },
+    ],
+    achievements: [
+      "Indoor air quality monitoring for steel and metal, tobacco processing, cement manufacturing industries and mines.",
+      "Wastewater monitoring for beverage, tobacco processing, steel and metal industries, breweries and mines.",
+      "Noise level monitoring in mines, cement, tobacco processing, and steel and metal industries.",
+      "Flue gas monitoring in mines, cement, tobacco processing, and steel and metal industries.",
+      "Particulate matter monitoring in mines, cement factories, tobacco processing, and steel and metal industries.",
+      "Monitoring of the biological and chemical quality of sludge from wastewater works of some industries.",
     ],
   },
   {
     slug: "food-biotechnology",
-    title: "Food Processing & Biotechnology Division",
+    title: "Food and Biotechnology Division",
     group: "Industrial Research",
     blurb: "Food processing, preservation, value addition and bioprocess research.",
+    head: "Dr. Ivy Matoju",
+    headRole: "Head of Food and Biotechnology Section",
     body: [
-      "The Food and Biotechnology Division comprises food processing, microbiology and biotechnology sections, delivering research, development and analytical services for a rapidly expanding food industry.",
-      "Its accredited food laboratory (established 1995, accredited in 2009) performs chemical, physical and microbiological testing on fish, cereals, legumes, meat, dairy and honey, and water-quality determinations. The division also produces mushroom spawn for farmers and trains industrialists and SMEs on food processing, packaging, safety, GMP, GHP and HACCP.",
+      "The Food and Biotechnology Division is under the Industrial Research Department. It has three sections: food processing, microbiology and biotechnology.",
+      "The food industry in the country is growing quickly in investment and product development, and needs research, development and analytical services in order to produce quality and safe food. The division carries out that research and development, and acts as a bridge between TIRDO and the food industry.",
+    ],
+    panels: [
+      {
+        title: "Role of the division",
+        intro: "The division was developed to:",
+        items: [
+          "Carry out research related to food and biotechnology.",
+          "Prepare project proposals on food issues.",
+          "Provide food analytical services to industries and the public.",
+          "Provide consultancy services related to food and biotechnology.",
+          "Produce spawn for mushroom farmers.",
+          "Provide training on basic food processing, microbiology and mushroom production to industrialists, small and medium enterprises, establishments and the general public.",
+        ],
+      },
+      {
+        title: "Food laboratory",
+        paragraphs: [
+          "The division's food laboratory was established in 1995 to support research and projects at TIRDO. It also provides food analytical services.",
+          "Those services cover chemical, physical and microbiological quality testing of foods of animal and plant origin, including fish and fish products, cereals, legumes, meat and meat products, edible fats and oils, dairy and dairy products, honey, fruits and vegetables. The laboratory also determines water quality. Clients include individuals, industries, hotels and institutions.",
+          "The laboratory was accredited in November 2009 for five microbiology parameters. The accreditation scope is based on food samples:",
+        ],
+        items: [
+          "Detection and enumeration of total aerobic count.",
+          "Detection and enumeration of Staphylococcus aureus.",
+          "Detection and enumeration of total coliforms.",
+          "Detection and enumeration of Escherichia coli.",
+          "Detection of Salmonella.",
+        ],
+        note: "Other parameters the laboratory can conduct, though not yet accredited, include detection of Vibrio cholerae, and detection and enumeration of Enterobacteriaceae and faecal coliforms. The laboratory is extending its scope to water samples on the same parameters and other common parameters found in water.",
+      },
+      {
+        title: "Current projects",
+        intro: "The division is currently carrying out:",
+        items: [
+          "Improvement of drying techniques for cassava grits using an improved tunnel solar dryer to produce high-quality cassava flour (HQCF).",
+          "Improvement of the palm oil extraction machine and palm oil quality parameters.",
+        ],
+      },
+      {
+        title: "Consultancies the division offers",
+        intro: "The division offers consultancy to its clients. The main services are:",
+        items: [
+          "Analytical services for food and water samples for hotels, catering centres, schools, industries and SMEs.",
+          "Industrial assessment of production processes, raw-material use, plant set-up, quality-assurance implementation and food-safety programmes.",
+          "Training on food processing, food packaging, food safety, Good Manufacturing Practices (GMP), Good Hygienic Practices (GHP) and Hazard Analysis and Critical Control Point (HACCP) for hotels, catering centres, schools, industries, associations and SMEs.",
+        ],
+      },
     ],
   },
   {
@@ -210,9 +295,31 @@ export const departments: Department[] = [
     group: "Industrial Research",
     blurb: "Chemical analysis, formulation and process chemistry for industry.",
     head: "Ms. Jacqueline Mwendwa",
+    headRole: "Head of Industrial Chemistry Section",
     body: [
-      "The Agro-Processing and Industrial Chemistry Division promotes the use of local raw materials for industrial production through value addition, spanning medicinal and synthetic chemistry, nanotechnology and new materials, analytical and environmental chemistry, and natural products.",
-      "Its well-equipped laboratory provides physicochemical quality testing of raw materials, products and industrial wastes; proximate analysis of foods; micronutrient determination in food, fertilizers and salt; heavy-metals analysis; and technical problem-solving for agro-processing industries and SMEs.",
+      "The Agro-Processing Technologies and Industrial Chemistry Division is under the Industrial Research Department. Its sections include medicinal and synthetic chemistry, nanotechnology and new materials, analytical and environmental chemistry, and natural products chemistry.",
+      "Tanzania is industrialising rapidly, using raw materials from agricultural produce. Research in green agro-processing and industrial chemistry is needed so that produce and by-products can be turned into industrial and value-added products. The division carries out research and consultancy on the analytical, physical and chemical processes involved.",
+    ],
+    panels: [
+      {
+        title: "Role of the division",
+        intro: "The division was developed to:",
+        items: [
+          "Promote the use of local raw materials for industrial production through value addition.",
+          "Provide quality, reliable and internationally recognised analytical laboratory services.",
+          "Document and share knowledge gained through research.",
+          "Improve local technologies so products meet standards and customer specifications.",
+          "Share technologies adopted and adapted from other countries that suit industrial development in Tanzania.",
+        ],
+      },
+      {
+        title: "Chemistry laboratory and consultancy",
+        paragraphs: [
+          "The division has a chemistry laboratory equipped for agro-processing and industrial chemistry research and projects.",
+          "Consultancy covers physicochemical quality testing of raw materials, industrial products and industrial wastes. This includes proximate analysis of food of plant and animal origin, micronutrient determination in food, fertiliser and salt quality, and heavy-metals analysis in raw materials, industrial products and industrial wastes.",
+          "The division also advises industries and SMEs on problems in agro-processing and industrial chemistry.",
+        ],
+      },
     ],
   },
   {
@@ -495,7 +602,8 @@ export const galleryImages: GalleryImage[] = [
 // TIRDO management / division heads (from tirdo.or.tz department pages).
 export const management: Leader[] = [
   { name: "Prof. Mkumbukwa M. A.", role: "Director General" },
-  { name: "Ms. Kunda Sikazwe", role: "Head, Environment & Occupational Safety" },
+  { name: "Ms. Kunda Sikazwe", role: "Head, Environment & Occupational Safety", photo: "/media/administration/kunda-sikazwe.png" },
+  { name: "Dr. Ivy Matoju", role: "Head, Food and Biotechnology" },
   { name: "Ms. Jacqueline Mwendwa", role: "Head, Industrial Chemistry" },
   { name: "Eng. Hossen Iddi Kayumba", role: "Head, Energy Technologies" },
   { name: "Eng. Liberatus Chizuzu", role: "Head, Material Science & Technology" },

@@ -3,8 +3,29 @@ import { User, Mail, Phone, MapPin } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { ProjectCard } from "@/components/site/cards";
 import { ButtonLink } from "@/components/ui/button";
-import { departments, projects } from "@/lib/content";
+import { departments, projects, type DeptFocus } from "@/lib/content";
 import { site } from "@/lib/site";
+
+function FocusBlock({ block, numbered }: { block: DeptFocus; numbered?: string }) {
+  return (
+    <div>
+      <h3 className="mb-2 font-semibold text-brand-teal">{numbered ? `${numbered} ` : ""}{block.title}</h3>
+      {block.intro && <p className="mb-3">{block.intro}</p>}
+      {block.paragraphs?.map((p) => <p key={p} className="mb-3">{p}</p>)}
+      {block.items && block.items.length > 0 && (
+        <ul className="space-y-1.5">
+          {block.items.map((item) => (
+            <li key={item} className="flex items-start gap-2">
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {block.note && <p className="mt-3">{block.note}</p>}
+    </div>
+  );
+}
 
 export function generateStaticParams() {
   return departments.map((d) => ({ slug: d.slug }));
@@ -32,21 +53,81 @@ export default function DepartmentPage({ params }: { params: { slug: string } })
       <PageBanner title={dept.title} subtitle={dept.group} crumbs={[{ label: "Departments", href: "/departments" }, { label: dept.title }]} />
       <section className="py-14">
         <div className="container-tirdo grid gap-10 lg:grid-cols-[1.6fr_1fr]">
-          <div className="space-y-4 text-foreground/80">
-            {dept.body.map((p, i) => <p key={i}>{p}</p>)}
+          <div className="space-y-8 text-foreground/80">
+            <div className="space-y-4">
+              {dept.body.map((p, i) => <p key={i}>{p}</p>)}
+            </div>
+
+            {dept.focus && dept.focus.length > 0 && (
+              <div>
+                <h2 className="mb-5 text-xl font-bold text-primary">What we do best</h2>
+                <div className="space-y-6">
+                  {dept.focus.map((block, i) => (
+                    <FocusBlock key={block.title} block={block} numbered={`${i + 1}.`} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {dept.panels && dept.panels.length > 0 && (
+              <div className="space-y-8">
+                {dept.panels.map((block) => (
+                  <div key={block.title}>
+                    <h2 className="mb-3 text-xl font-bold text-primary">{block.title}</h2>
+                    {block.intro && <p className="mb-3">{block.intro}</p>}
+                    {block.paragraphs?.map((p) => <p key={p} className="mb-3">{p}</p>)}
+                    {block.items && block.items.length > 0 && (
+                      <ul className="space-y-1.5">
+                        {block.items.map((item) => (
+                          <li key={item} className="flex items-start gap-2">
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {block.note && <p className="mt-3">{block.note}</p>}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {dept.achievements && dept.achievements.length > 0 && (
+              <div>
+                <h2 className="mb-4 text-xl font-bold text-primary">Achievements</h2>
+                <ul className="space-y-2">
+                  {dept.achievements.map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Contact / staff */}
           <aside>
             <div className="rounded-xl border bg-secondary/40 p-6">
               {dept.head && (
-                <div className="mb-4 flex items-center gap-3 border-b pb-4">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                    <User className="h-6 w-6" />
-                  </span>
-                  <div>
-                    <div className="text-xs uppercase tracking-wide text-muted-foreground">{dept.sections ? "Director" : "Head of Division"}</div>
-                    <div className="font-semibold text-primary">{dept.head}</div>
+                <div className="mb-4 border-b pb-4">
+                  {dept.headPhoto && (
+                    <div className="mb-3 h-44 w-36 overflow-hidden rounded-lg border border-black/5 shadow-sm">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={dept.headPhoto} alt={dept.head} className="h-full w-full object-cover object-top" />
+                    </div>
+                  )}
+                  <div className="flex items-center gap-3">
+                    {!dept.headPhoto && (
+                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                        <User className="h-6 w-6" />
+                      </span>
+                    )}
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-muted-foreground">{dept.headRole ?? (dept.sections ? "Director" : "Head of Division")}</div>
+                      <div className="font-semibold text-primary">{dept.head}</div>
+                    </div>
                   </div>
                 </div>
               )}

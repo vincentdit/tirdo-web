@@ -125,7 +125,15 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
   for (const d of content.departments)
     docs.push({
       id: `department:${d.slug}`, title: d.title, type: "Department", url: `/departments/${d.slug}`,
-      excerpt: d.blurb, body: [...(d.body ?? []), ...(d.sections?.flatMap((s) => [s.name, ...(s.items ?? [])]) ?? [])].join(" "), category: d.group,
+      excerpt: d.blurb,
+      body: [
+        ...(d.body ?? []),
+        ...(d.focus?.flatMap((f) => [f.title, f.intro ?? "", ...(f.paragraphs ?? []), ...(f.items ?? []), f.note ?? ""]) ?? []),
+        ...(d.panels?.flatMap((f) => [f.title, f.intro ?? "", ...(f.paragraphs ?? []), ...(f.items ?? []), f.note ?? ""]) ?? []),
+        ...(d.achievements ?? []),
+        ...(d.sections?.flatMap((s) => [s.name, ...(s.items ?? [])]) ?? []),
+      ].join(" "),
+      category: d.group,
     });
 
   for (const a of ABOUT_PAGES)

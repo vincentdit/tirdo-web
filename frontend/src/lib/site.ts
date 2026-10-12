@@ -47,8 +47,8 @@ const researchCol = {
   heading: "Industrial Research",
   headingKey: "headings.industrialResearch",
   items: [
-    { title: "Environmental Technology & Occupational Safety Division", key: "divisions.environment", href: "/departments/environment" },
-    { title: "Food Processing & Biotechnology Division", key: "divisions.foodBiotech", href: "/departments/food-biotechnology" },
+    { title: "Environmental Technologies and Occupational Safety Division", key: "divisions.environment", href: "/departments/environment" },
+    { title: "Food and Biotechnology Division", key: "divisions.foodBiotech", href: "/departments/food-biotechnology" },
     { title: "Agro processing Industrial Chemistry Division", key: "divisions.industrialChemistry", href: "/departments/industrial-chemistry" },
   ],
 };
