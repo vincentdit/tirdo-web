@@ -86,6 +86,22 @@ export default function DepartmentPage({ params }: { params: { slug: string } })
                         ))}
                       </ul>
                     )}
+                    {block.points?.map((point) => (
+                      <div key={point.label} className="mt-4">
+                        <h3 className="mb-2 font-semibold text-brand-teal">{point.label}</h3>
+                        {point.text && <p className="mb-2">{point.text}</p>}
+                        {point.items && point.items.length > 0 && (
+                          <ul className="space-y-1.5">
+                            {point.items.map((item) => (
+                              <li key={item} className="flex items-start gap-2">
+                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
                     {block.note && <p className="mt-3">{block.note}</p>}
                   </div>
                 ))}

@@ -56,7 +56,7 @@ const engineeringCol = {
   heading: "Engineering Development",
   headingKey: "headings.engineeringDevelopment",
   items: [
-    { title: "Energy Technology Division", key: "divisions.energy", href: "/departments/energy" },
+    { title: "Energy Technologies Division", key: "divisions.energy", href: "/departments/energy" },
     { title: "Engineering Material Technology Division", key: "divisions.materials", href: "/departments/materials" },
     { title: "Textile & Leather Technologies Division", key: "divisions.textileLeather", href: "/departments/textile-leather" },
   ],

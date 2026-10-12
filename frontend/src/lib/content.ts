@@ -172,7 +172,8 @@ export const services: ServiceItem[] = [
 ];
 
 export type DeptSection = { name: string; items?: string[] };
-export type DeptFocus = { title: string; intro?: string; paragraphs?: string[]; items?: string[]; note?: string };
+export type DeptPoint = { label: string; text?: string; items?: string[] };
+export type DeptFocus = { title: string; intro?: string; paragraphs?: string[]; items?: string[]; note?: string; points?: DeptPoint[] };
 export type Department = {
   slug: string;
   title: string;
@@ -324,13 +325,85 @@ export const departments: Department[] = [
   },
   {
     slug: "energy",
-    title: "Energy Technology Division",
+    title: "Energy Technologies Division",
     group: "Engineering Development",
     blurb: "Renewable energy, energy efficiency and industrial energy systems.",
     head: "Eng. Hossen Iddi Kayumba",
+    headRole: "Head of Energy Section",
+    headPhoto: "/media/administration/hossen-kayumba.png",
     body: [
-      "The Energy Technologies Division develops sustainable energy solutions across research, technical services and capacity building — from coal characterization and biofuels to improved cooking and renewable energy systems using biomass and agricultural waste.",
-      "It helps organisations implement energy management aligned to ISO 50001, and performs performance testing of energy systems (ovens, furnaces, solar PV, boilers), industrial energy audits, renewable-energy technology development, and skills training, managing projects from feasibility studies through commissioning.",
+      "The Energy Technologies Division develops energy technologies, provides technical services, and builds skills for industry and communities.",
+    ],
+    panels: [
+      {
+        title: "Research and innovation",
+        points: [
+          {
+            label: "Research and development",
+            text: "The division undertakes research and development to create energy technologies and increase the use of alternative energy sources.",
+            items: [
+              "Coal characterization for existing coal mines, new coal fields and coal database development.",
+              "Coal utilization technologies such as coal briquettes for household and industrial use.",
+              "Industrial technologies for the production of biofuels and bio-based chemicals.",
+              "Improved cook stoves for rural and peri-urban applications.",
+            ],
+          },
+          {
+            label: "Energy generation from local resources",
+            text: "It innovates in energy generation technologies that use locally available energy resources.",
+            items: [
+              "Transforming biomass — especially agricultural waste, forest waste and animal dung — into biofuels.",
+              "Production of bioethanol and biogas from organic wastes.",
+            ],
+          },
+          {
+            label: "Baseline and market studies",
+            text: "It designs and implements baseline and market-potential studies.",
+          },
+        ],
+      },
+      {
+        title: "Technical services",
+        points: [
+          {
+            label: "Energy resource assessment",
+            text: "The division assesses energy-resource quality and maintains a databank of Tanzania's energy resources.",
+            items: [
+              "Quality assessment of clean and alternative energy sources such as biomass briquettes and coal briquettes.",
+              "Performance testing of energy systems and technologies such as ovens, furnaces, solar PV, boilers and cooking stoves, using national and international protocols and standards.",
+              "Renewable energy technology development, including solar PV, wind and biogas.",
+            ],
+          },
+          {
+            label: "Energy management and auditing",
+            text: "It helps industries and organisations monitor, control and optimise energy use so they conserve energy and reduce costs.",
+            items: [
+              "Support for industries and businesses to adopt an Energy Management System (EnMS) in line with ISO 50001.",
+              "Energy audits that identify cost-effective ways to reduce energy use, including measurement and verification while recommendations are implemented.",
+            ],
+          },
+          {
+            label: "Community energy applications",
+            items: [
+              "Solar dryers for rural community applications.",
+              "Improved cook stoves to replace traditional stoves in rural communities.",
+            ],
+          },
+          {
+            label: "Project management",
+            text: "The division manages energy projects from pre-feasibility studies through to commissioning of sustainable energy projects.",
+          },
+        ],
+      },
+      {
+        title: "Training and skills development",
+        items: [
+          "Skills development and capacity building for industrialists in energy materials selection.",
+          "Capacity building in quality assessment of energy systems and technologies.",
+          "Training and awareness for SMEs and industrialists on producing clean energy technologies.",
+          "Training and awareness on energy management practices: energy auditing, energy conservation, energy efficiency and renewable energy.",
+        ],
+      },
     ],
   },
   {
@@ -605,7 +678,7 @@ export const management: Leader[] = [
   { name: "Ms. Kunda Sikazwe", role: "Head, Environment & Occupational Safety", photo: "/media/administration/kunda-sikazwe.png" },
   { name: "Dr. Ivy Matoju", role: "Head, Food and Biotechnology" },
   { name: "Ms. Jacqueline Mwendwa", role: "Head, Industrial Chemistry" },
-  { name: "Eng. Hossen Iddi Kayumba", role: "Head, Energy Technologies" },
+  { name: "Eng. Hossen Iddi Kayumba", role: "Head, Energy Technologies", photo: "/media/administration/hossen-kayumba.png" },
   { name: "Eng. Liberatus Chizuzu", role: "Head, Material Science & Technology" },
   { name: "Eng. Athanas Ntawanga", role: "Head, Textile & Leather Technologies" },
   { name: "Ms. Elizabeth Mtegwa", role: "Head, ICT" },

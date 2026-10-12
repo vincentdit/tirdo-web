@@ -129,7 +129,7 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
       body: [
         ...(d.body ?? []),
         ...(d.focus?.flatMap((f) => [f.title, f.intro ?? "", ...(f.paragraphs ?? []), ...(f.items ?? []), f.note ?? ""]) ?? []),
-        ...(d.panels?.flatMap((f) => [f.title, f.intro ?? "", ...(f.paragraphs ?? []), ...(f.items ?? []), f.note ?? ""]) ?? []),
+        ...(d.panels?.flatMap((f) => [f.title, f.intro ?? "", ...(f.paragraphs ?? []), ...(f.items ?? []), f.note ?? "", ...(f.points?.flatMap((p) => [p.label, p.text ?? "", ...(p.items ?? [])]) ?? [])]) ?? []),
         ...(d.achievements ?? []),
         ...(d.sections?.flatMap((s) => [s.name, ...(s.items ?? [])]) ?? []),
       ].join(" "),
