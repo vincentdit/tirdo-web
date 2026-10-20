@@ -33,11 +33,17 @@
       "publicClient": true,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": true,
-      "rootUrl": "http://localhost",
+      "rootUrl": "",
       "baseUrl": "/",
-      "redirectUris": ["http://localhost/*", "http://localhost:3000/*"],
-      "webOrigins": ["http://localhost", "+"],
-      "attributes": { "post.logout.redirect.uris": "http://localhost/*" }
+      "redirectUris": [
+        "http://localhost/*",
+        "http://localhost:3000/*",
+        "http://localhost:3001/*",
+        "http://172.30.30.54:3001/*",
+        "http://172.30.30.54/*"
+      ],
+      "webOrigins": ["http://localhost", "http://172.30.30.54:3001", "http://172.30.30.54", "+"],
+      "attributes": { "post.logout.redirect.uris": "+" }
     },
     {
       "clientId": "tirdo-cms",

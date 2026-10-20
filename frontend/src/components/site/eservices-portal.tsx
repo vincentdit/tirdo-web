@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 // sign-in prompt; signed-in users see their portal, role-aware.
 export function EServicesPortal() {
   const auth = useAuth();
-  const cmsUrl = (process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337") + "/admin";
+  const cmsUrl = "/admin";
 
   if (!auth.ready) {
     return <div className="h-40 animate-pulse rounded-xl border bg-secondary/40" />;

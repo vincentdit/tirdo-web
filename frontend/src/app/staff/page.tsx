@@ -22,7 +22,7 @@ export default function StaffPage() {
 
 function StaffDashboard() {
   const auth = useAuth();
-  const cmsUrl = (process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337") + "/admin";
+  const cmsUrl = "/admin";
   const matomoUrl = process.env.NEXT_PUBLIC_MATOMO_URL || "http://localhost:8095/";
   const isEditor = auth.hasRole("content-editor") || auth.hasRole("tirdo-admin");
   const isAdmin = auth.hasRole("tirdo-admin");
