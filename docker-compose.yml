@@ -153,6 +153,10 @@ services:
       MATOMO_API_URL: http://nginx:8081
       MATOMO_API_TOKEN: ${MATOMO_API_TOKEN}
       MATOMO_SITE_ID: "1"
+      # Runtime SSO (browser reads these via /api/public-config — no image rebuild)
+      KEYCLOAK_PUBLIC_URL: ${KEYCLOAK_PUBLIC_URL:-http://localhost:${HOST_KEYCLOAK_PORT:-8080}/auth}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
     depends_on:
       - cms
       - opensearch

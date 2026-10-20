@@ -35,11 +35,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    const kc = getKeycloak();
 
     initKeycloak()
       .then((authenticated) => {
         if (cancelled) return;
+        const kc = getKeycloak();
         const roles = kc.tokenParsed?.realm_access?.roles ?? [];
         setState({
           ready: true,
