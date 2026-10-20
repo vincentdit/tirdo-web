@@ -40,8 +40,12 @@ export function initKeycloak(): Promise<boolean> {
       return keycloak
         .init({
           onLoad: "check-sso",
+          // Hidden iframe SSO needs HTTPS. On LAN http://172.30.30.54:3001 it
+          // only logs CSP/storage warnings and does not block Sign in.
           silentCheckSsoRedirectUri:
-            typeof window !== "undefined" ? `${window.location.origin}/silent-check-sso.html` : undefined,
+            typeof window !== "undefined" && window.location.protocol === "https:"
+              ? `${window.location.origin}/silent-check-sso.html`
+              : undefined,
           pkceMethod: "S256",
           checkLoginIframe: false,
         })
