@@ -19,7 +19,7 @@ export default async function AnalyticsPage() {
     <>
       <PageBanner
         title="Analytics"
-        subtitle="How TIRDO's website is performing — visits, audience and content, powered by Matomo."
+        subtitle="How TIRDO's website is performing — visits, audience and content, powered by TIRDO Analytics."
         crumbs={[{ label: "Analytics" }]}
       />
       <section className="py-14">
@@ -28,7 +28,7 @@ export default async function AnalyticsPage() {
             <div className="rounded-xl border bg-secondary/40 p-8 text-center">
               <h2 className="text-lg font-bold text-primary">Analytics dashboard</h2>
               <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-                Live visitor analytics will appear here once the site is connected to Matomo.
+                Live visitor analytics will appear here once TIRDO Analytics is connected.
                 The counter and reports below refresh automatically.
               </p>
             </div>
@@ -74,7 +74,7 @@ export default async function AnalyticsPage() {
               </div>
 
               <p className="text-center text-xs text-muted-foreground">
-                Figures refresh every few minutes. Full reports are available to staff in Matomo.
+                Figures refresh every few minutes. Full reports are available to staff in TIRDO Analytics.
               </p>
             </>
           )}

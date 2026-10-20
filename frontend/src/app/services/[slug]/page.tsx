@@ -5,16 +5,17 @@ import { CheckCircle2 } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { Icon } from "@/components/site/icon";
 import { ButtonLink } from "@/components/ui/button";
-import { services } from "@/lib/content";
+import { services as fallbackServices } from "@/lib/content";
+import { getServiceBySlug, getServices } from "@/lib/strapi";
 
 const SECTION_ROUTES: Record<string, string> = { consultancy: "/consultancy", laboratory: "/laboratory", training: "/training" };
 
 export function generateStaticParams() {
-  return services.map((s) => ({ slug: s.slug }));
+  return fallbackServices.map((s) => ({ slug: s.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const s = services.find((x) => x.slug === params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const s = await getServiceBySlug(params.slug);
   const title = s?.title ?? "Service";
   const canonical = SECTION_ROUTES[params.slug] ?? `/services/${params.slug}`;
   return {
@@ -25,9 +26,10 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   };
 }
 
-export default function ServicePage({ params }: { params: { slug: string } }) {
-  const svc = services.find((s) => s.slug === params.slug);
+export default async function ServicePage({ params }: { params: { slug: string } }) {
+  const svc = await getServiceBySlug(params.slug);
   if (!svc) notFound();
+  const services = await getServices();
 
   return (
     <>

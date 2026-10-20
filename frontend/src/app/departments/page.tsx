@@ -3,11 +3,13 @@ import { ArrowRight, User } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { UnitsGrid } from "@/components/site/units-grid";
 import { Card, CardContent } from "@/components/ui/card";
-import { departments, managementUnits } from "@/lib/content";
+import { managementUnits } from "@/lib/content";
+import { getDepartments } from "@/lib/strapi";
 
 export const metadata = { title: "Departments" };
 
-export default function DepartmentsPage() {
+export default async function DepartmentsPage() {
+  const departments = await getDepartments();
   const groups = Array.from(new Set(departments.map((d) => d.group)));
 
   return (

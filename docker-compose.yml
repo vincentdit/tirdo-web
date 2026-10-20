@@ -89,6 +89,9 @@ services:
       OPENSEARCH_NODE: http://opensearch:9200
       OPENSEARCH_INDEX: ${OPENSEARCH_INDEX}
       SEED_DATA: "true"
+      # Public website (so a publish in Strapi refreshes Next.js immediately)
+      FRONTEND_INTERNAL_URL: http://frontend:3000
+      SEARCH_ADMIN_TOKEN: ${SEARCH_ADMIN_TOKEN}
       # Optional: protect GET /api/audit-log/verify (blank = open internally)
       AUDIT_LOG_TOKEN: ${AUDIT_LOG_TOKEN}
       # Email (SMTP) — captured by Mailpit locally

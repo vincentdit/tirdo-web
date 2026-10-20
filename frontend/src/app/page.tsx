@@ -3,16 +3,16 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { HeroSlider } from "@/components/site/hero-slider";
 import { Icon } from "@/components/site/icon";
-import { coreActivities, services, directorMessage } from "@/lib/content";
+import { coreActivities } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
-import { getNews } from "@/lib/strapi";
+import { getNews, getServices, getDirectorMessage } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
 export default async function HomePage() {
-  const news = await getNews(3);
+  const [news, services, directorMessage] = await Promise.all([getNews(3), getServices(), getDirectorMessage()]);
   const latest = news[0];
 
   return (

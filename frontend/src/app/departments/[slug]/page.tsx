@@ -3,15 +3,16 @@ import { User, Mail, Phone, MapPin } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { ProjectCard } from "@/components/site/cards";
 import { ButtonLink } from "@/components/ui/button";
-import { departments, projects } from "@/lib/content";
+import { departments as fallbackDepartments } from "@/lib/content";
+import { getDepartmentBySlug, getProjects } from "@/lib/strapi";
 import { site } from "@/lib/site";
 
 export function generateStaticParams() {
-  return departments.map((d) => ({ slug: d.slug }));
+  return fallbackDepartments.map((d) => ({ slug: d.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const d = departments.find((x) => x.slug === params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const d = await getDepartmentBySlug(params.slug);
   const title = d?.title ?? "Department";
   const canonical = `/departments/${params.slug}`;
   return {
@@ -22,9 +23,10 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   };
 }
 
-export default function DepartmentPage({ params }: { params: { slug: string } }) {
-  const dept = departments.find((d) => d.slug === params.slug);
+export default async function DepartmentPage({ params }: { params: { slug: string } }) {
+  const dept = await getDepartmentBySlug(params.slug);
   if (!dept) notFound();
+  const projects = await getProjects();
   const related = projects.filter((p) => p.department.toLowerCase().includes(dept.title.split(" ")[0].toLowerCase()));
 
   return (

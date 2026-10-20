@@ -10,12 +10,15 @@ try {
   seedData = require('./seed-data');
 }
 const { auditMiddleware } = require('./audit');
+const { frontendSyncMiddleware } = require('./sync-site');
 
 module.exports = {
   register({ strapi }) {
     // Record every create/update/delete/publish on audited content types to
     // the tamper-evident audit log.
     strapi.documents.use(auditMiddleware(strapi));
+    // Refresh the public website cache after CMS content changes.
+    strapi.documents.use(frontendSyncMiddleware(strapi));
   },
 
   async bootstrap({ strapi }) {
@@ -62,7 +65,7 @@ async function setPublicPermissions(strapi) {
     .findOne({ where: { type: 'public' } });
   if (!publicRole) return;
 
-  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology'];
+  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology', 'leader'];
   const perms = {};
   for (const t of readTypes) {
     perms[`api::${t}.${t}`] = { controllers: { [t]: { find: { enabled: true }, findOne: { enabled: true } } } };

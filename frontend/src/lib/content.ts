@@ -43,7 +43,7 @@ export type Publication = {
 export type ServiceItem = { slug: string; title: string; description: string; icon: string; body?: string[] };
 export type StatItem = { label: string; value: number; suffix?: string };
 export type Slide = { title: string; subtitle: string; cta: string; href: string; image: string };
-export type Leader = { name: string; role: string; photo?: string };
+export type Leader = { name: string; role: string; photo?: string; quote?: string };
 
 // Local assets served from frontend/public/media (downloaded from tirdo.or.tz
 // via scripts/fetch-tirdo-assets.ps1).

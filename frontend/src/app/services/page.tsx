@@ -2,14 +2,15 @@ import Link from "next/link";
 import { PageBanner } from "@/components/site/page-banner";
 import { Icon } from "@/components/site/icon";
 import { Card, CardContent } from "@/components/ui/card";
-import { services } from "@/lib/content";
+import { getServices } from "@/lib/strapi";
 
 // Services that have a richer dedicated section.
 const SECTION_ROUTES: Record<string, string> = { consultancy: "/consultancy", laboratory: "/laboratory", training: "/training" };
 
 export const metadata = { title: "Services" };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getServices();
   return (
     <>
       <PageBanner title="Our Services" subtitle="Research, engineering and advisory services for industry, government and development partners." crumbs={[{ label: "Services" }]} />

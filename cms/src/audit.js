@@ -24,6 +24,7 @@ const AUDITED_TYPES = new Set([
   'api::page.page',
   'api::vacancy.vacancy',
   'api::tender.tender',
+  'api::leader.leader',
 ]);
 
 const AUDITED_ACTIONS = new Set(['create', 'update', 'delete', 'publish', 'unpublish']);

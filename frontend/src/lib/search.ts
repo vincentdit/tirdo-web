@@ -12,7 +12,7 @@
 // fall back to a local content scan when OpenSearch is unavailable.
 // -----------------------------------------------------------------------
 import * as content from "./content";
-import { getNews, getProjects, getPublications, getVacancies, getTenders, getTechnologies } from "./strapi";
+import { getNews, getProjects, getPublications, getVacancies, getTenders, getTechnologies, getDepartments, getServices } from "./strapi";
 
 export const OS_NODE = process.env.OPENSEARCH_NODE || "http://opensearch:9200";
 export const OS_INDEX = process.env.OPENSEARCH_INDEX || "tirdo-content";
@@ -86,13 +86,15 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
 
 export async function gatherDocuments(): Promise<SearchDoc[]> {
   // Index the default-locale (English) content for a stable single index.
-  const [news, projects, publications, vacancies, tenders, technologies] = await Promise.all([
+  const [news, projects, publications, vacancies, tenders, technologies, services, departments] = await Promise.all([
     getNews(100, "en").catch(() => content.news),
     getProjects("en").catch(() => content.projects),
     getPublications("en").catch(() => content.publications),
     getVacancies("en").catch(() => content.vacancies),
     getTenders("en").catch(() => content.tenders),
     getTechnologies("en").catch(() => content.technologies),
+    getServices("en").catch(() => content.services),
+    getDepartments("en").catch(() => content.departments),
   ]);
 
   const docs: SearchDoc[] = [];
@@ -112,7 +114,7 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
   for (const t of tenders)
     docs.push({ id: `tender:${t.slug}`, title: t.title, type: "Tender", url: `/tenders#${t.slug}`, excerpt: t.description, body: `${t.reference} ${t.category}`, category: t.category, date: t.closingDate });
 
-  for (const s of content.services)
+  for (const s of services)
     docs.push({ id: `service:${s.slug}`, title: s.title, type: "Service", url: `/services/${s.slug}`, excerpt: s.description, body: s.body?.join(" ") });
 
   for (const t of technologies)
@@ -122,7 +124,7 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
       category: content.technologySectorName(t.sector),
     });
 
-  for (const d of content.departments)
+  for (const d of departments)
     docs.push({
       id: `department:${d.slug}`, title: d.title, type: "Department", url: `/departments/${d.slug}`,
       excerpt: d.blurb, body: [...(d.body ?? []), ...(d.sections?.flatMap((s) => [s.name, ...(s.items ?? [])]) ?? [])].join(" "), category: d.group,

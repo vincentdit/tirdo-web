@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leaders",
+  "info": {
+    "singularName": "leader",
+    "pluralName": "leaders",
+    "displayName": "Board & Management",
+    "description": "Board of Directors and top management shown on About pages"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "role": {
+      "type": "string",
+      "required": true
+    },
+    "group": {
+      "type": "enumeration",
+      "enum": ["board", "management"],
+      "required": true,
+      "default": "management"
+    },
+    "rank": {
+      "type": "integer",
+      "default": 10
+    },
+    "quote": {
+      "type": "text"
+    },
+    "photo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    }
+  }
+}

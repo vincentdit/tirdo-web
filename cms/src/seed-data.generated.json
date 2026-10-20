@@ -544,5 +544,22 @@
       "postedDate": "2026-05-15",
       "closingDate": "2026-06-30"
     }
+  ],
+  "api::leader.leader": [
+    { "name": "Eng. Bashiri Juma Mrindoko", "role": "Chairman", "group": "board", "rank": 1 },
+    { "name": "Prof. Maulilio John Kipanyula", "role": "Member", "group": "board", "rank": 2 },
+    { "name": "Dr. Mwansule Wilson Lugano", "role": "Member", "group": "board", "rank": 3 },
+    { "name": "Prof. Sylvester M. Mpanduji", "role": "Member", "group": "board", "rank": 4 },
+    { "name": "Dr. Amos Muhunde Nungu", "role": "Member", "group": "board", "rank": 5 },
+    { "name": "Dr. Abdulla Rashid Abdulla", "role": "Member", "group": "board", "rank": 6 },
+    { "name": "Ms. Rhobi Daniel Satima", "role": "Member", "group": "board", "rank": 7 },
+    { "name": "Mr. Peter Alanambula Ilomo", "role": "Member", "group": "board", "rank": 8 },
+    { "name": "Prof. Mkumbukwa M. A. Mtambo", "role": "Director General / Secretary", "group": "board", "rank": 90 },
+    { "name": "Prof. Mkumbukwa M. A. Mtambo", "role": "Director General", "group": "management", "rank": 1, "quote": "It is my distinguished pleasure and honour to welcome you to the Tanzania Industrial Research and Development Organization. TIRDO is a national industrial research organization whose mandate is to undertake industrial research, provide technology services, and disseminate research findings that have an impact on socio-economic activities in the country." },
+    { "name": "Mr. Emilian S. Bundala", "role": "Director of HR & Administration", "group": "management", "rank": 2 },
+    { "name": "Eng. Vincent J. Maro", "role": "Director of ICT & Technology Transfer", "group": "management", "rank": 3 },
+    { "name": "Eng. Ramson A. Mwilangali", "role": "Director of Engineering Development", "group": "management", "rank": 4 },
+    { "name": "Mr. Humphrey P. Ndossi", "role": "Director of Industrial Research", "group": "management", "rank": 5 },
+    { "name": "Mr. David J. Kisiwa", "role": "Director of Finance", "group": "management", "rank": 6 }
   ]
 }

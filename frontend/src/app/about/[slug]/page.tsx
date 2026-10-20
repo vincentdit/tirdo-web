@@ -4,9 +4,10 @@ import { PageBanner } from "@/components/site/page-banner";
 import { UnitsGrid } from "@/components/site/units-grid";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  board, topManagement, successStories, comsats, comsatsObjectives,
+  successStories, comsats, comsatsObjectives,
   comsatsActivities, orgStructure, managementUnits, type Leader,
 } from "@/lib/content";
+import { getLeaders } from "@/lib/strapi";
 
 const meta: Record<string, { title: string; subtitle: string }> = {
   "mission-vision": { title: "Mission & Vision", subtitle: "Our purpose, aspiration and values" },
@@ -58,7 +59,7 @@ function PortraitCard({ l, featured = false }: { l: Leader; featured?: boolean }
 }
 
 // Governance tree: Chairperson on top, members in a grid, Secretary at the bottom.
-function BoardTree() {
+function BoardTree({ board }: { board: Leader[] }) {
   const chair = board.find((b) => /chair/i.test(b.role)) ?? board[0];
   const secretary = board.find((b) => /secretary/i.test(b.role));
   const members = board.filter((b) => b !== chair && b !== secretary);
@@ -103,10 +104,12 @@ function LeaderTree({ people }: { people: Leader[] }) {
   );
 }
 
-export default function AboutSubPage({ params }: { params: { slug: string } }) {
+export default async function AboutSubPage({ params }: { params: { slug: string } }) {
   const m = meta[params.slug];
   if (!m) notFound();
   const crumbs = [{ label: "About Us", href: "/about" }, { label: m.title }];
+  const board = params.slug === "board" ? await getLeaders("board") : [];
+  const topManagement = params.slug === "administration" ? await getLeaders("management") : [];
 
   return (
     <>
@@ -191,7 +194,7 @@ export default function AboutSubPage({ params }: { params: { slug: string } }) {
             <div className="container-tirdo max-w-3xl text-center text-foreground/80">
               <p>The Board of Directors provides strategic direction and oversight, ensuring TIRDO delivers on its statutory mandate under the TIRDO Act, 1979 and serves the national industrialization agenda.</p>
             </div>
-            <BoardTree />
+            <BoardTree board={board} />
           </>
         )}
 

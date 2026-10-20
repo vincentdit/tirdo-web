@@ -12,7 +12,7 @@
 // -----------------------------------------------------------------------
 import { cookies } from "next/headers";
 import * as fallback from "./content";
-import type { NewsItem, Project, Publication, Vacancy, Tender, Technology } from "./content";
+import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader } from "./content";
 import { isLocale, defaultLocale } from "@/i18n/config";
 
 const INTERNAL = process.env.STRAPI_INTERNAL_URL || "http://cms:1337";
@@ -24,7 +24,7 @@ const base = typeof window === "undefined" ? INTERNAL : PUBLIC;
 async function strapiFetch<T>(path: string): Promise<T | null> {
   try {
     const res = await fetch(`${base}/api/${path}`, {
-      next: { revalidate: 60 },
+      next: { revalidate: 60, tags: ["strapi"] },
       signal: AbortSignal.timeout(4000),
     });
     if (!res.ok) return null;
@@ -152,6 +152,86 @@ export async function getTenders(locale = activeLocale()): Promise<Tender[]> {
   });
 }
 
+
+function paragraphs(value: unknown): string[] | undefined {
+  if (Array.isArray(value)) return value.filter((x): x is string => typeof x === "string" && x.trim() !== "");
+  if (typeof value === "string" && value.trim()) {
+    const text = value.replace(/<[^>]+>/g, "\n");
+    const parts = text.split(/\n+/).map((s) => s.trim()).filter(Boolean);
+    return parts.length ? parts : [value.trim()];
+  }
+  return undefined;
+}
+
+export async function getDepartments(locale = activeLocale()): Promise<Department[]> {
+  const data = await strapiFetch<Raw[]>(`departments?${L}&pagination[limit]=100`);
+  if (!data || data.length === 0) return fallback.departments;
+  return data.map((raw) => {
+    const d = mergeLocale(raw, locale);
+    const fb = fallback.departments.find((x) => x.slug === d.slug);
+    return {
+      slug: d.slug,
+      title: d.title,
+      group: d.group || fb?.group || "",
+      blurb: d.blurb || fb?.blurb || "",
+      head: fb?.head,
+      body: paragraphs(d.body) ?? fb?.body ?? [],
+      sections: fb?.sections,
+    };
+  });
+}
+
+export async function getDepartmentBySlug(slug: string, locale = activeLocale()): Promise<Department | null> {
+  const list = await getDepartments(locale);
+  return list.find((d) => d.slug === slug) ?? fallback.departments.find((d) => d.slug === slug) ?? null;
+}
+
+export async function getServices(locale = activeLocale()): Promise<ServiceItem[]> {
+  const data = await strapiFetch<Raw[]>(`services?${L}&pagination[limit]=100`);
+  if (!data || data.length === 0) return fallback.services;
+  return data.map((raw) => {
+    const s = mergeLocale(raw, locale);
+    const fb = fallback.services.find((x) => x.slug === s.slug);
+    return {
+      slug: s.slug,
+      title: s.title,
+      description: s.description || fb?.description || "",
+      icon: s.icon || fb?.icon || "FlaskConical",
+      body: paragraphs(s.body) ?? fb?.body,
+    };
+  });
+}
+
+export async function getServiceBySlug(slug: string, locale = activeLocale()): Promise<ServiceItem | null> {
+  const list = await getServices(locale);
+  return list.find((s) => s.slug === slug) ?? fallback.services.find((s) => s.slug === slug) ?? null;
+}
+
+export async function getLeaders(group: "board" | "management"): Promise<Leader[]> {
+  const data = await strapiFetch<Raw[]>(
+    `leaders?filters[group][$eq]=${group}&sort=rank:asc,name:asc&pagination[limit]=50&populate[photo]=true`
+  );
+  const bundled = group === "board" ? fallback.board : fallback.topManagement;
+  if (!data || data.length === 0) return bundled;
+  return data.map((raw) => ({
+    name: raw.name,
+    role: raw.role,
+    photo: raw.photo?.url,
+    quote: raw.quote,
+  }));
+}
+
+export async function getDirectorMessage() {
+  const people = await getLeaders("management");
+  const dg = people.find((p) => /director general/i.test(p.role)) ?? people[0];
+  const fb = fallback.directorMessage;
+  return {
+    name: dg?.name || fb.name,
+    role: dg?.role || fb.role,
+    photo: dg?.photo || fb.photo,
+    quote: dg?.quote || fb.quote,
+  };
+}
 
 export async function getTechnologies(locale = activeLocale()): Promise<Technology[]> {
   const data = await strapiFetch<Raw[]>(`technologies?${L}&populate[cover]=true`);
