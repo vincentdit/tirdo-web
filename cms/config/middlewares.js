@@ -1,11 +1,9 @@
 module.exports = ({ env }) => {
-  const origins = env(
-    "STRAPI_CORS_ORIGINS",
-    "http://localhost,http://localhost:3000,http://frontend:3000"
-  )
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const raw = env("STRAPI_CORS_ORIGINS", "*");
+  const origin =
+    raw === "*"
+      ? true
+      : raw.split(",").map((s) => s.trim()).filter(Boolean);
 
   return [
     "strapi::logger",
@@ -27,8 +25,7 @@ module.exports = ({ env }) => {
     {
       name: "strapi::cors",
       config: {
-        // Allow the LAN site origin (e.g. http://172.30.30.54:3001) plus listed hosts.
-        origin: origins.length ? origins : true,
+        origin,
         credentials: true,
         headers: "*",
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],

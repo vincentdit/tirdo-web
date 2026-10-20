@@ -75,10 +75,10 @@ services:
       TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT}
       JWT_SECRET: ${STRAPI_JWT_SECRET}
       ENCRYPTION_KEY: ${STRAPI_ENCRYPTION_KEY}
-      # Public URL browsers use (Nginx /cms). Set PUBLIC_URL to the LAN IP on a test server.
-      STRAPI_PUBLIC_URL: ${PUBLIC_URL}
+      # Blank = admin API uses the same host:port as the browser (LAN :3001).
+      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-}
       STRAPI_PROXY: "true"
-      STRAPI_CORS_ORIGINS: ${STRAPI_CORS_ORIGINS:-${PUBLIC_URL},http://localhost,http://localhost:3000,http://frontend:3000,${PUBLIC_URL}:1337}
+      STRAPI_CORS_ORIGINS: ${STRAPI_CORS_ORIGINS:-*}
       # MinIO / S3 storage provider
       MINIO_ENDPOINT: ${MINIO_ENDPOINT}
       MINIO_PORT: "9000"
