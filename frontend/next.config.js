@@ -16,6 +16,16 @@ const nextConfig = {
       { protocol: "https", hostname: "**" },
     ],
   },
+  // If the frontend is published on the LAN (e.g. :3001), send Strapi admin
+  // and /cms through to the CMS container instead of returning Next.js HTML.
+  async rewrites() {
+    const cms = process.env.STRAPI_INTERNAL_URL || "http://cms:1337";
+    return [
+      { source: "/cms/:path*", destination: `${cms}/:path*` },
+      { source: "/admin/:path*", destination: `${cms}/admin/:path*` },
+      { source: "/admin", destination: `${cms}/admin` },
+    ];
+  },
   // Allow the site to render even if the CMS is still booting.
   experimental: { missingSuspenseWithCSRBailout: false },
   // Long-cache immutable static media (served from /public/media). Content is
