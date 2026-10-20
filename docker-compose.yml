@@ -75,8 +75,10 @@ services:
       TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT}
       JWT_SECRET: ${STRAPI_JWT_SECRET}
       ENCRYPTION_KEY: ${STRAPI_ENCRYPTION_KEY}
-      # Public URL (Strapi is exposed directly on host port 1337)
-      STRAPI_PUBLIC_URL: http://localhost:1337
+      # Public URL browsers use (Nginx /cms). Set PUBLIC_URL to the LAN IP on a test server.
+      STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-${PUBLIC_URL}/cms}
+      STRAPI_PROXY: "true"
+      STRAPI_CORS_ORIGINS: ${STRAPI_CORS_ORIGINS:-${PUBLIC_URL},http://localhost,http://localhost:3000,http://frontend:3000,${PUBLIC_URL}:1337}
       # MinIO / S3 storage provider
       MINIO_ENDPOINT: ${MINIO_ENDPOINT}
       MINIO_PORT: "9000"
@@ -84,7 +86,7 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       MINIO_BUCKET: ${MINIO_BUCKET}
-      MINIO_PUBLIC_URL: http://localhost:9100/${MINIO_BUCKET}
+      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:${HOST_MINIO_API_PORT:-9100}/${MINIO_BUCKET}}
       # OpenSearch (for content sync hook)
       OPENSEARCH_NODE: http://opensearch:9200
       OPENSEARCH_INDEX: ${OPENSEARCH_INDEX}
@@ -103,7 +105,7 @@ services:
       EMAIL_REPLY_TO: ${EMAIL_REPLY_TO}
       CONTACT_RECIPIENT: ${CONTACT_RECIPIENT}
     ports:
-      - "1337:1337"
+      - "${HOST_CMS_PORT:-1337}:1337"
     volumes:
       - strapi_uploads:/opt/app/public/uploads
     depends_on:
@@ -127,13 +129,13 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_SITE_URL: ${PUBLIC_URL}
-        NEXT_PUBLIC_STRAPI_URL: http://localhost:1337
-        NEXT_PUBLIC_MATOMO_URL: http://localhost:8095/
+        NEXT_PUBLIC_STRAPI_URL: ${STRAPI_PUBLIC_URL:-${PUBLIC_URL}/cms}
+        NEXT_PUBLIC_MATOMO_URL: ${MATOMO_PUBLIC_URL:-http://localhost:${HOST_MATOMO_PORT:-8095}/}
         NEXT_PUBLIC_MATOMO_SITE_ID: "1"
         # First-party analytics paths (proxied to Matomo by Nginx) — evade ad blockers.
         NEXT_PUBLIC_MATOMO_JS_URL: /s/js
         NEXT_PUBLIC_MATOMO_TRACK_URL: /s/e
-        NEXT_PUBLIC_KEYCLOAK_URL: http://localhost:8080/auth
+        NEXT_PUBLIC_KEYCLOAK_URL: ${KEYCLOAK_PUBLIC_URL:-http://localhost:${HOST_KEYCLOAK_PORT:-8080}/auth}
         NEXT_PUBLIC_KEYCLOAK_REALM: ${KEYCLOAK_REALM}
         NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
     container_name: tirdo-frontend
@@ -180,7 +182,7 @@ services:
       KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
     ports:
-      - "8080:8080"
+      - "${HOST_KEYCLOAK_PORT:-8080}:8080"
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     depends_on:
@@ -200,8 +202,8 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     ports:
-      - "9100:9000"
-      - "9101:9001"
+      - "${HOST_MINIO_API_PORT:-9100}:9000"
+      - "${HOST_MINIO_CONSOLE_PORT:-9101}:9001"
     volumes:
       - minio_data:/data
     healthcheck:
@@ -260,7 +262,7 @@ services:
       OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
       DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
     ports:
-      - "5601:5601"
+      - "${HOST_OPENSEARCH_DASHBOARDS_PORT:-5601}:5601"
     depends_on:
       - opensearch
     networks: [tirdo-net]
@@ -280,7 +282,7 @@ services:
       MATOMO_DATABASE_USERNAME: ${MATOMO_DB_USER}
       MATOMO_DATABASE_PASSWORD: ${MATOMO_DB_PASSWORD}
     ports:
-      - "8095:80"
+      - "${HOST_MATOMO_PORT:-8095}:80"
     volumes:
       - matomo_data:/var/www/html
     depends_on:
@@ -299,7 +301,7 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: "true"
       MP_SMTP_AUTH_ALLOW_INSECURE: "true"
     ports:
-      - "8025:8025"   # web UI to read captured emails
+      - "${HOST_MAILPIT_PORT:-8025}:8025"   # web UI to read captured emails
     networks: [tirdo-net]
 
   # ----------------------------------------------------------------------
@@ -310,8 +312,8 @@ services:
     container_name: tirdo-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"          # unused until HTTPS is enabled (scripts/tls-setup.sh)
+      - "${HOST_HTTP_PORT:-80}:80"
+      - "${HOST_HTTPS_PORT:-443}:443"   # unused until HTTPS is enabled (scripts/tls-setup.sh)
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro

@@ -1,30 +1,40 @@
-module.exports = [
-  "strapi::logger",
-  "strapi::errors",
-  {
-    name: "strapi::security",
-    config: {
-      contentSecurityPolicy: {
-        useDefaults: true,
-        directives: {
-          "connect-src": ["'self'", "https:", "http:"],
-          "img-src": ["'self'", "data:", "blob:", "market-assets.strapi.io", "*"],
-          "media-src": ["'self'", "data:", "blob:", "*"],
-          upgradeInsecureRequests: null,
+module.exports = ({ env }) => {
+  const origins = env(
+    "STRAPI_CORS_ORIGINS",
+    "http://localhost,http://localhost:3000,http://frontend:3000"
+  )
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  return [
+    "strapi::logger",
+    "strapi::errors",
+    {
+      name: "strapi::security",
+      config: {
+        contentSecurityPolicy: {
+          useDefaults: true,
+          directives: {
+            "connect-src": ["'self'", "https:", "http:"],
+            "img-src": ["'self'", "data:", "blob:", "market-assets.strapi.io", "*"],
+            "media-src": ["'self'", "data:", "blob:", "*"],
+            upgradeInsecureRequests: null,
+          },
         },
       },
     },
-  },
-  {
-    name: "strapi::cors",
-    config: {
-      origin: ["http://localhost", "http://localhost:3000", "http://frontend:3000"],
+    {
+      name: "strapi::cors",
+      config: {
+        origin: origins,
+      },
     },
-  },
-  "strapi::poweredBy",
-  "strapi::query",
-  "strapi::body",
-  "strapi::session",
-  "strapi::favicon",
-  "strapi::public",
-];
+    "strapi::poweredBy",
+    "strapi::query",
+    "strapi::body",
+    "strapi::session",
+    "strapi::favicon",
+    "strapi::public",
+  ];
+};

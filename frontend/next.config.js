@@ -12,6 +12,7 @@ const nextConfig = {
       { protocol: "http", hostname: "localhost" },
       { protocol: "http", hostname: "cms" },
       { protocol: "http", hostname: "minio" },
+      { protocol: "http", hostname: "**" },
       { protocol: "https", hostname: "**" },
     ],
   },
