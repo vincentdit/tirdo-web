@@ -24,6 +24,9 @@ const nextConfig = {
       { source: "/cms/:path*", destination: `${cms}/:path*` },
       { source: "/admin/:path*", destination: `${cms}/admin/:path*` },
       { source: "/admin", destination: `${cms}/admin` },
+      { source: "/content-manager/:path*", destination: `${cms}/content-manager/:path*` },
+      { source: "/i18n/:path*", destination: `${cms}/i18n/:path*` },
+      { source: "/upload/:path*", destination: `${cms}/upload/:path*` },
     ];
   },
   // Allow the site to render even if the CMS is still booting.

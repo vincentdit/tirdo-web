@@ -27,7 +27,11 @@ module.exports = ({ env }) => {
     {
       name: "strapi::cors",
       config: {
-        origin: origins,
+        // Allow the LAN site origin (e.g. http://172.30.30.54:3001) plus listed hosts.
+        origin: origins.length ? origins : true,
+        credentials: true,
+        headers: "*",
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
       },
     },
     "strapi::poweredBy",
