@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { getKeycloak, initKeycloak } from "@/lib/keycloak";
+import { getKeycloak, initKeycloak, startLogin, startLogout, startRegister } from "@/lib/keycloak";
 
 export type AuthState = {
   ready: boolean;
@@ -39,24 +39,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     initKeycloak()
       .then((authenticated) => {
         if (cancelled) return;
-        const kc = getKeycloak();
-        const roles = kc.tokenParsed?.realm_access?.roles ?? [];
+        let authed = authenticated;
+        let roles: string[] = [];
+        let username: string | undefined;
+        let name: string | undefined;
+        let email: string | undefined;
+        let token: string | undefined;
+        try {
+          const kc = getKeycloak();
+          roles = kc.tokenParsed?.realm_access?.roles ?? [];
+          username = kc.tokenParsed?.preferred_username as string | undefined;
+          name = kc.tokenParsed?.name as string | undefined;
+          email = kc.tokenParsed?.email as string | undefined;
+          token = kc.token;
+        } catch {
+          authed = false;
+        }
         setState({
           ready: true,
-          authenticated,
-          username: kc.tokenParsed?.preferred_username as string | undefined,
-          name: kc.tokenParsed?.name as string | undefined,
-          email: kc.tokenParsed?.email as string | undefined,
+          authenticated: authed,
+          username,
+          name,
+          email,
           roles,
-          token: kc.token,
-          login: () => kc.login({ redirectUri: window.location.href }),
-          register: () => kc.register({ redirectUri: window.location.href }),
-          logout: () => kc.logout({ redirectUri: window.location.origin }),
+          token,
+          login: () => {
+            void startLogin();
+          },
+          register: () => {
+            void startRegister();
+          },
+          logout: () => {
+            void startLogout();
+          },
           hasRole: (role: string) => roles.includes(role),
         });
       })
       .catch(() => {
-        if (!cancelled) setState((s) => ({ ...s, ready: true }));
+        if (!cancelled) {
+          setState((s) => ({
+            ...s,
+            ready: true,
+            login: () => {
+              void startLogin();
+            },
+            register: () => {
+              void startRegister();
+            },
+            logout: () => {
+              void startLogout();
+            },
+          }));
+        }
       });
 
     return () => {
