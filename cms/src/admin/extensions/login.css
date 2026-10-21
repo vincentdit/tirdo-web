@@ -1,0 +1,202 @@
+/*
+  TIRDO admin auth screens (login, forgot password, first-admin setup).
+  Injected at runtime from src/admin/app.js so it is not dropped by the
+  Strapi 5 admin bundler. Scoped to UnauthenticatedLayout.
+*/
+
+html body:has(header [aria-label="Select interface language"]),
+html body:has(header [aria-label="Select interface language"]) #strapi,
+html body:has(header [aria-label="Select interface language"]) > div {
+  background: #e8eef2 !important;
+  min-height: 100vh;
+}
+
+html body:has(header [aria-label="Select interface language"])::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  z-index: 30;
+  background: linear-gradient(90deg, #006979 0%, #17488e 58%, #f2c500 100%);
+}
+
+html body:has(header [aria-label="Select interface language"]) header {
+  position: relative;
+  z-index: 2;
+}
+
+html body:has(header [aria-label="Select interface language"]) main {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 5.5rem;
+}
+
+html body:has(header [aria-label="Select interface language"]) main > div:first-of-type {
+  width: min(552px, calc(100% - 2rem)) !important;
+  background: #ffffff !important;
+  color: #092a45 !important;
+  border: 1px solid #d5e2e6 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 18px 48px rgba(6, 43, 69, 0.12) !important;
+}
+
+html body:has(header [aria-label="Select interface language"]) main > div:first-of-type:not(:last-of-type) {
+  border-bottom: none !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  box-shadow: none !important;
+  padding-bottom: 0.5rem !important;
+}
+
+/* Forgot password / back-to-sign-in sit under the form, same card, centered */
+html body:has(header [aria-label="Select interface language"]) main > div:last-of-type:not(:first-of-type) {
+  width: min(552px, calc(100% - 2rem)) !important;
+  background: #ffffff !important;
+  color: #092a45 !important;
+  border: 1px solid #d5e2e6 !important;
+  border-top: none !important;
+  border-radius: 0 0 12px 12px !important;
+  box-shadow: 0 18px 48px rgba(6, 43, 69, 0.12) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0.25rem 2.5rem 2rem !important;
+  margin: 0 auto !important;
+}
+
+html body:has(header [aria-label="Select interface language"]) main img {
+  max-height: 88px;
+  width: auto;
+  object-fit: contain;
+}
+
+html body:has(header [aria-label="Select interface language"]) main h1 {
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 1.5rem !important;
+  line-height: 1.3 !important;
+  color: #062b45 !important;
+  letter-spacing: -0.01em;
+}
+
+html body:has(header [aria-label="Select interface language"]) main p,
+html body:has(header [aria-label="Select interface language"]) main label,
+html body:has(header [aria-label="Select interface language"]) main span,
+html body:has(header [aria-label="Select interface language"]) main h1 + * {
+  color: #3d5160 !important;
+}
+
+html body:has(header [aria-label="Select interface language"]) main label {
+  color: #092a45 !important;
+  font-weight: 600 !important;
+}
+
+html body:has(header [aria-label="Select interface language"]) main input,
+html body:has(header [aria-label="Select interface language"]) main [role="textbox"] {
+  background: #ffffff !important;
+  color: #092a45 !important;
+  border-color: #c5d4d8 !important;
+}
+
+html body:has(header [aria-label="Select interface language"]) button[type="submit"],
+html body:has(header [aria-label="Select interface language"]) button[type="submit"] span {
+  background: #006979 !important;
+  border: 1px solid #00566b !important;
+  color: #ffffff !important;
+  min-height: 2.75rem;
+  font-weight: 600 !important;
+}
+
+html body:has(header [aria-label="Select interface language"]) button[type="submit"]:hover {
+  background: #00566b !important;
+}
+
+html body:has(header [aria-label="Select interface language"]) button[type="submit"][aria-busy="true"] {
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+html body:has(header [aria-label="Select interface language"]) button[type="submit"][aria-busy="true"]::after {
+  content: "";
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-left: 0.5em;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: tirdo-spin 0.7s linear infinite;
+  vertical-align: -0.1em;
+}
+
+@keyframes tirdo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+html body:has(header [aria-label="Select interface language"]) a {
+  color: #006979 !important;
+}
+
+html body:has(header [aria-label="Select interface language"]) :focus-visible {
+  outline: 3px solid #f2c500 !important;
+  outline-offset: 2px;
+}
+
+#global-form-error {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  background: #fdecec !important;
+  color: #9b1c1c !important;
+  border: 1px solid #f5c2c2;
+  text-align: left;
+}
+
+html body:has(header [aria-label="Select interface language"]) .tirdo-org-name {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #17488e !important;
+  font-weight: 600;
+  text-align: center;
+}
+
+.tirdo-auth-footer {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  padding: 0.85rem 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #607080;
+  background: rgba(232, 238, 242, 0.96);
+  border-top: 1px solid #d5e2e6;
+}
+
+html body:has(header [aria-label="Select interface language"]) .tirdo-auth-footer {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  html body:has(header [aria-label="Select interface language"]) main > div:first-of-type {
+    padding: 1.5rem !important;
+  }
+
+  html body:has(header [aria-label="Select interface language"]) main > div:last-of-type:not(:first-of-type) {
+    padding: 0.25rem 1.5rem 1.5rem !important;
+  }
+
+  html body:has(header [aria-label="Select interface language"]) main h1 {
+    font-size: 1.25rem !important;
+  }
+}
