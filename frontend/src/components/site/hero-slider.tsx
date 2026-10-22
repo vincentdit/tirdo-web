@@ -10,7 +10,9 @@ export function HeroSlider({ heroImage }: { heroImage?: string }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const reduceMotion = useRef(false);
-  const slides = heroImage ? [{ ...heroSlides[0], image: heroImage }, ...heroSlides.slice(1)] : heroSlides;
+  const slides = heroImage
+    ? [{ ...heroSlides[0], image: heroImage }, ...heroSlides.slice(1)]
+    : heroSlides.map((slide) => ({ ...slide, image: "" }));
   const n = slides.length;
 
   // Respect the user's reduced-motion preference: no auto-advance.
@@ -33,24 +35,26 @@ export function HeroSlider({ heroImage }: { heroImage?: string }) {
 
   return (
     <section
-      className="relative h-[470px] overflow-hidden text-white md:h-[515px]"
+      className="relative h-[470px] overflow-hidden bg-brand-blue text-white md:h-[515px]"
       aria-roledescription="carousel"
       aria-label="TIRDO highlights"
     >
-      {slides.map((s, idx) => (
-        // Decorative — the headline text is provided in the overlay below.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          key={idx}
-          src={s.image}
-          alt=""
-          aria-hidden="true"
-          className={cn(
-            "absolute inset-0 h-full w-full object-cover object-[center_42%] transition-opacity duration-700 motion-reduce:transition-none",
-            idx === i ? "opacity-100" : "opacity-0"
-          )}
-        />
-      ))}
+      {slides.map((s, idx) =>
+        s.image ? (
+          // Decorative — the headline text is provided in the overlay below.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={idx}
+            src={s.image}
+            alt=""
+            aria-hidden="true"
+            className={cn(
+              "absolute inset-0 h-full w-full object-cover object-[center_42%] transition-opacity duration-700 motion-reduce:transition-none",
+              idx === i ? "opacity-100" : "opacity-0"
+            )}
+          />
+        ) : null
+      )}
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,42,59,0.87)_0%,rgba(7,54,73,0.6)_40%,transparent_70%)]" />
 
       <div className="container-tirdo relative flex h-full flex-col justify-center">

@@ -58,7 +58,7 @@ export default function PortalBrandingPage() {
     <PortalShell>
       <h1 className="font-serif text-2xl font-bold text-[#0A192F]">Site photos and branding</h1>
       <p className="mt-1 text-sm text-slate-600">
-        Change the emblem, logo, homepage photo and director photo used across the public website. Super Admin, Admin, and staff granted gallery access can edit this.
+        Change the emblem, logo, homepage banner and director photo. Super Admin, Admin, and staff granted gallery access can edit this. You can hide or remove the large TIRDO photo on the home page.
       </p>
       {error && <p className="mt-3 text-sm text-red-700">{error}</p>}
       {notice && <p className="mt-3 text-sm text-emerald-800">{notice}</p>}
@@ -67,7 +67,35 @@ export default function PortalBrandingPage() {
         <form className="mt-6 max-w-3xl space-y-5 rounded-lg border bg-white p-5" onSubmit={onSubmit}>
           <MediaField label="Coat of arms / emblem" value={values.emblem} onChange={(next) => setValues((v) => ({ ...v, emblem: next }))} />
           <MediaField label="TIRDO logo" value={values.logo} onChange={(next) => setValues((v) => ({ ...v, logo: next }))} />
-          <MediaField label="Homepage banner photo" value={values.heroImage} onChange={(next) => setValues((v) => ({ ...v, heroImage: next }))} />
+          <label className="flex items-start gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm">
+            <input
+              type="checkbox"
+              className="mt-1"
+              checked={values.showHero !== false}
+              onChange={(e) => setValues((v) => ({ ...v, showHero: e.target.checked }))}
+            />
+            <span>
+              <span className="font-medium text-slate-700">Show homepage banner</span>
+              <span className="mt-1 block text-slate-600">
+                Uncheck to hide the large TIRDO photo and headlines at the top of the home page. Save to apply.
+              </span>
+            </span>
+          </label>
+          <MediaField
+            label="Homepage banner photo"
+            clearable={values.hideHeroImage !== true}
+            value={values.hideHeroImage ? null : values.heroImage}
+            onChange={(next) =>
+              setValues((v) => ({
+                ...v,
+                heroImage: next,
+                hideHeroImage: next == null,
+              }))
+            }
+          />
+          <p className="-mt-3 text-xs text-slate-500">
+            Remove the photo to keep the headlines on a plain TIRDO background, or upload a replacement.
+          </p>
           <MediaField label="Director photo" value={values.directorPhoto} onChange={(next) => setValues((v) => ({ ...v, directorPhoto: next }))} />
           <label className="block text-sm">
             <span className="font-medium text-slate-700">Tagline</span>

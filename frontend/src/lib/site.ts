@@ -34,6 +34,8 @@ export type SiteBrand = {
   logo: string;
   emblem: string;
   heroImage?: string;
+  showHero?: boolean;
+  hideHeroImage?: boolean;
   directorPhoto?: string;
   tagline?: string;
   footerBlurb?: string;
@@ -45,6 +47,8 @@ export const defaultBrand: SiteBrand = {
   logo: assets.logo,
   emblem: assets.emblem,
   heroImage: assets.hero,
+  showHero: true,
+  hideHeroImage: false,
   directorPhoto: assets.director,
   tagline: site.tagline,
   footerBlurb: "Building a sustainable industrial future through research, technology and innovation.",

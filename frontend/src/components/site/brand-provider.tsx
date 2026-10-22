@@ -6,7 +6,14 @@ import { defaultBrand, type SiteBrand } from "@/lib/site";
 const BrandContext = createContext<SiteBrand>(defaultBrand);
 
 export function BrandProvider({ brand, children }: { brand?: Partial<SiteBrand>; children: ReactNode }) {
-  return <BrandContext.Provider value={{ ...defaultBrand, ...brand }}>{children}</BrandContext.Provider>;
+  const value: SiteBrand = {
+    ...defaultBrand,
+    ...brand,
+    heroImage: brand?.hideHeroImage ? "" : brand?.heroImage || defaultBrand.heroImage,
+    showHero: brand?.showHero !== false,
+    hideHeroImage: Boolean(brand?.hideHeroImage),
+  };
+  return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
 }
 
 export function useBrand(): SiteBrand {

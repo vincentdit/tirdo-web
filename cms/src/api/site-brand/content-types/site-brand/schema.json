@@ -12,6 +12,8 @@
     "logo": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
     "emblem": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
     "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "showHero": { "type": "boolean", "default": true },
+    "hideHeroImage": { "type": "boolean", "default": false },
     "directorPhoto": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
     "tagline": { "type": "string" },
     "footerBlurb": { "type": "text" },

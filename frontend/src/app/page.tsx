@@ -17,7 +17,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSlider heroImage={brand.heroImage} />
+      {brand.showHero !== false && <HeroSlider heroImage={brand.heroImage} />}
 
       {/* Latest announcement */}
       {latest && (

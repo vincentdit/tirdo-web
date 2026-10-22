@@ -307,7 +307,9 @@ export async function getSiteBrand(): Promise<SiteBrand> {
   return {
     logo: mediaUrl(d.logo) || defaultBrand.logo,
     emblem: mediaUrl(d.emblem) || defaultBrand.emblem,
-    heroImage: mediaUrl(d.heroImage) || defaultBrand.heroImage,
+    heroImage: d.hideHeroImage ? "" : (mediaUrl(d.heroImage) || defaultBrand.heroImage),
+    showHero: d.showHero !== false,
+    hideHeroImage: Boolean(d.hideHeroImage),
     directorPhoto: mediaUrl(d.directorPhoto) || defaultBrand.directorPhoto,
     tagline: d.tagline || defaultBrand.tagline,
     footerBlurb: d.footerBlurb || defaultBrand.footerBlurb,

@@ -4,7 +4,18 @@ import { forbidden, loadAccess } from "../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../_cms";
 
 const UID = encodeURIComponent(SITE_BRAND_UID);
-const FIELDS = ["logo", "emblem", "heroImage", "directorPhoto", "tagline", "footerBlurb", "welcomeTitle", "welcomeBody"] as const;
+const FIELDS = [
+  "logo",
+  "emblem",
+  "heroImage",
+  "showHero",
+  "hideHeroImage",
+  "directorPhoto",
+  "tagline",
+  "footerBlurb",
+  "welcomeTitle",
+  "welcomeBody",
+] as const;
 
 function payloadFrom(body: Record<string, unknown>) {
   const out: Record<string, unknown> = {};
@@ -12,6 +23,10 @@ function payloadFrom(body: Record<string, unknown>) {
     if (!(key in body)) continue;
     if (key === "logo" || key === "emblem" || key === "heroImage" || key === "directorPhoto") {
       out[key] = mediaId(body[key]);
+    } else if (key === "showHero") {
+      out[key] = body[key] !== false;
+    } else if (key === "hideHeroImage") {
+      out[key] = Boolean(body[key]);
     } else {
       out[key] = body[key] ?? "";
     }

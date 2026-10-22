@@ -8,11 +8,13 @@ export function MediaField({
   value,
   onChange,
   accept = "image/*",
+  clearable = false,
 }: {
   label: string;
   value: unknown;
   onChange: (next: { id: number; url?: string } | null) => void;
   accept?: string;
+  clearable?: boolean;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -63,7 +65,7 @@ export function MediaField({
             }}
           />
         </label>
-        {id ? (
+        {id || clearable ? (
           <button type="button" className="text-sm text-red-700 hover:underline" onClick={() => onChange(null)}>
             Remove
           </button>
