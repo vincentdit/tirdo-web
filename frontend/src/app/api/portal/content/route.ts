@@ -28,9 +28,12 @@ export async function GET() {
     collections: counts,
     access: {
       isSuperAdmin: access.isSuperAdmin,
+      isFullAccess: access.isFullAccess,
       canPublish: access.canPublish,
       canManageMedia: access.canManageMedia,
       canManageUsers: access.canManageUsers,
+      canManageSite: access.canManageSite,
+      pageSlugs: access.pageSlugs,
       departments: access.departments,
       grantReady: access.grantReady,
     },

@@ -6,12 +6,14 @@ import { PortalShell } from "@/components/tirdo-auth/portal-shell";
 type User = { id: number; email: string; firstname?: string; lastname?: string; roles: string[]; isActive?: boolean };
 type Role = { id: number; name: string };
 type Dept = { slug?: string; title?: string };
+type SitePage = { slug: string; title: string; path: string };
 type Grant = {
   documentId: string;
   staffEmail: string;
   departmentSlug?: string;
   departmentTitle?: string;
   collections: string[];
+  pageSlugs: string[];
   canPublish: boolean;
   canManageMedia: boolean;
   canManageUsers: boolean;
@@ -26,12 +28,14 @@ export default function PortalUsersPage() {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [departments, setDepartments] = useState<Dept[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [sitePages, setSitePages] = useState<SitePage[]>([]);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
   const [staffEmail, setStaffEmail] = useState("");
   const [departmentSlug, setDepartmentSlug] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
+  const [pageSlugs, setPageSlugs] = useState<string[]>([]);
   const [canPublish, setCanPublish] = useState(false);
   const [canManageMedia, setCanManageMedia] = useState(false);
   const [canManageUsers, setCanManageUsers] = useState(false);
@@ -61,6 +65,7 @@ export default function PortalUsersPage() {
         setGrants(j.grants ?? []);
         setDepartments(j.departments ?? []);
         setCollections(j.collections ?? []);
+        setSitePages(j.sitePages ?? []);
       })
       .catch((e) => setError(e instanceof Error ? e.message : "Could not load users."));
   }
@@ -85,6 +90,7 @@ export default function PortalUsersPage() {
           departmentSlug,
           departmentTitle: selectedDept?.title || departmentSlug,
           collections: selected,
+          pageSlugs: selected.includes("pages") ? pageSlugs : [],
           canPublish,
           canManageMedia,
           canManageUsers,
@@ -140,7 +146,7 @@ export default function PortalUsersPage() {
     <PortalShell>
       <h1 className="font-serif text-2xl font-bold text-[#0A192F]">Users & access</h1>
       <p className="mt-1 text-sm text-slate-600">
-        A user administrator assigns staff from a department to the work they may see and do. Super Admins keep full access.
+        Super Admin and Admin can edit all pages, logos and photos. Other staff only see the collections you assign here.
       </p>
       {error && <p className="mt-3 text-sm text-red-700">{error}</p>}
 
@@ -193,11 +199,35 @@ export default function PortalUsersPage() {
                 </label>
               ))}
             </div>
+            {selected.includes("pages") && (
+              <div className="rounded-md border bg-slate-50 p-3">
+                <p className="mb-2 text-sm font-medium text-[#0A192F]">Website pages they may edit</p>
+                <p className="mb-2 text-xs text-slate-600">Leave all unticked to allow every page. Tick only the pages this person should update.</p>
+                <div className="grid gap-2 text-sm sm:grid-cols-2">
+                  {sitePages.map((p) => (
+                    <label key={p.slug} className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        className="mt-0.5"
+                        checked={pageSlugs.includes(p.slug)}
+                        onChange={() =>
+                          setPageSlugs((cur) => (cur.includes(p.slug) ? cur.filter((s) => s !== p.slug) : [...cur, p.slug]))
+                        }
+                      />
+                      <span>
+                        {p.title}
+                        <span className="block text-xs text-slate-500">{p.path}</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={canPublish} onChange={(e) => setCanPublish(e.target.checked)} /> Can publish
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={canManageMedia} onChange={(e) => setCanManageMedia(e.target.checked)} /> Can manage gallery
+              <input type="checkbox" checked={canManageMedia} onChange={(e) => setCanManageMedia(e.target.checked)} /> Can manage gallery, logo and site photos
             </label>
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={canManageUsers} onChange={(e) => setCanManageUsers(e.target.checked)} /> Can manage users
@@ -232,7 +262,12 @@ export default function PortalUsersPage() {
               <tr key={g.documentId} className="border-t">
                 <td className="px-4 py-3">{g.staffEmail}</td>
                 <td className="px-4 py-3">{g.departmentTitle || g.departmentSlug || "—"}</td>
-                <td className="px-4 py-3">{g.collections.join(", ") || "—"}</td>
+                <td className="px-4 py-3">
+                  {g.collections.join(", ") || "—"}
+                  {g.pageSlugs?.length ? (
+                    <div className="text-xs text-slate-500">Pages: {g.pageSlugs.join(", ")}</div>
+                  ) : null}
+                </td>
                 <td className="px-4 py-3">
                   {[g.canPublish && "Publish", g.canManageMedia && "Gallery", g.canManageUsers && "Users"].filter(Boolean).join(", ") || "View assigned"}
                 </td>

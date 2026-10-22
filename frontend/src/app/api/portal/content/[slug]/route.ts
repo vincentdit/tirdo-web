@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cmsListQuery, collectionBySlug, entryStatus, entryTitle, pickAllowedFields, sanitizeSearch } from "@/lib/portal";
-import { canUseCollection, forbidden, loadAccess } from "../../_access";
+import { canUseCollection, canUsePage, forbidden, loadAccess } from "../../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../../_cms";
 
 export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
@@ -24,7 +24,24 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   ).slice(0, 5);
 
   const path = `/content-manager/collection-types/${encodeURIComponent(col.uid)}`;
-  let res = await cmsAdmin(`${path}?${cmsListQuery(page, pageSize, q, searchFields)}`, token);
+  let listQuery = cmsListQuery(page, pageSize, q, searchFields);
+  if (col.slug === "pages" && Array.isArray(access.pageSlugs)) {
+    if (access.pageSlugs.length === 0) {
+      return NextResponse.json({
+        collection: { slug: col.slug, label: col.label, description: col.description, fields: col.fields, draftAndPublish: col.draftAndPublish },
+        canPublish: access.canPublish,
+        pageSlugs: access.pageSlugs,
+        canCreate: false,
+        query: q,
+        pagination: { page: 1, pageSize, pageCount: 1, total: 0 },
+        results: [],
+      });
+    }
+    const extra = new URLSearchParams();
+    access.pageSlugs.forEach((slug, i) => extra.set(`filters[slug][$in][${i}]`, slug));
+    listQuery = `${listQuery}&${extra.toString()}`;
+  }
+  let res = await cmsAdmin(`${path}?${listQuery}`, token);
   if (!res.ok && q) {
     res = await cmsAdmin(`${path}?${cmsListQuery(page, pageSize, q, [col.titleField])}`, token);
   }
@@ -43,6 +60,8 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   return NextResponse.json({
     collection: { slug: col.slug, label: col.label, description: col.description, fields: col.fields, draftAndPublish: col.draftAndPublish },
     canPublish: access.canPublish,
+    pageSlugs: access.pageSlugs,
+    canCreate: col.slug !== "pages" || access.pageSlugs == null,
     query: q,
     pagination: {
       page: Number(pagination.page) || page,
@@ -53,6 +72,8 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
     results: rows.map((row: Record<string, unknown>) => ({
       documentId: row.documentId || row.id,
       title: entryTitle(row, col.titleField),
+      slug: row.slug,
+      path: row.path,
       status: entryStatus(row, col.draftAndPublish),
       cmsStatus: row.status,
       updatedAt: row.updatedAt || row.publishedAt || row.createdAt,
@@ -75,6 +96,9 @@ export async function POST(request: NextRequest, { params }: { params: { slug: s
   if (!canUseCollection(access, col.slug)) return forbidden();
 
   const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+  if (col.slug === "pages" && !canUsePage(access, String(body.slug || ""))) {
+    return forbidden("You are not assigned to create this page.");
+  }
   const payload = pickAllowedFields(col, body);
   const res = await cmsAdmin(`/content-manager/collection-types/${encodeURIComponent(col.uid)}`, token, {
     method: "POST",

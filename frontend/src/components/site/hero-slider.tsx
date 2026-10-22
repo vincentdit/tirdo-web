@@ -6,11 +6,12 @@ import { ArrowRight, Pause, Play } from "lucide-react";
 import { heroSlides } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
-export function HeroSlider() {
+export function HeroSlider({ heroImage }: { heroImage?: string }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const reduceMotion = useRef(false);
-  const n = heroSlides.length;
+  const slides = heroImage ? [{ ...heroSlides[0], image: heroImage }, ...heroSlides.slice(1)] : heroSlides;
+  const n = slides.length;
 
   // Respect the user's reduced-motion preference: no auto-advance.
   useEffect(() => {
@@ -28,7 +29,7 @@ export function HeroSlider() {
     return () => clearInterval(t);
   }, [n, paused]);
 
-  const slide = heroSlides[i];
+  const slide = slides[i];
 
   return (
     <section
@@ -36,7 +37,7 @@ export function HeroSlider() {
       aria-roledescription="carousel"
       aria-label="TIRDO highlights"
     >
-      {heroSlides.map((s, idx) => (
+      {slides.map((s, idx) => (
         // Decorative — the headline text is provided in the overlay below.
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -68,7 +69,7 @@ export function HeroSlider() {
 
       <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3">
         <div className="flex gap-2">
-          {heroSlides.map((s, idx) => (
+          {slides.map((s, idx) => (
             <button
               key={idx}
               onClick={() => setI(idx)}

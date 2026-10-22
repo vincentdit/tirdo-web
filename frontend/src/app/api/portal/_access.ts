@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import {
   PORTAL_COLLECTIONS,
+  allowedPageSlugsFromGrants,
+  canAccessPageSlug,
+  isFullPortalRole,
   isSuperAdminRole,
   parseCollectionList,
   type PortalCollection,
@@ -14,11 +17,14 @@ export type PortalAccess = {
   lastname?: string;
   roles: string[];
   isSuperAdmin: boolean;
+  isFullAccess: boolean;
   canPublish: boolean;
   canManageMedia: boolean;
   canManageUsers: boolean;
+  canManageSite: boolean;
   departments: { slug: string; title: string }[];
   collections: PortalCollection[];
+  pageSlugs: string[] | null;
   grantReady: boolean;
 };
 
@@ -42,6 +48,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
   if (!meRes.ok) return null;
   const me = asUser(meJson);
   const isSuperAdmin = isSuperAdminRole(me.roles);
+  const isFullAccess = isFullPortalRole(me.roles);
 
   const grantRes = await cmsAdmin("/portal-internal/grants", token);
   const grantJson = (await grantRes.json().catch(() => ({}))) as {
@@ -55,15 +62,18 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
     return email === me.email.trim().toLowerCase();
   });
 
-  if (isSuperAdmin) {
+  if (isFullAccess) {
     return {
       ...me,
-      isSuperAdmin: true,
+      isSuperAdmin,
+      isFullAccess: true,
       canPublish: true,
       canManageMedia: true,
-      canManageUsers: true,
+      canManageUsers: isSuperAdmin ? true : false,
+      canManageSite: true,
       departments: [{ slug: "*", title: "All departments" }],
       collections: PORTAL_COLLECTIONS,
+      pageSlugs: null,
       grantReady,
     };
   }
@@ -89,13 +99,21 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
   return {
     ...me,
     isSuperAdmin: false,
+    isFullAccess: false,
     canPublish,
     canManageMedia,
     canManageUsers,
+    canManageSite: canManageMedia,
     departments,
     collections: PORTAL_COLLECTIONS.filter((c) => allowed.has(c.slug)),
+    pageSlugs: allowed.has("pages") ? allowedPageSlugsFromGrants(mine) : [],
     grantReady,
   };
+}
+
+export function canUsePage(access: PortalAccess, slug?: string) {
+  if (!canUseCollection(access, "pages")) return false;
+  return canAccessPageSlug(access.pageSlugs, slug);
 }
 
 export function forbidden(message = "You are not assigned to this work.") {

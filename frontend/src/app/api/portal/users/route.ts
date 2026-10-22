@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DEPARTMENT_UID, GRANT_UID, PORTAL_COLLECTIONS, parseCollectionList } from "@/lib/portal";
+import { DEPARTMENT_UID, GRANT_UID, PORTAL_COLLECTIONS, SITE_PAGES, parseCollectionList } from "@/lib/portal";
 
 function asList(json: unknown): Record<string, unknown>[] {
   if (Array.isArray(json)) return json as Record<string, unknown>[];
@@ -63,6 +63,7 @@ export async function GET() {
       departmentSlug: g.departmentSlug,
       departmentTitle: g.departmentTitle,
       collections: parseCollectionList(g.collections),
+      pageSlugs: parseCollectionList(g.pageSlugs),
       canPublish: Boolean(g.canPublish),
       canManageMedia: Boolean(g.canManageMedia),
       canManageUsers: Boolean(g.canManageUsers),
@@ -75,6 +76,7 @@ export async function GET() {
       slug: d.slug,
     })),
     collections: PORTAL_COLLECTIONS.map((c) => ({ slug: c.slug, label: c.label, group: c.group })),
+    sitePages: SITE_PAGES,
   });
 }
 
@@ -122,6 +124,7 @@ export async function POST(request: NextRequest) {
     departmentSlug: String(body.departmentSlug || ""),
     departmentTitle: String(body.departmentTitle || ""),
     collections: Array.isArray(body.collections) ? body.collections : [],
+    pageSlugs: Array.isArray(body.pageSlugs) ? body.pageSlugs : [],
     canPublish: Boolean(body.canPublish),
     canManageMedia: Boolean(body.canManageMedia),
     canManageUsers: Boolean(body.canManageUsers),

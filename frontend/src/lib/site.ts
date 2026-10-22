@@ -30,6 +30,26 @@ export const assets = {
   newsFeatured: "/media/carousel-items/laX5QEVDZMj4dCwh7uxiIy1gerC4jjQOJe3myxs9.jpg",
 };
 
+export type SiteBrand = {
+  logo: string;
+  emblem: string;
+  heroImage?: string;
+  directorPhoto?: string;
+  tagline?: string;
+  footerBlurb?: string;
+  welcomeTitle?: string;
+  welcomeBody?: string;
+};
+
+export const defaultBrand: SiteBrand = {
+  logo: assets.logo,
+  emblem: assets.emblem,
+  heroImage: assets.hero,
+  directorPhoto: assets.director,
+  tagline: site.tagline,
+  footerBlurb: "Building a sustainable industrial future through research, technology and innovation.",
+};
+
 // `title` is the English source text (fallback / sitemap default); `key` is the
 // i18n message key (namespace-relative under "nav") the header and sitemap use
 // to render translated labels. Keep both in sync when editing the nav.

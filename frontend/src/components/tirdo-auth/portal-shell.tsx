@@ -9,7 +9,7 @@ import {
   Images,
   Settings,
   Users,
-  ExternalLink,
+  Palette,
 } from "lucide-react";
 
 type Collection = { slug: string; label: string; group: string };
@@ -21,6 +21,7 @@ type Me = {
   isSuperAdmin?: boolean;
   canManageMedia?: boolean;
   canManageUsers?: boolean;
+  canManageSite?: boolean;
   departments?: { slug: string; title: string }[];
   collections?: Collection[];
 };
@@ -82,10 +83,15 @@ export function PortalShell({ children }: { children: React.ReactNode }) {
               </div>
             );
           })}
-          {(me?.canManageMedia || me?.isSuperAdmin) && (
-            <NavItem href="/portal/gallery" active={pathname.startsWith("/portal/gallery")} icon={<Images className="h-4 w-4" />}>
-              Gallery
-            </NavItem>
+          {(me?.canManageSite || me?.canManageMedia || me?.isSuperAdmin) && (
+            <>
+              <NavItem href="/portal/branding" active={pathname.startsWith("/portal/branding")} icon={<Palette className="h-4 w-4" />}>
+                Logo & photos
+              </NavItem>
+              <NavItem href="/portal/gallery" active={pathname.startsWith("/portal/gallery")} icon={<Images className="h-4 w-4" />}>
+                Gallery
+              </NavItem>
+            </>
           )}
           {me?.canManageUsers && (
             <NavItem href="/portal/users" active={pathname.startsWith("/portal/users")} icon={<Users className="h-4 w-4" />}>
@@ -95,12 +101,6 @@ export function PortalShell({ children }: { children: React.ReactNode }) {
           <NavItem href="/portal/settings" active={pathname.startsWith("/portal/settings")} icon={<Settings className="h-4 w-4" />}>
             Settings
           </NavItem>
-          <a
-            href="/admin"
-            className="flex items-center gap-2 rounded-md px-3 py-2 text-white/80 hover:bg-white/10 hover:text-white"
-          >
-            <ExternalLink className="h-4 w-4" /> Advanced Strapi
-          </a>
         </nav>
         <div className="border-t border-white/10 p-3 text-xs text-white/70">
           <div className="truncate font-medium text-white">{name}</div>

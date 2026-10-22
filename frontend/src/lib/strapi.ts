@@ -12,6 +12,7 @@
 // -----------------------------------------------------------------------
 import { cookies } from "next/headers";
 import * as fallback from "./content";
+import { defaultBrand, type SiteBrand } from "./site";
 import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader } from "./content";
 import { isLocale, defaultLocale } from "@/i18n/config";
 
@@ -110,19 +111,27 @@ export async function getProjects(locale = activeLocale()): Promise<Project[]> {
   });
 }
 
+function mapPublication(raw: Raw, locale: string): Publication {
+  const p = mergeLocale(raw, locale);
+  return {
+    slug: p.slug, title: p.title, type: p.type ?? "Report",
+    year: p.year ?? new Date().getFullYear(), fileUrl: p.fileUrl || p.file?.url,
+    abstract: p.abstract, authors: p.authors,
+    keywords: Array.isArray(p.keywords) ? p.keywords : typeof p.keywords === "string" ? p.keywords.split(",").map((k: string) => k.trim()).filter(Boolean) : undefined,
+    doi: p.doi, citation: p.citation,
+  };
+}
+
 export async function getPublications(locale = activeLocale()): Promise<Publication[]> {
   const data = await strapiFetch<Raw[]>(`publications?sort=year:desc&${L}&populate[file]=true`);
   if (!data || data.length === 0) return fallback.publications;
-  return data.map((raw) => {
-    const p = mergeLocale(raw, locale);
-    return {
-      slug: p.slug, title: p.title, type: p.type ?? "Report",
-      year: p.year ?? new Date().getFullYear(), fileUrl: p.fileUrl || p.file?.url,
-      abstract: p.abstract, authors: p.authors,
-      keywords: Array.isArray(p.keywords) ? p.keywords : typeof p.keywords === "string" ? p.keywords.split(",").map((k: string) => k.trim()).filter(Boolean) : undefined,
-      doi: p.doi, citation: p.citation,
-    };
-  });
+  return data.map((raw) => mapPublication(raw, locale));
+}
+
+export async function getPublicationBySlug(slug: string, locale = activeLocale()): Promise<Publication | null> {
+  const data = await strapiFetch<Raw[]>(`publications?filters[slug][$eq]=${encodeURIComponent(slug)}&${L}&populate[file]=true`);
+  if (data && data.length > 0) return mapPublication(data[0], locale);
+  return fallback.publications.find((p) => p.slug === slug) ?? null;
 }
 
 export async function getVacancies(locale = activeLocale()): Promise<Vacancy[]> {
@@ -225,10 +234,11 @@ export async function getDirectorMessage() {
   const people = await getLeaders("management");
   const dg = people.find((p) => /director general/i.test(p.role)) ?? people[0];
   const fb = fallback.directorMessage;
+  const brand = await getSiteBrand();
   return {
     name: dg?.name || fb.name,
     role: dg?.role || fb.role,
-    photo: dg?.photo || fb.photo,
+    photo: brand.directorPhoto || dg?.photo || fb.photo,
     quote: dg?.quote || fb.quote,
   };
 }
@@ -258,6 +268,53 @@ export type Charter = {
   rights: string[];
   responsibilities: string[];
 };
+
+export type { SiteBrand };
+
+function mediaUrl(file: unknown): string | undefined {
+  if (!file) return undefined;
+  if (typeof file === "string") return file;
+  const url = (file as { url?: string }).url;
+  return url || undefined;
+}
+
+export type CmsPage = { slug: string; title: string; body?: string; path?: string; cover?: string };
+
+export async function getPageBySlug(slug: string, locale = activeLocale()): Promise<CmsPage | null> {
+  const data = await strapiFetch<Raw[]>(
+    `pages?filters[slug][$eq]=${encodeURIComponent(slug)}&${L}&populate[cover]=true`
+  );
+  const raw = data?.[0];
+  if (!raw) return null;
+  const p = mergeLocale(raw, locale);
+  return {
+    slug: p.slug,
+    title: p.title,
+    body: p.body || undefined,
+    path: p.path,
+    cover: p.cover?.url,
+  };
+}
+
+export function pageParagraphs(body?: string): string[] {
+  if (!body) return [];
+  return body.split(/\n\s*\n/).map((part) => part.trim()).filter(Boolean);
+}
+
+export async function getSiteBrand(): Promise<SiteBrand> {
+  const d = await strapiFetch<Raw>("site-brand?populate=*");
+  if (!d) return defaultBrand;
+  return {
+    logo: mediaUrl(d.logo) || defaultBrand.logo,
+    emblem: mediaUrl(d.emblem) || defaultBrand.emblem,
+    heroImage: mediaUrl(d.heroImage) || defaultBrand.heroImage,
+    directorPhoto: mediaUrl(d.directorPhoto) || defaultBrand.directorPhoto,
+    tagline: d.tagline || defaultBrand.tagline,
+    footerBlurb: d.footerBlurb || defaultBrand.footerBlurb,
+    welcomeTitle: d.welcomeTitle || undefined,
+    welcomeBody: d.welcomeBody || undefined,
+  };
+}
 
 export async function getServiceCharter(locale = activeLocale()): Promise<Charter> {
   const texts = (arr: unknown): string[] =>

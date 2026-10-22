@@ -3,6 +3,7 @@ import { ArrowRight, Target, Eye, Gem } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { Card, CardContent } from "@/components/ui/card";
 import { site } from "@/lib/site";
+import { getPageBySlug, pageParagraphs } from "@/lib/strapi";
 
 export const metadata = { title: "About Us" };
 
@@ -15,7 +16,9 @@ const subPages = [
   { title: "COMSATS Centre", href: "/about/comsats" },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const page = await getPageBySlug("about");
+  const intro = pageParagraphs(page?.body);
   return (
     <>
       <PageBanner
@@ -26,19 +29,25 @@ export default function AboutPage() {
       <section className="py-14">
         <div className="container-tirdo grid gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div className="space-y-4 text-foreground/80">
-            <p>
-              The Tanzania Industrial Research and Development Organization (TIRDO) is a multidisciplinary
-              research and development institution established by an Act of Parliament No. 5 of 1979.
-              TIRDO&apos;s mandate is to support the industrialization of Tanzania by carrying out applied
-              research, providing technological services and facilitating the transfer of appropriate
-              technologies to industry.
-            </p>
-            <p>
-              TIRDO works across four core areas — industrial research, industrial engineering, ICT and
-              technology transfer, and technology forecasting — serving manufacturers, government agencies,
-              SMEs and development partners. The organization operates specialised laboratories and hosts the
-              COMSATS Centre and the T-Hub innovation hub.
-            </p>
+            {intro.length ? (
+              intro.map((p) => <p key={p.slice(0, 40)}>{p}</p>)
+            ) : (
+              <>
+                <p>
+                  The Tanzania Industrial Research and Development Organization (TIRDO) is a multidisciplinary
+                  research and development institution established by an Act of Parliament No. 5 of 1979.
+                  TIRDO&apos;s mandate is to support the industrialization of Tanzania by carrying out applied
+                  research, providing technological services and facilitating the transfer of appropriate
+                  technologies to industry.
+                </p>
+                <p>
+                  TIRDO works across four core areas — industrial research, industrial engineering, ICT and
+                  technology transfer, and technology forecasting — serving manufacturers, government agencies,
+                  SMEs and development partners. The organization operates specialised laboratories and hosts the
+                  COMSATS Centre and the T-Hub innovation hub.
+                </p>
+              </>
+            )}
             <div className="grid gap-4 sm:grid-cols-3">
               {[
                 { icon: Target, title: "Mission", text: "Deliver industrial research and technology services that add value to national resources." },

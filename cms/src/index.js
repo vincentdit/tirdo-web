@@ -32,6 +32,9 @@ module.exports = {
     // 2b) Pre-populate the Customer Service Charter single type (EN + SW) if empty.
     await seedCharter(strapi);
 
+    // 2c) Ensure public website pages exist so staff can be assigned to edit them.
+    await seedPages(strapi);
+
     // 3) Seed demo content on an empty database (idempotent).
     if (process.env.SEED_DATA === 'true') {
       await seed(strapi);
@@ -117,7 +120,7 @@ async function setPublicPermissions(strapi) {
     .findOne({ where: { type: 'public' } });
   if (!publicRole) return;
 
-  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology', 'leader'];
+  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology', 'leader', 'site-brand'];
   const perms = {};
   for (const t of readTypes) {
     perms[`api::${t}.${t}`] = { controllers: { [t]: { find: { enabled: true }, findOne: { enabled: true } } } };
@@ -166,6 +169,24 @@ async function seedCharter(strapi) {
     strapi.log.info('[seed] Customer Service Charter populated (en + sw)');
   } catch (e) {
     strapi.log.warn('[seed] charter seed skipped: ' + e.message);
+  }
+}
+
+async function seedPages(strapi) {
+  const uid = 'api::page.page';
+  try {
+    const pages = require('./page-seed');
+    const existing = await strapi.documents(uid).findMany({ locale: 'en', limit: 200 });
+    const have = new Set((existing || []).map((p) => p.slug).filter(Boolean));
+    let created = 0;
+    for (const page of pages) {
+      if (have.has(page.slug)) continue;
+      await strapi.documents(uid).create({ data: page, status: 'published' });
+      created += 1;
+    }
+    if (created) strapi.log.info(`[seed] created ${created} website pages`);
+  } catch (e) {
+    strapi.log.warn('[seed] pages seed skipped: ' + e.message);
   }
 }
 

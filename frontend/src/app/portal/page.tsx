@@ -10,6 +10,7 @@ type Access = {
   isSuperAdmin?: boolean;
   canManageMedia?: boolean;
   canManageUsers?: boolean;
+  canManageSite?: boolean;
   departments?: { slug: string; title: string }[];
   grantReady?: boolean;
 };
@@ -39,7 +40,7 @@ export default function PortalDashboardPage() {
     <PortalShell>
       <h1 className="font-serif text-2xl font-bold text-[#0A192F]">Content overview</h1>
       <p className="mt-1 text-sm text-slate-600">
-        Manage website content, gallery, settings and staff access. Native Strapi remains available for advanced work.
+        Manage website content, gallery, settings and staff access.
       </p>
       {access?.departments?.length ? (
         <p className="mt-3 text-sm text-slate-700">
@@ -70,7 +71,19 @@ export default function PortalDashboardPage() {
             </Card>
           </Link>
         ))}
-        {(access?.canManageMedia || access?.isSuperAdmin) && (
+        {(access?.canManageSite || access?.canManageMedia || access?.isSuperAdmin) && (
+          <Link href="/portal/branding">
+            <Card className="h-full transition hover:border-[#059669] hover:shadow-md">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base text-[#0A192F]">Logo & photos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-slate-600">Change the emblem, logo and homepage photos.</p>
+              </CardContent>
+            </Card>
+          </Link>
+        )}
+        {(access?.canManageSite || access?.canManageMedia || access?.isSuperAdmin) && (
           <Link href="/portal/gallery">
             <Card className="h-full transition hover:border-[#059669] hover:shadow-md">
               <CardHeader className="pb-2">
@@ -88,7 +101,7 @@ export default function PortalDashboardPage() {
               <CardTitle className="text-base text-[#0A192F]">Settings</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-slate-600">Account, Strapi admin, and access rules.</p>
+              <p className="text-sm text-slate-600">Account details and access rules.</p>
             </CardContent>
           </Card>
         </Link>

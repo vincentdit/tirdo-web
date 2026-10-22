@@ -7,7 +7,7 @@ import {
   successStories, comsats, comsatsObjectives,
   comsatsActivities, orgStructure, managementUnits, type Leader,
 } from "@/lib/content";
-import { getLeaders } from "@/lib/strapi";
+import { getLeaders, getPageBySlug, pageParagraphs } from "@/lib/strapi";
 
 const meta: Record<string, { title: string; subtitle: string }> = {
   "mission-vision": { title: "Mission & Vision", subtitle: "Our purpose, aspiration and values" },
@@ -110,6 +110,8 @@ export default async function AboutSubPage({ params }: { params: { slug: string 
   const crumbs = [{ label: "About Us", href: "/about" }, { label: m.title }];
   const board = params.slug === "board" ? await getLeaders("board") : [];
   const topManagement = params.slug === "administration" ? await getLeaders("management") : [];
+  const cmsPage = await getPageBySlug(params.slug);
+  const cmsParagraphs = pageParagraphs(cmsPage?.body);
 
   return (
     <>
@@ -117,9 +119,15 @@ export default async function AboutSubPage({ params }: { params: { slug: string 
       <section className="py-14">
         {params.slug === "mission-vision" && (
           <div className="container-tirdo max-w-3xl space-y-4 text-foreground/80">
-            <p>Vision: To be a centre of excellence in provision of innovative solutions for a competitive industrial sector.</p>
-            <p>Mission: To support the development of competitive and sustainable industries through quality research and professional technical services.</p>
-            <p>Core values: Integrity, Customer Focus, Quality, Innovation, Partnership, Accountability and Environmental Protection guide how TIRDO delivers its mandate.</p>
+            {cmsParagraphs.length ? (
+              cmsParagraphs.map((p) => <p key={p.slice(0, 48)}>{p}</p>)
+            ) : (
+              <>
+                <p>Vision: To be a centre of excellence in provision of innovative solutions for a competitive industrial sector.</p>
+                <p>Mission: To support the development of competitive and sustainable industries through quality research and professional technical services.</p>
+                <p>Core values: Integrity, Customer Focus, Quality, Innovation, Partnership, Accountability and Environmental Protection guide how TIRDO delivers its mandate.</p>
+              </>
+            )}
           </div>
         )}
 
@@ -192,7 +200,11 @@ export default async function AboutSubPage({ params }: { params: { slug: string 
         {params.slug === "board" && (
           <>
             <div className="container-tirdo max-w-3xl text-center text-foreground/80">
-              <p>The Board of Directors provides strategic direction and oversight, ensuring TIRDO delivers on its statutory mandate under the TIRDO Act, 1979 and serves the national industrialization agenda.</p>
+              {cmsParagraphs.length ? (
+                cmsParagraphs.map((p) => <p key={p.slice(0, 48)}>{p}</p>)
+              ) : (
+                <p>The Board of Directors provides strategic direction and oversight, ensuring TIRDO delivers on its statutory mandate under the TIRDO Act, 1979 and serves the national industrialization agenda.</p>
+              )}
             </div>
             <BoardTree board={board} />
           </>
@@ -201,7 +213,11 @@ export default async function AboutSubPage({ params }: { params: { slug: string 
         {params.slug === "administration" && (
           <>
             <div className="container-tirdo max-w-3xl text-center text-foreground/80">
-              <p>TIRDO&apos;s top management leads the organisation&apos;s research, engineering, ICT and corporate services, translating the mandate into applied research and technical services for industry.</p>
+              {cmsParagraphs.length ? (
+                cmsParagraphs.map((p) => <p key={p.slice(0, 48)}>{p}</p>)
+              ) : (
+                <p>TIRDO&apos;s top management leads the organisation&apos;s research, engineering, ICT and corporate services, translating the mandate into applied research and technical services for industry.</p>
+              )}
             </div>
             <LeaderTree people={topManagement} />
 

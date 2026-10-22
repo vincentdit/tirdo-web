@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FileText, Download, FileSpreadsheet, Scale, BookOpen, FileBadge, Files } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { Badge } from "@/components/ui/badge";
@@ -61,14 +62,11 @@ export default async function DocumentsPage() {
                   </h2>
                   <div className="grid gap-3 md:grid-cols-2">
                     {g.items.map((p) => (
-                      <a
+                      <div
                         key={p.slug}
-                        href={p.fileUrl ?? "#"}
-                        target="_blank"
-                        rel="noreferrer"
                         className="group flex items-start justify-between gap-4 rounded-lg border bg-card p-4 transition-all hover:border-brand-teal hover:shadow-md"
                       >
-                        <div className="flex items-start gap-3">
+                        <Link href={`/publications/${p.slug}`} className="flex min-w-0 flex-1 items-start gap-3">
                           <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand-teal/10 text-brand-teal group-hover:bg-brand-teal group-hover:text-white">
                             <Icon className="h-5 w-5" />
                           </span>
@@ -77,11 +75,21 @@ export default async function DocumentsPage() {
                             <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                               <Badge variant="secondary">{p.type}</Badge>
                               <span>{p.year}</span>
+                              <span>Preview</span>
                             </div>
                           </div>
-                        </div>
-                        <Download className="mt-1 h-5 w-5 shrink-0 text-brand-teal opacity-70 group-hover:opacity-100" />
-                      </a>
+                        </Link>
+                        {p.fileUrl ? (
+                          <a
+                            href={p.fileUrl}
+                            download
+                            aria-label={`Download ${p.title}`}
+                            className="mt-1 shrink-0 text-brand-teal opacity-70 hover:opacity-100"
+                          >
+                            <Download className="h-5 w-5" />
+                          </a>
+                        ) : null}
+                      </div>
                     ))}
                   </div>
                 </div>

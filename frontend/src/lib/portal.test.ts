@@ -4,8 +4,15 @@ import {
   friendlyAuthError,
   isAdminEmail,
   isSuperAdminRole,
+  isAdminRole,
+  isFullPortalRole,
+  pageEditTarget,
+  mediaId,
+  pickAllowedFields,
   entryStatus,
   parseCollectionList,
+  allowedPageSlugsFromGrants,
+  canAccessPageSlug,
   cmsListQuery,
   sanitizeSearch,
   PORTAL_COLLECTIONS,
@@ -33,9 +40,40 @@ describe("portal helpers", () => {
     expect(isSuperAdminRole(["Super Admin"])).toBe(true);
   });
 
+  it("treats Admin like Super Admin for site editing", () => {
+    expect(isAdminRole(["Admin"])).toBe(true);
+    expect(isAdminRole(["Editor"])).toBe(false);
+    expect(isFullPortalRole(["Administrator"])).toBe(true);
+    expect(isFullPortalRole(["Author"])).toBe(false);
+  });
+
+  it("maps public pages to the matching portal editor", () => {
+    expect(pageEditTarget("/").href).toBe("/portal/branding");
+    expect(pageEditTarget("/news/foo").collection).toBe("articles");
+    expect(pageEditTarget("/publications/tirdo-profile").collection).toBe("publications");
+  });
+
+  it("sends media fields as numeric ids", () => {
+    const col = collectionBySlug("articles");
+    expect(col).toBeTruthy();
+    expect(mediaId({ id: 12, url: "/uploads/a.jpg" })).toBe(12);
+    expect(pickAllowedFields(col!, { title: "News", cover: { id: 9 } }).cover).toBe(9);
+  });
+
   it("parses assigned collection lists", () => {
     expect(parseCollectionList(["articles", "pages"])).toEqual(["articles", "pages"]);
     expect(parseCollectionList("articles,vacancies")).toEqual(["articles", "vacancies"]);
+  });
+
+  it("limits page editing to assigned slugs", () => {
+    expect(allowedPageSlugsFromGrants([{ collections: ["pages"], pageSlugs: ["privacy", "about"] }])).toEqual([
+      "privacy",
+      "about",
+    ]);
+    expect(allowedPageSlugsFromGrants([{ collections: ["pages"], pageSlugs: [] }])).toBeNull();
+    expect(canAccessPageSlug(["privacy"], "privacy")).toBe(true);
+    expect(canAccessPageSlug(["privacy"], "about")).toBe(false);
+    expect(canAccessPageSlug(null, "about")).toBe(true);
   });
 
   it("builds paginated CMS search queries", () => {

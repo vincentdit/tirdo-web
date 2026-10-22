@@ -5,19 +5,19 @@ import { HeroSlider } from "@/components/site/hero-slider";
 import { Icon } from "@/components/site/icon";
 import { coreActivities } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
-import { getNews, getServices, getDirectorMessage } from "@/lib/strapi";
+import { getNews, getServices, getDirectorMessage, getSiteBrand } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
 export default async function HomePage() {
-  const [news, services, directorMessage] = await Promise.all([getNews(3), getServices(), getDirectorMessage()]);
+  const [news, services, directorMessage, brand] = await Promise.all([getNews(3), getServices(), getDirectorMessage(), getSiteBrand()]);
   const latest = news[0];
 
   return (
     <>
-      <HeroSlider />
+      <HeroSlider heroImage={brand.heroImage} />
 
       {/* Latest announcement */}
       {latest && (
@@ -37,14 +37,13 @@ export default async function HomePage() {
         <div>
           <p className="eyebrow mb-3 text-brand-teal">Welcome to TIRDO</p>
           <h2 className="font-display text-[2rem] leading-tight text-brand-ink md:text-[2.6rem]">
-            Research that moves industry forward.
+            {brand.welcomeTitle || "Research that moves industry forward."}
           </h2>
         </div>
         <div className="md:pt-7">
           <p className="text-[1.05rem] text-brand-muted">
-            Tanzania Industrial Research and Development Organization is a multidisciplinary R&amp;D
-            institution established in 1979. We help industry solve practical challenges, strengthen
-            technology capability and create value from Tanzania&apos;s resources.
+            {brand.welcomeBody ||
+              "Tanzania Industrial Research and Development Organization is a multidisciplinary R&D institution established in 1979. We help industry solve practical challenges, strengthen technology capability and create value from Tanzania's resources."}
           </p>
           <Link href="/about" className="mt-5 inline-flex items-center gap-1 text-sm font-bold uppercase tracking-wide text-brand-teal hover:gap-2">
             Learn about our mandate <ArrowRight className="h-4 w-4 transition-all" />

@@ -24,6 +24,9 @@
     "collections": {
       "type": "json"
     },
+    "pageSlugs": {
+      "type": "json"
+    },
     "canPublish": {
       "type": "boolean",
       "default": false

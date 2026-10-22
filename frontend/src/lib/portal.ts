@@ -2,9 +2,9 @@ export const PORTAL_COOKIE = "tirdo_portal_token";
 export const PORTAL_LOGIN_PATH = "/portal/login";
 export const GRANT_UID = "api::portal-grant.portal-grant";
 export const DEPARTMENT_UID = "api::department.department";
-export const STRAPI_ADMIN_PATH = "/admin";
+export const SITE_BRAND_UID = "api::site-brand.site-brand";
 
-export type PortalFieldType = "text" | "textarea" | "number" | "boolean" | "email" | "select";
+export type PortalFieldType = "text" | "textarea" | "number" | "boolean" | "email" | "select" | "media" | "file";
 
 export type PortalField = {
   key: string;
@@ -40,6 +40,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
       { key: "excerpt", label: "Excerpt", type: "textarea" },
       { key: "category", label: "Category", type: "text" },
       { key: "body", label: "Body", type: "textarea" },
+      { key: "cover", label: "Photo", type: "media" },
     ],
   },
   {
@@ -49,11 +50,13 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     titleField: "title",
     draftAndPublish: true,
     group: "content",
-    description: "Editable website pages.",
+    description: "Website pages staff can be assigned to edit, such as About and Privacy.",
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
+      { key: "path", label: "Website path", type: "text" },
       { key: "body", label: "Body", type: "textarea" },
+      { key: "cover", label: "Photo", type: "media" },
     ],
   },
   {
@@ -72,6 +75,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
       { key: "authors", label: "Authors", type: "text" },
       { key: "doi", label: "DOI", type: "text" },
       { key: "abstract", label: "Abstract", type: "textarea" },
+      { key: "file", label: "Document file", type: "file" },
     ],
   },
   {
@@ -88,6 +92,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
       { key: "department", label: "Department", type: "text" },
       { key: "summary", label: "Summary", type: "textarea" },
       { key: "body", label: "Body", type: "textarea" },
+      { key: "cover", label: "Photo", type: "media" },
     ],
   },
   {
@@ -105,6 +110,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
       { key: "maturity", label: "Maturity", type: "select", options: ["Concept", "Pilot", "Commercial", "Mature"] },
       { key: "summary", label: "Summary", type: "textarea" },
       { key: "body", label: "Body", type: "textarea" },
+      { key: "cover", label: "Photo", type: "media" },
     ],
   },
   {
@@ -186,6 +192,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
       { key: "group", label: "Group", type: "select", options: ["board", "management"] },
       { key: "rank", label: "Rank", type: "number" },
       { key: "quote", label: "Quote", type: "textarea" },
+      { key: "photo", label: "Photo", type: "media" },
     ],
   },
   {
@@ -225,6 +232,38 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
   },
 ];
 
+export const SITE_PAGES: { slug: string; title: string; path: string }[] = [
+  { slug: "about", title: "About TIRDO", path: "/about" },
+  { slug: "mission-vision", title: "Mission & Vision", path: "/about/mission-vision" },
+  { slug: "board", title: "Board of Directors", path: "/about/board" },
+  { slug: "administration", title: "Administration", path: "/about/administration" },
+  { slug: "success-stories", title: "Success Stories", path: "/about/success-stories" },
+  { slug: "comsats", title: "COMSATS Centre", path: "/about/comsats" },
+  { slug: "privacy", title: "Privacy Policy", path: "/privacy" },
+  { slug: "disclaimer", title: "Disclaimer", path: "/disclaimer" },
+  { slug: "contact", title: "Contact Us", path: "/contact" },
+];
+
+export function allowedPageSlugsFromGrants(rows: { collections?: unknown; pageSlugs?: unknown }[]): string[] | null {
+  let allPages = false;
+  const slugs = new Set<string>();
+  for (const row of rows) {
+    const collections = parseCollectionList(row.collections);
+    if (!collections.includes("pages")) continue;
+    const pages = parseCollectionList(row.pageSlugs);
+    if (pages.length === 0) allPages = true;
+    else pages.forEach((slug) => slugs.add(slug));
+  }
+  if (allPages) return null;
+  return Array.from(slugs);
+}
+
+export function canAccessPageSlug(pageSlugs: string[] | null | undefined, slug?: string): boolean {
+  if (pageSlugs == null) return true;
+  if (!slug) return false;
+  return pageSlugs.includes(slug);
+}
+
 export function collectionBySlug(slug: string): PortalCollection | undefined {
   return PORTAL_COLLECTIONS.find((c) => c.slug === slug);
 }
@@ -258,6 +297,63 @@ export function isSuperAdminRole(roles: string[]): boolean {
   return roles.some((r) => r.toLowerCase() === "super admin");
 }
 
+export function isAdminRole(roles: string[]): boolean {
+  return roles.some((r) => {
+    const n = r.trim().toLowerCase();
+    return n === "admin" || n === "administrator";
+  });
+}
+
+export function isFullPortalRole(roles: string[]): boolean {
+  return isSuperAdminRole(roles) || isAdminRole(roles);
+}
+
+export type PageEditTarget = { href: string; label: string; collection?: string };
+
+export function pageEditTarget(pathname: string): PageEditTarget {
+  const path = (pathname.replace(/\/$/, "") || "/") as string;
+  if (path === "/") return { href: "/portal/branding", label: "Home photos and branding" };
+  if (path.startsWith("/news")) return { href: "/portal/articles", label: "News articles", collection: "articles" };
+  if (path.startsWith("/publications") || path.startsWith("/documents")) {
+    return { href: "/portal/publications", label: "Publications", collection: "publications" };
+  }
+  if (path.startsWith("/projects")) return { href: "/portal/projects", label: "Projects", collection: "projects" };
+  if (path.startsWith("/technology")) return { href: "/portal/technologies", label: "Technologies", collection: "technologies" };
+  if (path.startsWith("/careers")) return { href: "/portal/vacancies", label: "Vacancies", collection: "vacancies" };
+  if (path.startsWith("/tenders")) return { href: "/portal/tenders", label: "Tenders", collection: "tenders" };
+  if (path.startsWith("/departments")) return { href: "/portal/departments", label: "Departments", collection: "departments" };
+  if (path.startsWith("/services") || path.startsWith("/laboratory") || path.startsWith("/consultancy") || path.startsWith("/training")) {
+    return { href: "/portal/services", label: "Services", collection: "services" };
+  }
+  if (path.startsWith("/staff") || path.startsWith("/about/administration") || path.startsWith("/about/board")) {
+    return { href: "/portal/leaders", label: "Board and management", collection: "leaders" };
+  }
+  if (path.startsWith("/gallery")) return { href: "/portal/gallery", label: "Gallery" };
+  if (path.startsWith("/contact")) return { href: "/portal/contact-messages", label: "Contact messages", collection: "contact-messages" };
+  if (path.startsWith("/feedback")) return { href: "/portal/feedback", label: "Service requests", collection: "feedback" };
+  if (path.startsWith("/privacy") || path.startsWith("/disclaimer") || path.startsWith("/about")) {
+    return { href: "/portal/pages", label: "Pages", collection: "pages" };
+  }
+  return { href: "/portal/pages", label: "Pages", collection: "pages" };
+}
+
+export function mediaId(value: unknown): number | null {
+  if (value == null || value === "") return null;
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && /^\d+$/.test(value)) return Number(value);
+  if (typeof value === "object" && value && "id" in value) {
+    const id = Number((value as { id: unknown }).id);
+    return Number.isFinite(id) ? id : null;
+  }
+  return null;
+}
+
+export function mediaPreviewUrl(value: unknown): string | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const url = (value as { url?: string }).url;
+  return url || undefined;
+}
+
 export function pickAllowedFields(col: PortalCollection, body: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const field of col.fields) {
@@ -267,6 +363,8 @@ export function pickAllowedFields(col: PortalCollection, body: Record<string, un
     else if (field.type === "number") {
       const n = Number(value);
       out[field.key] = Number.isFinite(n) ? n : null;
+    } else if (field.type === "media" || field.type === "file") {
+      out[field.key] = mediaId(value);
     } else if (value === "" || value == null) out[field.key] = field.type === "textarea" || field.type === "text" ? value : null;
     else out[field.key] = value;
   }

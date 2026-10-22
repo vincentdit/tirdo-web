@@ -106,7 +106,7 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
     docs.push({ id: `project:${p.slug}`, title: p.title, type: "Project", url: `/projects#${p.slug}`, excerpt: p.summary, body: [content.researchAreaName(content.projectAreaSlug(p)), p.funder].filter(Boolean).join(" "), category: p.department, date: p.year ? String(p.year) : undefined });
 
   for (const p of publications)
-    docs.push({ id: `publication:${p.slug}`, title: p.title, type: "Publication", url: `/publications#${p.slug}`, excerpt: `${p.type} · ${p.year}`, body: [p.abstract, p.authors, ...(p.keywords ?? [])].filter(Boolean).join(" "), category: p.type, date: String(p.year) });
+    docs.push({ id: `publication:${p.slug}`, title: p.title, type: "Publication", url: `/publications/${p.slug}`, excerpt: `${p.type} · ${p.year}`, body: [p.abstract, p.authors, ...(p.keywords ?? [])].filter(Boolean).join(" "), category: p.type, date: String(p.year) });
 
   for (const v of vacancies)
     docs.push({ id: `vacancy:${v.slug}`, title: v.title, type: "Vacancy", url: `/careers#${v.slug}`, excerpt: v.description, body: [v.department, ...(v.body ?? [])].filter(Boolean).join(" "), category: v.category, date: v.closingDate });

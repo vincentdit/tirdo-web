@@ -1,137 +1,152 @@
 "use client";
-
-import { useMemo, useState } from "react";
-import { FileText, Download, Search as SearchIcon, ChevronDown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { useEffect, useMemo, useState } from "react";
+import { Download, Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/site/filter-chips";
+import { PublicationPreview } from "@/components/site/publication-preview";
 import type { Publication } from "@/lib/content";
 
-// Publications library with type + year filters, keyword search and expandable
-// metadata (abstract, authors, keywords, DOI, citation).
 export function PublicationsExplorer({ publications }: { publications: Publication[] }) {
-  const [type, setType] = useState<string | undefined>();
-  const [year, setYear] = useState<number | undefined>();
   const [q, setQ] = useState("");
-  const [open, setOpen] = useState<string | null>(null);
+  const [type, setType] = useState("all");
+  const [year, setYear] = useState("all");
+  const [preview, setPreview] = useState<Publication | null>(null);
 
   const types = useMemo(() => Array.from(new Set(publications.map((p) => p.type))).sort(), [publications]);
   const years = useMemo(() => Array.from(new Set(publications.map((p) => p.year))).sort((a, b) => b - a), [publications]);
 
-  const needle = q.trim().toLowerCase();
   const filtered = publications.filter((p) => {
-    if (type && p.type !== type) return false;
-    if (year && p.year !== year) return false;
-    if (needle) {
-      const hay = [p.title, p.abstract, p.authors, p.type, ...(p.keywords ?? [])].filter(Boolean).join(" ").toLowerCase();
-      if (!hay.includes(needle)) return false;
-    }
-    return true;
+    const hay = `${p.title} ${p.type} ${p.year} ${p.abstract ?? ""} ${p.authors ?? ""} ${(p.keywords ?? []).join(" ")}`.toLowerCase();
+    const matchQ = !q || hay.includes(q.toLowerCase());
+    const matchT = type === "all" || p.type === type;
+    const matchY = year === "all" || String(p.year) === year;
+    return matchQ && matchT && matchY;
   });
 
-  const hasMeta = (p: Publication) => !!(p.abstract || p.authors || (p.keywords && p.keywords.length) || p.doi || p.citation);
+  useEffect(() => {
+    const openFromHash = () => {
+      const id = window.location.hash.replace(/^#/, "");
+      if (!id) return;
+      const found = publications.find((p) => p.slug === id);
+      if (found) setPreview(found);
+    };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
+  }, [publications]);
+
+  useEffect(() => {
+    if (!preview) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreview(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [preview]);
 
   return (
-    <div className="space-y-6">
-      <div className="relative max-w-md">
-        <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search titles, authors, keywords…"
-          className="w-full rounded-md border border-input bg-background py-2.5 pl-9 pr-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-          aria-label="Search publications"
-        />
+    <div>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search title, author, keyword…"
+            aria-label="Search publications"
+            className="h-11 w-full rounded-lg border bg-white pl-10 pr-3 text-sm outline-none ring-brand-gold/40 focus:ring-2"
+          />
+        </div>
+        <p className="text-xs text-muted-foreground sm:max-w-[14rem]">Click a title to preview before you download.</p>
       </div>
 
-      <div className="space-y-3 rounded-xl border bg-secondary/30 p-4">
-        <div>
-          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Type</div>
-          <div className="flex flex-wrap gap-2">
-            <Chip active={!type} onClick={() => setType(undefined)}>All</Chip>
-            {types.map((t) => (
-              <Chip key={t} active={type === t} onClick={() => setType(t)}>{t}</Chip>
-            ))}
-          </div>
-        </div>
-        <div>
-          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Year</div>
-          <div className="flex flex-wrap gap-2">
-            <Chip active={!year} onClick={() => setYear(undefined)}>All</Chip>
-            {years.map((y) => (
-              <Chip key={y} active={year === y} onClick={() => setYear(y)}>{y}</Chip>
-            ))}
-          </div>
-        </div>
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Type</span>
+        <Chip active={type === "all"} onClick={() => setType("all")}>All</Chip>
+        {types.map((t) => (
+          <Chip key={t} active={type === t} onClick={() => setType(t)}>{t}</Chip>
+        ))}
+      </div>
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Year</span>
+        <Chip active={year === "all"} onClick={() => setYear("all")}>All</Chip>
+        {years.map((y) => (
+          <Chip key={y} active={year === String(y)} onClick={() => setYear(String(y))}>{y}</Chip>
+        ))}
       </div>
 
-      <p className="text-sm text-muted-foreground">{filtered.length} publication{filtered.length !== 1 && "s"}</p>
+      <p className="mb-3 text-sm text-muted-foreground">{filtered.length} publication{filtered.length === 1 ? "" : "s"}</p>
 
-      <div className="overflow-hidden rounded-xl border">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-secondary text-primary">
+      <div className="overflow-x-auto rounded-xl border bg-white">
+        <table className="w-full min-w-[640px] text-left text-sm">
+          <thead className="border-b bg-secondary/50 text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
               <th className="px-5 py-3 font-semibold">Title</th>
-              <th className="hidden px-5 py-3 font-semibold sm:table-cell">Type</th>
-              <th className="hidden px-5 py-3 font-semibold sm:table-cell">Year</th>
-              <th className="px-5 py-3 text-right font-semibold">Download</th>
+              <th className="px-5 py-3 font-semibold">Type</th>
+              <th className="px-5 py-3 font-semibold">Year</th>
+              <th className="px-5 py-3 font-semibold">File</th>
             </tr>
           </thead>
-          <tbody className="divide-y">
-            {filtered.map((p) => {
-              const expandable = hasMeta(p);
-              const isOpen = open === p.slug;
-              return (
-                <tr key={p.slug} id={p.slug} className="scroll-mt-28 align-top hover:bg-secondary/40">
-                  <td className="px-5 py-4" colSpan={1}>
-                    <button
-                      type="button"
-                      onClick={() => expandable && setOpen(isOpen ? null : p.slug)}
-                      className={"flex items-start gap-2 text-left font-medium text-primary " + (expandable ? "cursor-pointer" : "cursor-default")}
-                      aria-expanded={isOpen}
-                    >
-                      <FileText className="mt-0.5 h-4 w-4 shrink-0 text-brand-teal" />
-                      <span>
-                        {p.title}
-                        {p.authors && <span className="block text-xs font-normal text-muted-foreground">{p.authors}</span>}
-                        <span className="mt-1 flex flex-wrap items-center gap-2 sm:hidden">
-                          <Badge variant="secondary">{p.type}</Badge>
-                          <span className="text-xs text-muted-foreground">{p.year}</span>
-                        </span>
-                      </span>
-                      {expandable && <ChevronDown className={"ml-1 mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform " + (isOpen ? "rotate-180" : "")} />}
-                    </button>
-
-                    {expandable && isOpen && (
-                      <div className="mt-3 space-y-2 border-l-2 border-brand-teal/40 pl-3 text-sm text-muted-foreground">
-                        {p.abstract && <p>{p.abstract}</p>}
-                        {p.keywords && p.keywords.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5">
-                            {p.keywords.map((k) => <Badge key={k} variant="outline">{k}</Badge>)}
-                          </div>
-                        )}
-                        {p.doi && (
-                          <p>DOI: <a href={`https://doi.org/${p.doi}`} className="text-brand-teal hover:underline" target="_blank" rel="noreferrer">{p.doi}</a></p>
-                        )}
-                        {p.citation && <p className="italic">{p.citation}</p>}
-                      </div>
-                    )}
-                  </td>
-                  <td className="hidden px-5 py-4 sm:table-cell"><Badge variant="secondary">{p.type}</Badge></td>
-                  <td className="hidden px-5 py-4 text-muted-foreground sm:table-cell">{p.year}</td>
-                  <td className="px-5 py-4 text-right">
-                    <a href={p.fileUrl ?? "#"} className="inline-flex items-center gap-1 text-brand-teal hover:underline" target="_blank" rel="noreferrer">
-                      <Download className="h-4 w-4" /> PDF
-                    </a>
-                  </td>
-                </tr>
-              );
-            })}
-            {filtered.length === 0 && (
+          <tbody>
+            {filtered.length === 0 ? (
               <tr><td colSpan={4} className="px-5 py-10 text-center text-sm text-muted-foreground">No publications match these filters.</td></tr>
-            )}
+            ) : filtered.map((p) => (
+              <tr key={p.slug} id={p.slug} className="border-b last:border-0 hover:bg-secondary/30">
+                <td className="px-5 py-3">
+                  <button
+                    type="button"
+                    onClick={() => setPreview(p)}
+                    className="text-left font-medium text-primary underline-offset-2 hover:text-brand-teal hover:underline"
+                  >
+                    {p.title}
+                  </button>
+                </td>
+                <td className="px-5 py-3 text-muted-foreground">{p.type}</td>
+                <td className="px-5 py-3 text-muted-foreground">{p.year}</td>
+                <td className="px-5 py-3">
+                  {p.fileUrl ? (
+                    <a href={p.fileUrl} className="inline-flex items-center gap-1 text-brand-teal hover:underline" download>
+                      <Download className="h-4 w-4" /> Download
+                    </a>
+                  ) : (
+                    <button type="button" onClick={() => setPreview(p)} className="text-muted-foreground hover:text-brand-teal hover:underline">
+                      Preview
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
+
+      {preview ? (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 pt-10 sm:pt-16"
+          onClick={() => setPreview(null)}
+          role="presentation"
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="publication-preview-title"
+            className="relative mb-10 w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <h2 id="publication-preview-title" className="font-heading text-xl font-bold text-primary">{preview.title}</h2>
+              <Button type="button" variant="ghost" size="icon" aria-label="Close preview" onClick={() => setPreview(null)}>
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <PublicationPreview publication={preview} compact />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

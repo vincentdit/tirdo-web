@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { site, assets } from "@/lib/site";
+import { site } from "@/lib/site";
+import { useBrand } from "@/components/site/brand-provider";
 import { VisitorCounter } from "@/components/site/visitor-counter";
 
 // Footer link columns: hrefs are fixed; labels come from the "footer" message
@@ -28,14 +29,15 @@ const columns = [
 
 export function Footer() {
   const t = useTranslations("footer");
+  const brand = useBrand();
   return (
     <footer className="bg-brand-navy text-[#d3e0e9]">
       <div className="container-tirdo grid gap-8 py-16 md:grid-cols-2 lg:grid-cols-[1.7fr_1fr_1fr_1.2fr_1.15fr]">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img loading="lazy" decoding="async" src={assets.logo} alt="TIRDO" className="w-[76px] bg-white p-1.5" />
+          <img loading="lazy" decoding="async" src={brand.logo} alt="TIRDO" className="w-[76px] bg-white p-1.5" />
           <p className="mt-4 max-w-[280px] text-sm leading-7">
-            {t("blurb")}
+            {brand.footerBlurb || t("blurb")}
           </p>
         </div>
 

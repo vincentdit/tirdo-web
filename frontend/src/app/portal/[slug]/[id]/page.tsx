@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { PortalShell } from "@/components/tirdo-auth/portal-shell";
+import { MediaField } from "@/components/tirdo-auth/media-field";
 import { collectionBySlug, entryStatus, type PortalField } from "@/lib/portal";
 
 export default function PortalEntryPage() {
@@ -127,6 +128,15 @@ export default function PortalEntryPage() {
       {loaded && (
         <form className="mt-6 max-w-3xl space-y-4 rounded-lg border bg-white p-5" onSubmit={(e) => onSubmit(e, "save")}>
           {fields.map((field) => (
+            field.type === "media" || field.type === "file" ? (
+              <MediaField
+                key={field.key}
+                label={field.label}
+                value={values[field.key]}
+                accept={field.type === "file" ? "application/pdf,image/*" : "image/*"}
+                onChange={(next) => setValues((v) => ({ ...v, [field.key]: next }))}
+              />
+            ) : (
             <label key={field.key} className="block text-sm">
               <span className="font-medium text-slate-700">{field.label}</span>
               {field.type === "textarea" ? (
@@ -171,6 +181,7 @@ export default function PortalEntryPage() {
                 />
               )}
             </label>
+            )
           ))}
           <div className="flex flex-wrap gap-2 border-t pt-4">
             <button type="submit" disabled={saving} className="rounded-md bg-[#0A192F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">

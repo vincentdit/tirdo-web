@@ -81,7 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     })),
     ...publications.map((p) => ({
-      url: absoluteUrl(`/publications#${p.slug}`),
+      url: absoluteUrl(`/publications/${p.slug}`),
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.5,

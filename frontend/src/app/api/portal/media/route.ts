@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   if (!token) return unauthorized();
   const access = await loadAccess(token);
   if (!access) return NextResponse.json({ error: "Session expired. Sign in again." }, { status: 401 });
-  if (!access.canManageMedia && !access.isSuperAdmin) return forbidden("You are not assigned to the gallery.");
+  if (!access.canManageSite) return forbidden("You are not assigned to the gallery.");
 
   const page = Number(request.nextUrl.searchParams.get("page") || "1") || 1;
   const pageSize = Math.min(48, Number(request.nextUrl.searchParams.get("pageSize") || "12") || 12);
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     results,
     query: q,
-    canManageMedia: access.canManageMedia || access.isSuperAdmin,
+    canManageMedia: access.canManageSite,
     pagination: {
       page,
       pageSize,
@@ -50,7 +50,6 @@ export async function POST(request: NextRequest) {
   if (!token) return unauthorized();
   const access = await loadAccess(token);
   if (!access) return NextResponse.json({ error: "Session expired. Sign in again." }, { status: 401 });
-  if (!access.canManageMedia && !access.isSuperAdmin) return forbidden("You are not assigned to the gallery.");
 
   const incoming = await request.formData();
   const file = incoming.get("files") || incoming.get("file");

@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_brands",
+  "info": {
+    "singularName": "site-brand",
+    "pluralName": "site-brands",
+    "displayName": "Site Branding",
+    "description": "Logo, emblem, photos and homepage text shown on the public website"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "logo": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "emblem": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "heroImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "directorPhoto": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "tagline": { "type": "string" },
+    "footerBlurb": { "type": "text" },
+    "welcomeTitle": { "type": "string" },
+    "welcomeBody": { "type": "text" }
+  }
+}

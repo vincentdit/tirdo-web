@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Menu, X, ChevronDown, Search, ArrowRight, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
-import { site, mainNav, portal, assets, type NavItem } from "@/lib/site";
+import { site, mainNav, portal, type NavItem } from "@/lib/site";
+import { useBrand } from "@/components/site/brand-provider";
 import { AuthButton } from "@/components/site/auth-button";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const t = useTranslations();
+  const brand = useBrand();
 
   return (
     <>
@@ -50,7 +52,7 @@ export function Header() {
         <div className="container-tirdo flex h-[108px] items-center justify-between gap-4 md:h-[132px]">
           <Link href="/" className="shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={assets.emblem} alt="Tanzania emblem" className="h-14 w-14 object-contain md:h-[88px] md:w-[88px]" />
+            <img src={brand.emblem} alt="Tanzania emblem" className="h-14 w-14 object-contain md:h-[88px] md:w-[88px]" />
           </Link>
           <div className="text-center leading-tight">
             <p className="text-[0.55rem] tracking-[0.18em] text-brand-muted md:text-[0.67rem]">
@@ -59,11 +61,11 @@ export function Header() {
             <h1 className="my-1 text-sm font-bold uppercase leading-tight tracking-wide text-brand-blue md:text-[1.7rem]">
               {t("site.orgName")}
             </h1>
-            <span className="text-[0.62rem] font-semibold italic text-brand-ink md:text-sm">{t("site.tagline")}</span>
+            <span className="text-[0.62rem] font-semibold italic text-brand-ink md:text-sm">{brand.tagline || t("site.tagline")}</span>
           </div>
           <Link href="/" className="shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={assets.logo} alt="TIRDO logo" className="h-14 w-14 object-contain md:h-[78px] md:w-[78px]" />
+            <img src={brand.logo} alt="TIRDO logo" className="h-14 w-14 object-contain md:h-[78px] md:w-[78px]" />
           </Link>
         </div>
       </div>

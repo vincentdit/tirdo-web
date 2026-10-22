@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { collectionBySlug } from "@/lib/portal";
-import { canUseCollection, forbidden, loadAccess } from "../../../../_access";
+import { canUseCollection, canUsePage, forbidden, loadAccess } from "../../../../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../../../../_cms";
 
 export async function POST(_request: NextRequest, { params }: { params: { slug: string; id: string } }) {
@@ -13,6 +13,15 @@ export async function POST(_request: NextRequest, { params }: { params: { slug: 
   if (!col) return NextResponse.json({ error: "Unknown collection." }, { status: 404 });
   if (!canUseCollection(access, col.slug)) return forbidden();
   if (!access.canPublish) return forbidden("You are not assigned to unpublish this content.");
+  if (col.slug === "pages") {
+    const current = await cmsAdmin(
+      `/content-manager/collection-types/${encodeURIComponent(col.uid)}/${encodeURIComponent(params.id)}`,
+      token
+    );
+    const currentJson = (await current.json().catch(() => ({}))) as { data?: { slug?: string }; slug?: string };
+    const slug = String(currentJson.data?.slug || currentJson.slug || "");
+    if (!canUsePage(access, slug)) return forbidden("You are not assigned to this page.");
+  }
 
   const res = await cmsAdmin(
     `/content-manager/collection-types/${encodeURIComponent(col.uid)}/${encodeURIComponent(params.id)}/actions/unpublish`,

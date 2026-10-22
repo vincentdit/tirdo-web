@@ -18,9 +18,11 @@ export async function GET() {
     lastname: access.lastname,
     roles: access.roles,
     isSuperAdmin: access.isSuperAdmin,
+    isFullAccess: access.isFullAccess,
     canPublish: access.canPublish,
     canManageMedia: access.canManageMedia,
     canManageUsers: access.canManageUsers,
+    canManageSite: access.canManageSite,
     departments: access.departments,
     collections: access.collections.map((c) => ({
       slug: c.slug,
@@ -29,6 +31,7 @@ export async function GET() {
       group: c.group,
       draftAndPublish: c.draftAndPublish,
     })),
+    pageSlugs: access.pageSlugs,
     grantReady: access.grantReady,
   });
 }

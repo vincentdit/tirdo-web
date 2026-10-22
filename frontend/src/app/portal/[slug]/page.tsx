@@ -10,6 +10,8 @@ import { formatDate } from "@/lib/utils";
 type Row = {
   documentId: string;
   title: string;
+  slug?: string;
+  path?: string;
   status: string;
   updatedAt?: string;
   email?: string;
@@ -33,6 +35,7 @@ export default function PortalCollectionPage() {
   const [q, setQ] = useState("");
   const [qDebounced, setQDebounced] = useState("");
   const [canPublish, setCanPublish] = useState(false);
+  const [canCreate, setCanCreate] = useState(true);
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -73,6 +76,7 @@ export default function PortalCollectionPage() {
         setTotal(Number(pagination.total) || j?.results?.length || 0);
         setPageCount(Number(pagination.pageCount) || 1);
         setCanPublish(Boolean(j?.canPublish));
+        setCanCreate(j?.canCreate !== false);
       })
       .catch((e) => setError(e instanceof Error ? e.message : "Could not load this list."))
       .finally(() => setLoading(false));
@@ -124,13 +128,18 @@ export default function PortalCollectionPage() {
         <div>
           <h1 className="font-serif text-2xl font-bold text-[#0A192F]">{col.label}</h1>
           <p className="mt-1 text-sm text-slate-600">{col.description}</p>
+          {col.slug === "pages" && !canCreate && (
+            <p className="mt-2 text-sm text-slate-600">You can update only the website pages assigned to you.</p>
+          )}
         </div>
-        <Link
-          href={`/portal/${collection.slug}/new`}
-          className="rounded-md bg-[#059669] px-4 py-2 text-sm font-semibold text-white hover:bg-[#047857]"
-        >
-          New entry
-        </Link>
+        {canCreate && (
+          <Link
+            href={`/portal/${collection.slug}/new`}
+            className="rounded-md bg-[#059669] px-4 py-2 text-sm font-semibold text-white hover:bg-[#047857]"
+          >
+            New entry
+          </Link>
+        )}
       </div>
       <div className="mt-5 flex flex-wrap items-center gap-3">
         <label className="relative min-w-[220px] flex-1">
@@ -190,6 +199,11 @@ export default function PortalCollectionPage() {
               <tr key={row.documentId} className="border-t">
                 <td className="px-4 py-3">
                   <div className="font-medium text-[#0A192F]">{row.title}</div>
+                  {row.path && (
+                    <a href={row.path} className="text-xs text-[#059669] hover:underline" target="_blank" rel="noreferrer">
+                      {row.path}
+                    </a>
+                  )}
                   {(row.name || row.email) && (
                     <div className="text-xs text-slate-500">
                       {row.name} {row.email}
