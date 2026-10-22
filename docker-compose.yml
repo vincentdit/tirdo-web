@@ -104,8 +104,7 @@ services:
       EMAIL_FROM: ${EMAIL_FROM}
       EMAIL_REPLY_TO: ${EMAIL_REPLY_TO}
       CONTACT_RECIPIENT: ${CONTACT_RECIPIENT}
-    ports:
-      - "${HOST_CMS_PORT:-1337}:1337"
+    # CMS is internal only. Staff use http://<host>/portal; Next talks to cms:1337 on tirdo-net.
     volumes:
       - strapi_uploads:/opt/app/public/uploads
     depends_on:

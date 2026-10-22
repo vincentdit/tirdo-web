@@ -16,17 +16,15 @@ const nextConfig = {
       { protocol: "https", hostname: "**" },
     ],
   },
-  // If the frontend is published on the LAN (e.g. :3001), send Strapi admin
-  // and /cms through to the CMS container instead of returning Next.js HTML.
-  async rewrites() {
-    const cms = process.env.STRAPI_INTERNAL_URL || "http://cms:1337";
+  // Old Strapi admin bookmarks go to the TIRDO management portal.
+  async redirects() {
     return [
-      { source: "/cms/:path*", destination: `${cms}/:path*` },
-      { source: "/admin/:path*", destination: `${cms}/admin/:path*` },
-      { source: "/admin", destination: `${cms}/admin` },
-      { source: "/content-manager/:path*", destination: `${cms}/content-manager/:path*` },
-      { source: "/i18n/:path*", destination: `${cms}/i18n/:path*` },
-      { source: "/upload/:path*", destination: `${cms}/upload/:path*` },
+      { source: "/admin", destination: "/portal", permanent: false },
+      { source: "/admin/:path*", destination: "/portal", permanent: false },
+      { source: "/cms", destination: "/portal", permanent: false },
+      { source: "/cms/:path*", destination: "/portal", permanent: false },
+      { source: "/content-manager/:path*", destination: "/portal", permanent: false },
+      { source: "/content-type-builder/:path*", destination: "/portal", permanent: false },
     ];
   },
   // Allow the site to render even if the CMS is still booting.

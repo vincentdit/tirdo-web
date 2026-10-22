@@ -32,7 +32,7 @@ function StaffDashboard() {
     { icon: Inbox, title: "Contact Messages", desc: "Messages submitted via the website.", href: `${cmsUrl}/contact-messages`, external: false, show: isEditor },
     { icon: FolderKanban, title: "Content Management", desc: "Manage news, publications, projects and pages.", href: cmsUrl, external: false, show: isEditor, badge: "Editor" },
     { icon: BarChart3, title: "Web Analytics", desc: "TIRDO Analytics traffic and engagement reports.", href: matomoUrl, external: true, show: true },
-    { icon: Settings, title: "Identity & Access", desc: "Manage users and roles (Keycloak).", href: (process.env.NEXT_PUBLIC_KEYCLOAK_URL || "http://localhost:8080/auth") + "/admin", external: true, show: isAdmin, badge: "Admin" },
+    { icon: Settings, title: "Users & access", desc: "Create CMS users and manage access in the management portal.", href: `${cmsUrl}/users`, external: false, show: isAdmin, badge: "Admin" },
   ].filter((t) => t.show);
 
   return (
