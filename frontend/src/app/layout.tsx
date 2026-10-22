@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
-import { Header } from "@/components/site/header";
-import { Footer } from "@/components/site/footer";
+import { SiteShell } from "@/components/site/site-shell";
 import { MatomoAnalytics } from "@/components/site/matomo";
 import { AuthProvider } from "@/components/site/auth-provider";
 import { site } from "@/lib/site";
@@ -75,9 +74,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </a>
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
-            <Header />
-            <main id="main">{children}</main>
-            <Footer />
+            <SiteShell>{children}</SiteShell>
           </AuthProvider>
         </NextIntlClientProvider>
         <MatomoAnalytics />

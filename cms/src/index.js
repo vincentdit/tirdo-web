@@ -19,6 +19,7 @@ module.exports = {
     strapi.documents.use(auditMiddleware(strapi));
     // Refresh the public website cache after CMS content changes.
     strapi.documents.use(frontendSyncMiddleware(strapi));
+    registerPortalGrantRoute(strapi);
   },
 
   async bootstrap({ strapi }) {
@@ -45,6 +46,57 @@ module.exports = {
     }
   },
 };
+
+function registerPortalGrantRoute(strapi) {
+  strapi.server.routes([
+    {
+      method: 'GET',
+      path: '/portal-internal/grants',
+      handler: async (ctx) => {
+        const user = await adminUserFromAuth(strapi, ctx);
+        if (!user) {
+          ctx.status = 401;
+          ctx.body = { error: 'Unauthorized' };
+          return;
+        }
+        const roles = (user.roles || []).map((r) => r.name).filter(Boolean);
+        const isSuperAdmin = roles.some((n) => String(n).toLowerCase() === 'super admin');
+        const email = String(user.email || '').trim().toLowerCase();
+        try {
+          const rows = await strapi.db.query('api::portal-grant.portal-grant').findMany({ limit: 200 });
+          const results = (rows || []).filter((row) => {
+            if (row.active === false) return false;
+            if (isSuperAdmin) return true;
+            return String(row.staffEmail || '').trim().toLowerCase() === email;
+          });
+          ctx.body = { results, grantReady: true, isSuperAdmin, email: user.email, roles };
+        } catch (e) {
+          ctx.body = { results: [], grantReady: false, isSuperAdmin, email: user.email, roles };
+        }
+      },
+      config: { auth: false },
+    },
+  ]);
+}
+
+async function adminUserFromAuth(strapi, ctx) {
+  const header = String(ctx.request.header.authorization || '');
+  const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';
+  if (!token) return null;
+  try {
+    const tokenService = strapi.service('admin::token') || strapi.admin?.services?.token;
+    const decoded = tokenService?.decodeJwtToken
+      ? await tokenService.decodeJwtToken(token)
+      : tokenService?.decode
+        ? await tokenService.decode(token)
+        : null;
+    const id = decoded?.id || decoded?.userId || decoded?.payload?.id;
+    if (!id) return null;
+    return strapi.db.query('admin::user').findOne({ where: { id }, populate: ['roles'] });
+  } catch {
+    return null;
+  }
+}
 
 async function ensureLocale(strapi, code, name) {
   try {

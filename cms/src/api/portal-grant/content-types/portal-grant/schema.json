@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "portal_grants",
+  "info": {
+    "singularName": "portal-grant",
+    "pluralName": "portal-grants",
+    "displayName": "Portal Access Grant",
+    "description": "Department work assignments for the TIRDO management portal"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "staffEmail": {
+      "type": "email",
+      "required": true
+    },
+    "departmentSlug": {
+      "type": "string"
+    },
+    "departmentTitle": {
+      "type": "string"
+    },
+    "collections": {
+      "type": "json"
+    },
+    "canPublish": {
+      "type": "boolean",
+      "default": false
+    },
+    "canManageMedia": {
+      "type": "boolean",
+      "default": false
+    },
+    "canManageUsers": {
+      "type": "boolean",
+      "default": false
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "notes": {
+      "type": "text"
+    }
+  }
+}

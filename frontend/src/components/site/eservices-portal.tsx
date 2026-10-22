@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 // sign-in prompt; signed-in users see their portal, role-aware.
 export function EServicesPortal() {
   const auth = useAuth();
-  const cmsUrl = "/admin";
+  const cmsUrl = "/portal";
 
   if (!auth.ready) {
     return <div className="h-40 animate-pulse rounded-xl border bg-secondary/40" />;
@@ -66,10 +66,9 @@ export function EServicesPortal() {
         {isEditor && (
           <PortalTile
             icon={ExternalLink}
-            title="Content Management (Strapi)"
+            title="Content Management"
             desc="Manage news, publications and projects."
             href={cmsUrl}
-            external
             badge="Editor"
           />
         )}
