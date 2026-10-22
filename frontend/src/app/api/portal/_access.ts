@@ -3,6 +3,7 @@ import {
   PORTAL_COLLECTIONS,
   allowedPageSlugsFromGrants,
   canAccessPageSlug,
+  isAdminRole,
   isFullPortalRole,
   isSuperAdminRole,
   parseCollectionList,
@@ -38,6 +39,7 @@ function asUser(json: Record<string, unknown>) {
     email: String(u.email || ""),
     firstname: u.firstname ? String(u.firstname) : undefined,
     lastname: u.lastname ? String(u.lastname) : undefined,
+    isActive: u.isActive !== false,
     roles,
   };
 }
@@ -47,6 +49,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
   const meJson = (await meRes.json().catch(() => ({}))) as Record<string, unknown>;
   if (!meRes.ok) return null;
   const me = asUser(meJson);
+  if (!me.isActive) return null;
   const isSuperAdmin = isSuperAdminRole(me.roles);
   const isFullAccess = isFullPortalRole(me.roles);
 
@@ -69,7 +72,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
       isFullAccess: true,
       canPublish: true,
       canManageMedia: true,
-      canManageUsers: isSuperAdmin ? true : false,
+      canManageUsers: isSuperAdmin || isAdminRole(me.roles),
       canManageSite: true,
       departments: [{ slug: "*", title: "All departments" }],
       collections: PORTAL_COLLECTIONS,
@@ -85,6 +88,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
   let canManageUsers = false;
 
   for (const row of mine) {
+    if (row.active === false) continue;
     for (const slug of parseCollectionList(row.collections)) allowed.add(slug);
     canPublish = canPublish || Boolean(row.canPublish);
     canManageMedia = canManageMedia || Boolean(row.canManageMedia);

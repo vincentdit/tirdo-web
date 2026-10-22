@@ -38,6 +38,12 @@ export default function PortalSettingsPage() {
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <section className="rounded-lg border bg-white p-5">
           <h2 className="font-semibold text-[#0A192F]">Your account</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            <Link href="/portal/profile" className="font-medium text-[#059669] hover:underline">
+              Open profile
+            </Link>{" "}
+            to edit your name or change password.
+          </p>
           <dl className="mt-3 space-y-2 text-sm">
             <div>
               <dt className="text-slate-500">Name</dt>

@@ -1,71 +1,36 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { PortalShell } from "@/components/tirdo-auth/portal-shell";
-
-type User = { id: number; email: string; firstname?: string; lastname?: string; roles: string[]; isActive?: boolean };
-type Role = { id: number; name: string };
-type Dept = { slug?: string; title?: string };
-type SitePage = { slug: string; title: string; path: string };
-type Grant = {
-  documentId: string;
-  staffEmail: string;
-  departmentSlug?: string;
-  departmentTitle?: string;
-  collections: string[];
-  pageSlugs: string[];
-  canPublish: boolean;
-  canManageMedia: boolean;
-  canManageUsers: boolean;
-  active: boolean;
-  notes?: string;
-};
-type Collection = { slug: string; label: string };
+import { UsersHeading } from "@/components/tirdo-auth/users-tabs";
+import {
+  displayUserName,
+  emailKey,
+  fetchPortalUsers,
+  type PortalGrant,
+  type PortalUser,
+  type PortalUsersMe,
+} from "@/lib/portal-users";
 
 export default function PortalUsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [grants, setGrants] = useState<Grant[]>([]);
-  const [departments, setDepartments] = useState<Dept[]>([]);
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [sitePages, setSitePages] = useState<SitePage[]>([]);
+  const [me, setMe] = useState<PortalUsersMe>({});
+  const [users, setUsers] = useState<PortalUser[]>([]);
+  const [grants, setGrants] = useState<PortalGrant[]>([]);
   const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  const [staffEmail, setStaffEmail] = useState("");
-  const [departmentSlug, setDepartmentSlug] = useState("");
-  const [selected, setSelected] = useState<string[]>([]);
-  const [pageSlugs, setPageSlugs] = useState<string[]>([]);
-  const [canPublish, setCanPublish] = useState(false);
-  const [canManageMedia, setCanManageMedia] = useState(false);
-  const [canManageUsers, setCanManageUsers] = useState(false);
-  const [notes, setNotes] = useState("");
-
-  const [newEmail, setNewEmail] = useState("");
-  const [newFirst, setNewFirst] = useState("");
-  const [newLast, setNewLast] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [newRoleId, setNewRoleId] = useState("");
+  const [notice, setNotice] = useState("");
+  const [busyId, setBusyId] = useState<number | null>(null);
+  const [q, setQ] = useState("");
+  const [qDebounced, setQDebounced] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   function load() {
-    fetch("/api/portal/users")
-      .then(async (r) => {
-        if (r.status === 401) {
-          window.location.href = "/portal/login";
-          return null;
-        }
-        if (r.status === 403) throw new Error("Only a user administrator can manage access.");
-        if (!r.ok) throw new Error("Could not load users.");
-        return r.json();
-      })
+    fetchPortalUsers()
       .then((j) => {
-        if (!j) return;
+        setMe(j.me ?? {});
         setUsers(j.users ?? []);
-        setRoles(j.roles ?? []);
         setGrants(j.grants ?? []);
-        setDepartments(j.departments ?? []);
-        setCollections(j.collections ?? []);
-        setSitePages(j.sitePages ?? []);
       })
       .catch((e) => setError(e instanceof Error ? e.message : "Could not load users."));
   }
@@ -74,207 +39,221 @@ export default function PortalUsersPage() {
     load();
   }, []);
 
-  const selectedDept = departments.find((d) => d.slug === departmentSlug);
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      setQDebounced(q.trim());
+      setPage(1);
+    }, 300);
+    return () => window.clearTimeout(t);
+  }, [q]);
 
-  async function saveGrant(e: FormEvent) {
-    e.preventDefault();
-    setSaving(true);
+  const grantsByEmail = useMemo(() => {
+    const map = new Map<string, PortalGrant>();
+    for (const grant of grants) {
+      const key = emailKey(grant.staffEmail);
+      if (!map.has(key)) map.set(key, grant);
+    }
+    return map;
+  }, [grants]);
+
+  async function setActive(user: PortalUser, isActive: boolean) {
+    if (!isActive && user.id === me.id) {
+      setError("You cannot deactivate your own account.");
+      return;
+    }
+    setBusyId(user.id);
     setError("");
+    setNotice("");
     try {
       const res = await fetch("/api/portal/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "grant",
-          staffEmail,
-          departmentSlug,
-          departmentTitle: selectedDept?.title || departmentSlug,
-          collections: selected,
-          pageSlugs: selected.includes("pages") ? pageSlugs : [],
-          canPublish,
-          canManageMedia,
-          canManageUsers,
-          notes,
-          active: true,
-        }),
+        body: JSON.stringify({ action: "set-active", userId: user.id, isActive }),
       });
-      if (!res.ok) throw new Error("Could not save this assignment.");
-      setNotes("");
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Could not update this user.");
+      setNotice(isActive ? `${user.email} is active.` : `${user.email} is deactivated and cannot sign in.`);
       load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save this assignment.");
+      setError(err instanceof Error ? err.message : "Could not update this user.");
     } finally {
-      setSaving(false);
+      setBusyId(null);
     }
   }
 
-  async function createUser(e: FormEvent) {
-    e.preventDefault();
-    setSaving(true);
-    setError("");
-    try {
-      const res = await fetch("/api/portal/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "create-user",
-          email: newEmail,
-          firstname: newFirst,
-          lastname: newLast,
-          password: newPassword,
-          roleId: newRoleId ? Number(newRoleId) : undefined,
-        }),
-      });
-      if (!res.ok) throw new Error("Could not create this user.");
-      setNewEmail("");
-      setNewFirst("");
-      setNewLast("");
-      setNewPassword("");
-      load();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not create this user.");
-    } finally {
-      setSaving(false);
-    }
-  }
+  const filteredUsers = useMemo(() => {
+    const needle = qDebounced.toLowerCase();
+    if (!needle) return users;
+    return users.filter((user) => {
+      const grant = grantsByEmail.get(emailKey(user.email));
+      const hay = [
+        displayUserName(user),
+        user.email,
+        user.roles.join(" "),
+        user.isActive === false ? "inactive" : "active",
+        grant?.departmentTitle,
+        grant?.departmentSlug,
+        grant?.collections.join(" "),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(needle);
+    });
+  }, [users, qDebounced, grantsByEmail]);
 
-  function toggleCollection(slug: string) {
-    setSelected((cur) => (cur.includes(slug) ? cur.filter((s) => s !== slug) : [...cur, slug]));
-  }
+  const total = filteredUsers.length;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(page, pageCount);
+  const pagedUsers = filteredUsers.slice((safePage - 1) * pageSize, safePage * pageSize);
+  const from = total === 0 ? 0 : (safePage - 1) * pageSize + 1;
+  const to = Math.min(safePage * pageSize, total);
 
   return (
     <PortalShell>
-      <h1 className="font-serif text-2xl font-bold text-[#0A192F]">Users & access</h1>
-      <p className="mt-1 text-sm text-slate-600">
-        Super Admin and Admin can edit all pages, logos and photos. Other staff only see the collections you assign here.
-      </p>
+      <UsersHeading description="Find staff, activate or deactivate accounts, then open a tab to create a user or edit access." />
       {error && <p className="mt-3 text-sm text-red-700">{error}</p>}
+      {notice && <p className="mt-3 text-sm text-emerald-800">{notice}</p>}
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-2">
-        <form className="rounded-lg border bg-white p-5" onSubmit={createUser}>
-          <h2 className="font-semibold text-[#0A192F]">Create CMS user</h2>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <input className="rounded-md border px-3 py-2 text-sm" placeholder="First name" value={newFirst} onChange={(e) => setNewFirst(e.target.value)} required />
-            <input className="rounded-md border px-3 py-2 text-sm" placeholder="Last name" value={newLast} onChange={(e) => setNewLast(e.target.value)} />
-            <input className="rounded-md border px-3 py-2 text-sm sm:col-span-2" type="email" placeholder="Email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} required />
-            <input className="rounded-md border px-3 py-2 text-sm" type="password" placeholder="Temporary password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
-            <select className="rounded-md border px-3 py-2 text-sm" value={newRoleId} onChange={(e) => setNewRoleId(e.target.value)}>
-              <option value="">Default role</option>
-              {roles.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button type="submit" disabled={saving} className="mt-4 rounded-md bg-[#0A192F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
-            Create user
-          </button>
-        </form>
-
-        <form className="rounded-lg border bg-white p-5" onSubmit={saveGrant}>
-          <h2 className="font-semibold text-[#0A192F]">Assign department work</h2>
-          <div className="mt-3 space-y-3">
-            <select className="w-full rounded-md border px-3 py-2 text-sm" value={staffEmail} onChange={(e) => setStaffEmail(e.target.value)} required>
-              <option value="">Select staff user</option>
-              {users.map((u) => (
-                <option key={u.id} value={u.email}>
-                  {u.firstname} {u.lastname} ({u.email})
-                </option>
-              ))}
-            </select>
-            <select className="w-full rounded-md border px-3 py-2 text-sm" value={departmentSlug} onChange={(e) => setDepartmentSlug(e.target.value)}>
-              <option value="">Select department</option>
-              {departments.map((d) => (
-                <option key={d.slug || d.title} value={d.slug || ""}>
-                  {d.title}
-                </option>
-              ))}
-            </select>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {collections.map((c) => (
-                <label key={c.slug} className="flex items-center gap-2">
-                  <input type="checkbox" checked={selected.includes(c.slug)} onChange={() => toggleCollection(c.slug)} />
-                  {c.label}
-                </label>
-              ))}
-            </div>
-            {selected.includes("pages") && (
-              <div className="rounded-md border bg-slate-50 p-3">
-                <p className="mb-2 text-sm font-medium text-[#0A192F]">Website pages they may edit</p>
-                <p className="mb-2 text-xs text-slate-600">Leave all unticked to allow every page. Tick only the pages this person should update.</p>
-                <div className="grid gap-2 text-sm sm:grid-cols-2">
-                  {sitePages.map((p) => (
-                    <label key={p.slug} className="flex items-start gap-2">
-                      <input
-                        type="checkbox"
-                        className="mt-0.5"
-                        checked={pageSlugs.includes(p.slug)}
-                        onChange={() =>
-                          setPageSlugs((cur) => (cur.includes(p.slug) ? cur.filter((s) => s !== p.slug) : [...cur, p.slug]))
-                        }
-                      />
-                      <span>
-                        {p.title}
-                        <span className="block text-xs text-slate-500">{p.path}</span>
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={canPublish} onChange={(e) => setCanPublish(e.target.checked)} /> Can publish
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={canManageMedia} onChange={(e) => setCanManageMedia(e.target.checked)} /> Can manage gallery, logo and site photos
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={canManageUsers} onChange={(e) => setCanManageUsers(e.target.checked)} /> Can manage users
-            </label>
-            <textarea className="w-full rounded-md border px-3 py-2 text-sm" rows={2} placeholder="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
-          </div>
-          <button type="submit" disabled={saving} className="mt-4 rounded-md bg-[#059669] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
-            Save assignment
-          </button>
-        </form>
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <label className="relative min-w-[220px] flex-1">
+          <span className="sr-only">Search users</span>
+          <input
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search users…"
+            className="w-full rounded-md border bg-white px-3 py-2 text-sm"
+            autoComplete="off"
+          />
+        </label>
+        <label className="flex items-center gap-2 text-sm text-slate-600">
+          Per page
+          <select
+            className="rounded-md border bg-white px-2 py-2 text-sm"
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value) || 10);
+              setPage(1);
+            }}
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={25}>25</option>
+          </select>
+        </label>
       </div>
 
-      <div className="mt-6 overflow-x-auto rounded-lg border bg-white">
+      <div className="mt-4 overflow-x-auto rounded-lg border bg-white">
         <table className="min-w-full text-left text-sm">
           <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-4 py-3">Staff</th>
-              <th className="px-4 py-3">Department</th>
-              <th className="px-4 py-3">Work</th>
-              <th className="px-4 py-3">Rights</th>
+              <th className="px-4 py-3">User</th>
+              <th className="px-4 py-3">Role</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Access</th>
+              <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {grants.length === 0 && (
+            {users.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-4 py-6 text-slate-500">
-                  No department assignments yet. Super Admins still have full access.
+                <td colSpan={5} className="px-4 py-6 text-slate-500">
+                  No CMS users yet.
                 </td>
               </tr>
             )}
-            {grants.map((g) => (
-              <tr key={g.documentId} className="border-t">
-                <td className="px-4 py-3">{g.staffEmail}</td>
-                <td className="px-4 py-3">{g.departmentTitle || g.departmentSlug || "—"}</td>
-                <td className="px-4 py-3">
-                  {g.collections.join(", ") || "—"}
-                  {g.pageSlugs?.length ? (
-                    <div className="text-xs text-slate-500">Pages: {g.pageSlugs.join(", ")}</div>
-                  ) : null}
-                </td>
-                <td className="px-4 py-3">
-                  {[g.canPublish && "Publish", g.canManageMedia && "Gallery", g.canManageUsers && "Users"].filter(Boolean).join(", ") || "View assigned"}
+            {users.length > 0 && pagedUsers.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-4 py-6 text-slate-500">
+                  No matching users.
                 </td>
               </tr>
-            ))}
+            )}
+            {pagedUsers.map((user) => {
+              const grant = grantsByEmail.get(emailKey(user.email));
+              const superAdmin = user.roles.some((r) => r.toLowerCase() === "super admin");
+              const canChange = me.isSuperAdmin || !superAdmin;
+              return (
+                <tr key={user.id} className="border-t">
+                  <td className="px-4 py-3">
+                    <div className="font-medium text-[#0A192F]">{displayUserName(user)}</div>
+                    <div className="text-xs text-slate-500">{user.email}</div>
+                  </td>
+                  <td className="px-4 py-3">{user.roles.join(", ") || "—"}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        user.isActive === false ? "bg-red-50 text-red-800" : "bg-emerald-50 text-emerald-800"
+                      }`}
+                    >
+                      {user.isActive === false ? "Inactive" : "Active"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    {grant ? (
+                      <>
+                        {grant.departmentTitle || grant.departmentSlug || "Assigned"}
+                        <div className="text-xs text-slate-500">{grant.collections.join(", ") || "No collections"}</div>
+                      </>
+                    ) : (
+                      <span className="text-slate-500">{superAdmin ? "Full access" : "Not assigned"}</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex flex-wrap gap-2">
+                      <Link
+                        href={`/portal/users/access?email=${encodeURIComponent(user.email)}`}
+                        className="rounded-md border px-3 py-1.5 text-xs font-semibold text-[#0A192F] hover:bg-slate-50"
+                      >
+                        Edit access
+                      </Link>
+                      {canChange && user.id !== me.id && (
+                        <button
+                          type="button"
+                          disabled={busyId === user.id}
+                          className={`rounded-md px-3 py-1.5 text-xs font-semibold disabled:opacity-60 ${
+                            user.isActive === false ? "bg-[#059669] text-white" : "border border-red-200 text-red-800 hover:bg-red-50"
+                          }`}
+                          onClick={() => setActive(user, user.isActive === false)}
+                        >
+                          {busyId === user.id ? "Working…" : user.isActive === false ? "Activate" : "Deactivate"}
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
+      </div>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-600">
+        <p>
+          {from}–{to} of {total}
+          {qDebounced ? ` for “${qDebounced}”` : ""}
+        </p>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            disabled={safePage <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="rounded-md border px-3 py-1.5 text-xs font-semibold disabled:opacity-40"
+          >
+            Previous
+          </button>
+          <span className="text-xs">
+            Page {safePage} of {pageCount}
+          </span>
+          <button
+            type="button"
+            disabled={safePage >= pageCount}
+            onClick={() => setPage((p) => p + 1)}
+            className="rounded-md border px-3 py-1.5 text-xs font-semibold disabled:opacity-40"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </PortalShell>
   );

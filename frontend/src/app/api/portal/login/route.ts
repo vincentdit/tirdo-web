@@ -59,6 +59,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: friendlyAuthError(cmsRes.status, msg) }, { status: cmsRes.status === 400 ? 401 : cmsRes.status });
   }
 
+  if (user && user.isActive === false) {
+    return NextResponse.json({ error: "This account is deactivated. Ask an administrator to activate it." }, { status: 403 });
+  }
+
   const res = NextResponse.json({
     ok: true,
     user: {
