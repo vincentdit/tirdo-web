@@ -14,3 +14,10 @@ export function formatDate(input: string | Date): string {
     year: "numeric",
   });
 }
+
+export function formatDateRange(start?: string, end?: string): string {
+  const from = start ? formatDate(start) : "";
+  const to = end && end !== start ? formatDate(end) : "";
+  if (from && to) return `${from} – ${to}`;
+  return from;
+}

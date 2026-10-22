@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
+  featuredEvents,
+  isCurrentEvent,
   isOpen,
   projectAreaSlug,
   researchAreaName,
@@ -18,6 +20,38 @@ import {
   feedbackTypes,
   type Project,
 } from "@/lib/content";
+
+describe("featured events", () => {
+  const now = new Date("2026-10-22T12:00:00Z");
+  const sample = {
+    slug: "sample",
+    title: "Sample",
+    date: "2026-11-01",
+    location: "Dar es Salaam",
+    category: "Training",
+    description: "A training.",
+  };
+
+  it("treats a future date as current", () => {
+    expect(isCurrentEvent(sample, now)).toBe(true);
+  });
+
+  it("treats a past date as not current", () => {
+    expect(isCurrentEvent({ ...sample, date: "2025-01-01" }, now)).toBe(false);
+  });
+
+  it("pins current events first", () => {
+    const list = featuredEvents(
+      [
+        { ...sample, slug: "later", date: "2026-12-01" },
+        { ...sample, slug: "pinned-past", date: "2025-01-01", pinned: true },
+      ],
+      now
+    );
+    expect(list[0].slug).toBe("pinned-past");
+    expect(list.map((e) => e.slug)).toContain("later");
+  });
+});
 
 describe("isOpen (vacancy/tender auto-archive)", () => {
   const now = new Date("2026-09-06T12:00:00Z");

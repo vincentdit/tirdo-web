@@ -4,10 +4,11 @@ import Link from "next/link";
 import { PageBanner } from "@/components/site/page-banner";
 import { SectionHeading } from "@/components/site/section-heading";
 import { PortalGateway } from "@/components/site/gateway";
-import { Clock, MapPin, Calendar } from "lucide-react";
-import { training, events } from "@/lib/content";
-import { formatDate } from "@/lib/utils";
+import { Clock, MapPin } from "lucide-react";
+import { training } from "@/lib/content";
 import { portals } from "@/lib/site";
+import { getEvents } from "@/lib/strapi";
+import { EventCompactRow } from "@/components/site/event-card";
 
 export const metadata: Metadata = {
   title: "Training & Skills Development",
@@ -15,8 +16,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/training" },
 };
 
-export default function TrainingPage() {
-  const trainingEvents = events.filter((e) => e.category === "Training");
+export default async function TrainingPage() {
+  const trainingEvents = (await getEvents()).filter((e) => e.category === "Training");
   return (
     <>
       <PageBanner
@@ -56,16 +57,7 @@ export default function TrainingPage() {
             <SectionHeading eyebrow="Scheduled" title="Upcoming training" />
             <ul className="space-y-3">
               {trainingEvents.map((e) => (
-                <li key={e.title} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card p-5">
-                  <div>
-                    <h3 className="font-semibold text-primary">{e.title}</h3>
-                    <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {formatDate(e.date)}</span>
-                      <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {e.location}</span>
-                    </div>
-                  </div>
-                  <Link href="/events" className="text-sm font-semibold text-brand-teal hover:underline">Details</Link>
-                </li>
+                <EventCompactRow key={e.slug} item={e} />
               ))}
             </ul>
           </div>

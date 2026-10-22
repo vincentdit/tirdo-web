@@ -13,7 +13,8 @@
 import { cookies } from "next/headers";
 import * as fallback from "./content";
 import { defaultBrand, type SiteBrand } from "./site";
-import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader } from "./content";
+import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader, EventItem } from "./content";
+import { featuredEvents } from "./content";
 import { isLocale, defaultLocale } from "@/i18n/config";
 
 const INTERNAL = process.env.STRAPI_INTERNAL_URL || "http://cms:1337";
@@ -132,6 +133,49 @@ export async function getPublicationBySlug(slug: string, locale = activeLocale()
   const data = await strapiFetch<Raw[]>(`publications?filters[slug][$eq]=${encodeURIComponent(slug)}&${L}&populate[file]=true`);
   if (data && data.length > 0) return mapPublication(data[0], locale);
   return fallback.publications.find((p) => p.slug === slug) ?? null;
+}
+
+function mapEvent(raw: Raw, locale: string): EventItem {
+  const e = mergeLocale(raw, locale);
+  return {
+    slug: e.slug,
+    title: e.title,
+    date: e.date,
+    endDate: e.endDate || undefined,
+    location: e.location ?? "",
+    category: e.category ?? "Other",
+    description: e.description ?? "",
+    body: e.body || undefined,
+    image: e.imageUrl || e.cover?.url,
+    logo: e.logo?.url,
+    documentUrl: e.document?.url,
+    registerUrl: e.registerUrl || undefined,
+    pinned: Boolean(e.pinned),
+  };
+}
+
+export async function getEvents(locale = activeLocale()): Promise<EventItem[]> {
+  const data = await strapiFetch<Raw[]>(
+    `events?sort=date:desc&pagination[limit]=50&${L}&populate[cover]=true&populate[logo]=true&populate[document]=true`
+  );
+  if (!data || data.length === 0) return fallback.events;
+  return data.map((raw) => mapEvent(raw, locale));
+}
+
+export async function getEventBySlug(slug: string, locale = activeLocale()): Promise<EventItem | null> {
+  const data = await strapiFetch<Raw[]>(
+    `events?filters[slug][$eq]=${encodeURIComponent(slug)}&${L}&populate[cover]=true&populate[logo]=true&populate[document]=true`
+  );
+  if (data && data.length > 0) return mapEvent(data[0], locale);
+  return fallback.events.find((e) => e.slug === slug) ?? null;
+}
+
+export async function getFeaturedEvents(limit = 3, locale = activeLocale()): Promise<EventItem[]> {
+  return featuredEvents(await getEvents(locale), new Date(), limit);
+}
+
+export async function getPinnedEvents(locale = activeLocale()): Promise<EventItem[]> {
+  return (await getEvents(locale)).filter((item) => item.pinned);
 }
 
 export async function getVacancies(locale = activeLocale()): Promise<Vacancy[]> {

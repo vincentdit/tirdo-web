@@ -4,7 +4,7 @@ export const GRANT_UID = "api::portal-grant.portal-grant";
 export const DEPARTMENT_UID = "api::department.department";
 export const SITE_BRAND_UID = "api::site-brand.site-brand";
 
-export type PortalFieldType = "text" | "textarea" | "number" | "boolean" | "email" | "select" | "media" | "file";
+export type PortalFieldType = "text" | "textarea" | "number" | "boolean" | "email" | "select" | "media" | "file" | "date" | "url";
 
 export type PortalField = {
   key: string;
@@ -76,6 +76,30 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
       { key: "doi", label: "DOI", type: "text" },
       { key: "abstract", label: "Abstract", type: "textarea" },
       { key: "file", label: "Document file", type: "file" },
+    ],
+  },
+  {
+    slug: "events",
+    uid: "api::event.event",
+    label: "Events",
+    titleField: "title",
+    draftAndPublish: true,
+    group: "content",
+    description: "Trainings, workshops and public events, with pin, logo, documents and registration.",
+    fields: [
+      { key: "title", label: "Title", type: "text", required: true },
+      { key: "slug", label: "URL slug", type: "text" },
+      { key: "category", label: "Category", type: "select", options: ["Training", "Workshop", "Exhibition", "Conference", "Seminar", "Other"] },
+      { key: "date", label: "Start date", type: "date", required: true },
+      { key: "endDate", label: "End date", type: "date" },
+      { key: "location", label: "Location", type: "text" },
+      { key: "description", label: "Short description", type: "textarea" },
+      { key: "body", label: "Details", type: "textarea" },
+      { key: "pinned", label: "Pin (floats on the website with a blinking icon)", type: "boolean" },
+      { key: "registerUrl", label: "Registration link (optional)", type: "text" },
+      { key: "logo", label: "Event logo", type: "media" },
+      { key: "cover", label: "Photo", type: "media" },
+      { key: "document", label: "Attached document", type: "file" },
     ],
   },
   {
@@ -314,6 +338,9 @@ export function pageEditTarget(pathname: string): PageEditTarget {
   const path = (pathname.replace(/\/$/, "") || "/") as string;
   if (path === "/") return { href: "/portal/branding", label: "Home photos and branding" };
   if (path.startsWith("/news")) return { href: "/portal/articles", label: "News articles", collection: "articles" };
+  if (path.startsWith("/events") || path.startsWith("/training")) {
+    return { href: "/portal/events", label: "Events", collection: "events" };
+  }
   if (path.startsWith("/publications") || path.startsWith("/documents")) {
     return { href: "/portal/publications", label: "Publications", collection: "publications" };
   }
@@ -322,7 +349,7 @@ export function pageEditTarget(pathname: string): PageEditTarget {
   if (path.startsWith("/careers")) return { href: "/portal/vacancies", label: "Vacancies", collection: "vacancies" };
   if (path.startsWith("/tenders")) return { href: "/portal/tenders", label: "Tenders", collection: "tenders" };
   if (path.startsWith("/departments")) return { href: "/portal/departments", label: "Departments", collection: "departments" };
-  if (path.startsWith("/services") || path.startsWith("/laboratory") || path.startsWith("/consultancy") || path.startsWith("/training")) {
+  if (path.startsWith("/services") || path.startsWith("/laboratory") || path.startsWith("/consultancy")) {
     return { href: "/portal/services", label: "Services", collection: "services" };
   }
   if (path.startsWith("/staff") || path.startsWith("/about/administration") || path.startsWith("/about/board")) {

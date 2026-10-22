@@ -12,7 +12,7 @@
 // fall back to a local content scan when OpenSearch is unavailable.
 // -----------------------------------------------------------------------
 import * as content from "./content";
-import { getNews, getProjects, getPublications, getVacancies, getTenders, getTechnologies, getDepartments, getServices } from "./strapi";
+import { getNews, getProjects, getPublications, getVacancies, getTenders, getTechnologies, getDepartments, getServices, getEvents } from "./strapi";
 
 export const OS_NODE = process.env.OPENSEARCH_NODE || "http://opensearch:9200";
 export const OS_INDEX = process.env.OPENSEARCH_INDEX || "tirdo-content";
@@ -86,7 +86,7 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
 
 export async function gatherDocuments(): Promise<SearchDoc[]> {
   // Index the default-locale (English) content for a stable single index.
-  const [news, projects, publications, vacancies, tenders, technologies, services, departments] = await Promise.all([
+  const [news, projects, publications, vacancies, tenders, technologies, services, departments, events] = await Promise.all([
     getNews(100, "en").catch(() => content.news),
     getProjects("en").catch(() => content.projects),
     getPublications("en").catch(() => content.publications),
@@ -95,6 +95,7 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
     getTechnologies("en").catch(() => content.technologies),
     getServices("en").catch(() => content.services),
     getDepartments("en").catch(() => content.departments),
+    getEvents("en").catch(() => content.events),
   ]);
 
   const docs: SearchDoc[] = [];
@@ -133,8 +134,8 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
   for (const a of ABOUT_PAGES)
     docs.push({ id: `about:${a.slug}`, title: a.title, type: "Page", url: `/about/${a.slug}`, excerpt: a.subtitle });
 
-  content.events.forEach((e, i) =>
-    docs.push({ id: `event:${i}`, title: e.title, type: "Event", url: `/events`, excerpt: e.description, category: e.category, date: e.date }));
+  for (const e of events)
+    docs.push({ id: `event:${e.slug}`, title: e.title, type: "Event", url: `/events/${e.slug}`, excerpt: e.description, category: e.category, date: e.date });
 
   for (const s of STATIC_PAGES)
     docs.push({ id: `page:${s.url}`, title: s.title, type: "Page", url: s.url, excerpt: s.excerpt });

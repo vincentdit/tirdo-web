@@ -35,6 +35,9 @@ module.exports = {
     // 2c) Ensure public website pages exist so staff can be assigned to edit them.
     await seedPages(strapi);
 
+    // 2d) Ensure events exist so the portal and homepage have content to edit.
+    await seedEvents(strapi);
+
     // 3) Seed demo content on an empty database (idempotent).
     if (process.env.SEED_DATA === 'true') {
       await seed(strapi);
@@ -120,7 +123,7 @@ async function setPublicPermissions(strapi) {
     .findOne({ where: { type: 'public' } });
   if (!publicRole) return;
 
-  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology', 'leader', 'site-brand'];
+  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology', 'leader', 'site-brand', 'event'];
   const perms = {};
   for (const t of readTypes) {
     perms[`api::${t}.${t}`] = { controllers: { [t]: { find: { enabled: true }, findOne: { enabled: true } } } };
@@ -187,6 +190,24 @@ async function seedPages(strapi) {
     if (created) strapi.log.info(`[seed] created ${created} website pages`);
   } catch (e) {
     strapi.log.warn('[seed] pages seed skipped: ' + e.message);
+  }
+}
+
+async function seedEvents(strapi) {
+  const uid = 'api::event.event';
+  try {
+    const events = require('./event-seed');
+    const existing = await strapi.documents(uid).findMany({ locale: 'en', limit: 200 });
+    const have = new Set((existing || []).map((p) => p.slug).filter(Boolean));
+    let created = 0;
+    for (const event of events) {
+      if (have.has(event.slug)) continue;
+      await strapi.documents(uid).create({ data: event, status: 'published' });
+      created += 1;
+    }
+    if (created) strapi.log.info(`[seed] created ${created} events`);
+  } catch (e) {
+    strapi.log.warn('[seed] events seed skipped: ' + e.message);
   }
 }
 

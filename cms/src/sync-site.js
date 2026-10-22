@@ -16,6 +16,7 @@ const SITE_TYPES = new Set([
   'api::service-charter.service-charter',
   'api::leader.leader',
   'api::site-brand.site-brand',
+  'api::event.event',
 ]);
 
 const ACTIONS = new Set(['create', 'update', 'delete', 'publish', 'unpublish']);

@@ -441,24 +441,53 @@ export const partners = [
 ];
 
 export type EventItem = {
+  slug: string;
   title: string;
   date: string;
+  endDate?: string;
   location: string;
   category: string;
   description: string;
+  body?: string;
   image?: string;
+  logo?: string;
+  documentUrl?: string;
+  registerUrl?: string;
+  pinned?: boolean;
 };
+
+export function isCurrentEvent(item: EventItem, now: Date = new Date()): boolean {
+  const end = item.endDate || item.date;
+  const d = new Date(end);
+  if (isNaN(d.getTime())) return Boolean(item.pinned);
+  d.setHours(23, 59, 59, 999);
+  return d.getTime() >= now.getTime();
+}
+
+export function featuredEvents(list: EventItem[], now: Date = new Date(), limit = 3): EventItem[] {
+  return list
+    .filter((item) => item.pinned || isCurrentEvent(item, now))
+    .sort((a, b) => {
+      if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
+      return String(a.date).localeCompare(String(b.date));
+    })
+    .slice(0, limit);
+}
 
 export const events: EventItem[] = [
   {
+    slug: "biomass-briquettes-production-training",
     title: "Biomass Briquettes Production Training",
-    date: "2025-11-15",
+    date: "2026-11-15",
     location: "TIRDO Complex, Dar es Salaam",
     category: "Training",
     description: "Hands-on, registration-based training on producing biomass briquettes as a clean cooking-fuel alternative to charcoal.",
     image: `${RES}/H1D6ScYYF7ZdoRK9q5V8fxut6gRVKKVeSQaTWjKU.png`,
+    pinned: true,
+    registerUrl: "/contact",
   },
   {
+    slug: "hands-on-training-alternative-charcoal-production",
     title: "Hands-on Training in Alternative Charcoal Production",
     date: "2025-10-10",
     location: "TIRDO Complex, Dar es Salaam",
@@ -467,6 +496,7 @@ export const events: EventItem[] = [
     image: `${NEWS}/q2cMG2Q6dwvZqhDC5vXf8vJTzX6LT4DBgJKj1OEd.jpg`,
   },
   {
+    slug: "dar-es-salaam-international-trade-fair-ditf-2025",
     title: "Dar es Salaam International Trade Fair (DITF) 2025",
     date: "2025-07-01",
     location: "Mwalimu J. K. Nyerere Trade Fair Grounds, Dar es Salaam",

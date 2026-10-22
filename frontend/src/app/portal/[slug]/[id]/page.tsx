@@ -148,12 +148,15 @@ export default function PortalEntryPage() {
                   required={field.required}
                 />
               ) : field.type === "boolean" ? (
-                <input
-                  type="checkbox"
-                  className="ml-2 align-middle"
-                  checked={Boolean(values[field.key])}
-                  onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.checked }))}
-                />
+                <span className="mt-1 flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4"
+                    checked={Boolean(values[field.key])}
+                    onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.checked }))}
+                  />
+                  <span className="text-slate-600">Yes</span>
+                </span>
               ) : field.type === "select" ? (
                 <select
                   className="mt-1 w-full rounded-md border px-3 py-2"
@@ -168,7 +171,7 @@ export default function PortalEntryPage() {
                 </select>
               ) : (
                 <input
-                  type={field.type === "number" ? "number" : field.type === "email" ? "email" : "text"}
+                  type={field.type === "number" ? "number" : field.type === "email" ? "email" : field.type === "date" ? "date" : field.type === "url" ? "url" : "text"}
                   className="mt-1 w-full rounded-md border px-3 py-2"
                   value={values[field.key] == null ? "" : String(values[field.key])}
                   onChange={(e) =>

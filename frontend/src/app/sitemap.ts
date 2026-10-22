@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/seo";
 import { departments, services, projects, publications, technologies } from "@/lib/content";
-import { getNews } from "@/lib/strapi";
+import { getNews, getEvents } from "@/lib/strapi";
 
 // Served at /sitemap.xml. Static routes plus every dynamic detail page
 // (departments, services, about sections, news, projects, publications).
@@ -41,7 +41,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const aboutSlugs = ["mission-vision", "structure", "board", "administration", "success-stories", "comsats"];
 
-  const news = await getNews(100).catch(() => []);
+  const [news, eventList] = await Promise.all([
+    getNews(100).catch(() => []),
+    getEvents().catch(() => []),
+  ]);
 
   const entries: MetadataRoute.Sitemap = [
     ...staticPaths.map((s) => ({
@@ -90,6 +93,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: absoluteUrl(`/news/${n.slug}`),
       lastModified: n.date ? new Date(n.date) : now,
       changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...eventList.map((e) => ({
+      url: absoluteUrl(`/events/${e.slug}`),
+      lastModified: e.date ? new Date(e.date) : now,
+      changeFrequency: "weekly" as const,
       priority: 0.6,
     })),
   ];

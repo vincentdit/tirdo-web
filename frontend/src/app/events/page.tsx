@@ -1,12 +1,31 @@
-import { Calendar, MapPin } from "lucide-react";
+import Link from "next/link";
+import { CalendarDays } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
-import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/utils";
-import { events } from "@/lib/content";
+import { SectionHeading } from "@/components/site/section-heading";
+import { EventCard } from "@/components/site/event-card";
+import { isCurrentEvent } from "@/lib/content";
+import { getEvents } from "@/lib/strapi";
 
-export const metadata = { title: "Events" };
+export const metadata = {
+  title: "Events",
+  description: "Workshops, training, exhibitions and industry engagements hosted by TIRDO.",
+};
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const events = await getEvents();
+  const now = new Date();
+  const upcoming = events
+    .filter((e) => e.pinned || isCurrentEvent(e, now))
+    .sort((a, b) => {
+      if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
+      return String(a.date).localeCompare(String(b.date));
+    });
+  const past = events
+    .filter((e) => !upcoming.some((u) => u.slug === e.slug))
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  const spotlight = upcoming[0];
+  const restUpcoming = upcoming.slice(1);
+
   return (
     <>
       <PageBanner
@@ -14,34 +33,52 @@ export default function EventsPage() {
         subtitle="Workshops, training, exhibitions and industry engagements hosted by TIRDO."
         crumbs={[{ label: "Media" }, { label: "Events" }]}
       />
-      <section className="py-14">
-        <div className="container-tirdo grid gap-6 lg:grid-cols-2">
-          {events.map((e) => (
-            <article key={e.title} className="group grid overflow-hidden rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-lg sm:grid-cols-[40%_1fr]">
-              <div className="relative aspect-video bg-primary/10 sm:aspect-auto">
-                {e.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img loading="lazy" decoding="async" src={e.image} alt={e.title} className="h-full w-full object-cover" />
-                ) : (
-                  <div className="h-full w-full bg-gradient-to-br from-primary/15 to-accent/15" />
-                )}
-                <Badge variant="accent" className="absolute left-3 top-3">{e.category}</Badge>
-              </div>
-              <div className="p-5">
-                <div className="mb-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {formatDate(e.date)}</span>
-                  <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {e.location}</span>
-                </div>
-                <h3 className="mb-2 font-semibold leading-snug text-primary">{e.title}</h3>
-                <p className="text-sm text-muted-foreground">{e.description}</p>
-              </div>
-            </article>
-          ))}
-        </div>
+      <section className="bg-brand-pale/60 py-12 md:py-16">
+        <div className="container-tirdo">
+          {upcoming.length === 0 && past.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-brand-teal/30 bg-white p-10 text-center">
+              <CalendarDays className="mx-auto mb-3 h-10 w-10 text-brand-teal" />
+              <h2 className="font-display text-2xl text-brand-ink">No events published yet</h2>
+              <p className="mt-2 text-sm text-brand-muted">Upcoming TIRDO programmes will appear here.</p>
+            </div>
+          ) : null}
 
-        <div className="container-tirdo mt-10 rounded-xl border-l-4 border-accent bg-secondary/40 p-6 text-sm text-foreground/70">
-          Upcoming events are published here and can be managed through the CMS. For enquiries or to
-          register for a training, please <a href="/contact" className="font-semibold text-brand-teal hover:underline">contact TIRDO</a>.
+          {spotlight ? (
+            <>
+              <SectionHeading eyebrow="Featured" title="Happening now and upcoming" />
+              <EventCard item={spotlight} featured />
+            </>
+          ) : null}
+
+          {restUpcoming.length > 0 ? (
+            <div className={`grid gap-6 md:grid-cols-2 ${spotlight ? "mt-8" : ""}`}>
+              {restUpcoming.map((e) => (
+                <EventCard key={e.slug} item={e} />
+              ))}
+            </div>
+          ) : null}
+
+          {past.length > 0 ? (
+            <div className={upcoming.length ? "mt-14" : ""}>
+              <SectionHeading eyebrow="Archive" title="Past events" />
+              <div className="grid gap-6 md:grid-cols-2">
+                {past.map((e) => (
+                  <EventCard key={e.slug} item={e} />
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-12 rounded-2xl border border-brand-gold/40 bg-[#fff8e8] p-6 text-sm text-brand-ink md:p-8">
+            <p className="font-semibold">Need to attend or host a programme with TIRDO?</p>
+            <p className="mt-2 text-brand-muted">
+              Upcoming events are published here. For enquiries or to register when a registration link is not listed, please{" "}
+              <Link href="/contact" className="font-semibold text-brand-teal hover:underline">
+                contact TIRDO
+              </Link>
+              .
+            </p>
+          </div>
         </div>
       </section>
     </>

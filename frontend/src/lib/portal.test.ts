@@ -32,6 +32,7 @@ describe("portal helpers", () => {
   it("whitelists known CMS collections", () => {
     expect(PORTAL_COLLECTIONS.length).toBeGreaterThan(3);
     expect(collectionBySlug("articles")?.uid).toBe("api::article.article");
+    expect(collectionBySlug("events")?.uid).toBe("api::event.event");
     expect(collectionBySlug("secret")).toBeUndefined();
   });
 
@@ -50,6 +51,7 @@ describe("portal helpers", () => {
   it("maps public pages to the matching portal editor", () => {
     expect(pageEditTarget("/").href).toBe("/portal/branding");
     expect(pageEditTarget("/news/foo").collection).toBe("articles");
+    expect(pageEditTarget("/events/training").collection).toBe("events");
     expect(pageEditTarget("/publications/tirdo-profile").collection).toBe("publications");
   });
 

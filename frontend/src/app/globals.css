@@ -94,6 +94,10 @@
   .eyebrow {
     @apply text-xs font-bold uppercase tracking-[0.15em];
   }
+  .event-pin-wrap {
+    float: left;
+    shape-outside: circle(50%);
+  }
   /* Org-chart connectors */
   .org-v {
     width: 2px;
