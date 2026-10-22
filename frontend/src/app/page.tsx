@@ -6,19 +6,21 @@ import { Icon } from "@/components/site/icon";
 import { RegisterLink } from "@/components/site/current-event-ribbon";
 import { coreActivities } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
-import { getNews, getServices, getDirectorMessage, getSiteBrand, getFeaturedEvents } from "@/lib/strapi";
+import { PartnersGrid } from "@/components/site/partners-grid";
+import { getNews, getServices, getDirectorMessage, getSiteBrand, getFeaturedEvents, getPartners } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
 export default async function HomePage() {
-  const [news, services, directorMessage, brand, currentEvents] = await Promise.all([
+  const [news, services, directorMessage, brand, currentEvents, partnerList] = await Promise.all([
     getNews(3),
     getServices(),
     getDirectorMessage(),
     getSiteBrand(),
     getFeaturedEvents(2),
+    getPartners(),
   ]);
   const latest = news[0];
   const spotlight = currentEvents[0];
@@ -208,6 +210,22 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+      {partnerList.length > 0 && (
+        <section className="bg-white py-16 md:py-20">
+          <div className="container-tirdo">
+            <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+              <div>
+                <p className="eyebrow mb-2 text-brand-teal">Stakeholders</p>
+                <h2 className="font-display text-[2rem] text-brand-ink md:text-[2.4rem]">Our partners</h2>
+              </div>
+              <Link href="/about/partners" className="inline-flex items-center gap-1 text-sm font-bold uppercase tracking-wide text-brand-teal hover:gap-2">
+                View all partners <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+            <PartnersGrid items={partnerList.slice(0, 12)} compact />
+          </div>
+        </section>
+      )}
       <section className="bg-brand-teal py-16 text-white">
         <div className="container-tirdo flex flex-col items-center gap-4 text-center">
           <h2 className="text-2xl font-bold sm:text-3xl">Used a TIRDO service? Tell us how we did.</h2>

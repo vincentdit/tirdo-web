@@ -22,6 +22,7 @@ export async function GET() {
     canPublish: access.canPublish,
     canManageMedia: access.canManageMedia,
     canManageUsers: access.canManageUsers,
+    canDelete: access.canDelete,
     canManageSite: access.canManageSite,
     departments: access.departments,
     collections: access.collections.map((c) => ({

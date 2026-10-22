@@ -111,6 +111,14 @@ const events = (C.events || []).map((e) =>
   })
 );
 
+const partners = (C.partners || []).map((p) =>
+  clean({
+    name: p.name, slug: p.slug, category: p.category, description: p.description,
+    website: p.website, email: p.email, phone: p.phone, address: p.address,
+    displayOrder: p.displayOrder, active: p.active !== false, startDate: p.startDate, endDate: p.endDate,
+  })
+);
+
 // Order is not significant (no relations between these types), but keep it
 // stable for readable diffs.
 const seed = {
@@ -123,6 +131,7 @@ const seed = {
   'api::vacancy.vacancy': vacancies,
   'api::tender.tender': tenders,
   'api::event.event': events,
+  'api::partner.partner': partners,
 };
 
 const out = resolve(here, '../src/seed-data.generated.json');

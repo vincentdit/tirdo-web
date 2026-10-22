@@ -45,6 +45,13 @@ module.exports = [
       'TIRDO hosts a COMSATS Centre of Excellence supporting climate and sustainability cooperation through research, training and technology exchange.',
   },
   {
+    slug: 'partners',
+    path: '/about/partners',
+    title: 'Our Partners',
+    body:
+      'TIRDO works with government institutions, development partners, industry associations and research organisations to strengthen Tanzania\'s industrial capability.',
+  },
+  {
     slug: 'privacy',
     path: '/privacy',
     title: 'Privacy Policy',

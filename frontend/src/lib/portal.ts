@@ -1,3 +1,5 @@
+import { publicFileUrl } from "@/lib/utils";
+
 export const PORTAL_COOKIE = "tirdo_portal_token";
 export const PORTAL_LOGIN_PATH = "/portal/login";
 export const GRANT_UID = "api::portal-grant.portal-grant";
@@ -100,6 +102,30 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
       { key: "logo", label: "Event logo", type: "media" },
       { key: "cover", label: "Photo", type: "media" },
       { key: "document", label: "Attached document", type: "file" },
+    ],
+  },
+  {
+    slug: "partners",
+    uid: "api::partner.partner",
+    label: "Our Partners",
+    titleField: "name",
+    draftAndPublish: true,
+    group: "content",
+    description: "Partner organisations on the public website. Add, edit and publish as many as needed.",
+    fields: [
+      { key: "name", label: "Partner organisation name", type: "text", required: true },
+      { key: "slug", label: "URL slug", type: "text" },
+      { key: "category", label: "Partner category", type: "select", options: ["Government Institution", "Development Partner", "NGO", "Private Sector", "Academic / Research", "Other"] },
+      { key: "description", label: "Short description", type: "textarea" },
+      { key: "website", label: "Official website URL", type: "url" },
+      { key: "email", label: "Contact email", type: "email" },
+      { key: "phone", label: "Contact phone", type: "text" },
+      { key: "address", label: "Physical address", type: "textarea" },
+      { key: "displayOrder", label: "Display order", type: "number" },
+      { key: "active", label: "Active (shown on the website when published)", type: "boolean" },
+      { key: "startDate", label: "Partnership start date", type: "date" },
+      { key: "endDate", label: "Partnership end date", type: "date" },
+      { key: "logo", label: "Partner logo", type: "media" },
     ],
   },
   {
@@ -263,6 +289,7 @@ export const SITE_PAGES: { slug: string; title: string; path: string }[] = [
   { slug: "administration", title: "Administration", path: "/about/administration" },
   { slug: "success-stories", title: "Success Stories", path: "/about/success-stories" },
   { slug: "comsats", title: "COMSATS Centre", path: "/about/comsats" },
+  { slug: "partners", title: "Our Partners", path: "/about/partners" },
   { slug: "privacy", title: "Privacy Policy", path: "/privacy" },
   { slug: "disclaimer", title: "Disclaimer", path: "/disclaimer" },
   { slug: "contact", title: "Contact Us", path: "/contact" },
@@ -341,6 +368,9 @@ export function pageEditTarget(pathname: string): PageEditTarget {
   if (path.startsWith("/events") || path.startsWith("/training")) {
     return { href: "/portal/events", label: "Events", collection: "events" };
   }
+  if (path.startsWith("/about/partners") || path === "/partners") {
+    return { href: "/portal/partners", label: "Partners", collection: "partners" };
+  }
   if (path.startsWith("/publications") || path.startsWith("/documents")) {
     return { href: "/portal/publications", label: "Publications", collection: "publications" };
   }
@@ -376,9 +406,12 @@ export function mediaId(value: unknown): number | null {
 }
 
 export function mediaPreviewUrl(value: unknown): string | undefined {
-  if (!value || typeof value !== "object") return undefined;
-  const url = (value as { url?: string }).url;
-  return url || undefined;
+  if (!value) return undefined;
+  if (typeof value === "string") return publicFileUrl(value);
+  if (typeof value !== "object") return undefined;
+  const nested = value as { url?: string; data?: { url?: string } | { url?: string }[] };
+  const url = nested.url || (Array.isArray(nested.data) ? nested.data[0]?.url : nested.data?.url);
+  return publicFileUrl(url);
 }
 
 export function pickAllowedFields(col: PortalCollection, body: Record<string, unknown>): Record<string, unknown> {
@@ -403,9 +436,10 @@ export function entryTitle(row: Record<string, unknown>, field: string): string 
   return v == null || v === "" ? "Untitled" : String(v);
 }
 
-export type EntryStatus = "Published" | "Draft" | "Modified" | "Open" | "Handled";
+export type EntryStatus = "Published" | "Draft" | "Modified" | "Open" | "Handled" | "Inactive";
 
 export function entryStatus(row: Record<string, unknown>, draftAndPublish: boolean): EntryStatus {
+  if (row.active === false && draftAndPublish) return "Inactive";
   if (!draftAndPublish) {
     return row.handled ? "Handled" : "Open";
   }
@@ -416,15 +450,42 @@ export function entryStatus(row: Record<string, unknown>, draftAndPublish: boole
   return row.publishedAt ? "Published" : "Draft";
 }
 
+export function validateCollectionPayload(col: PortalCollection, payload: Record<string, unknown>): string | null {
+  for (const field of col.fields) {
+    if (!field.required) continue;
+    const value = payload[field.key];
+    if (value == null || value === "") return `${field.label} is required.`;
+  }
+  if (col.slug !== "partners") return null;
+  const email = String(payload.email || "").trim();
+  if (email && !isAdminEmail(email)) return "Enter a valid contact email, or leave it blank.";
+  const website = String(payload.website || "").trim();
+  if (website && !/^https?:\/\/.+/i.test(website)) return "Website URL must start with http:// or https://.";
+  const start = String(payload.startDate || "");
+  const end = String(payload.endDate || "");
+  if (start && end && start > end) return "Partnership end date must be on or after the start date.";
+  const order = payload.displayOrder;
+  if (order != null && order !== "" && (!Number.isFinite(Number(order)) || Number(order) < 0)) {
+    return "Display order must be a number of zero or more.";
+  }
+  return null;
+}
+
 export function sanitizeSearch(q: string): string {
   return q.trim().replace(/[<>]/g, "").slice(0, 80);
 }
 
-export function cmsListQuery(page: number, pageSize: number, q: string, searchFields: string[] = ["title"]): string {
+export function cmsListQuery(
+  page: number,
+  pageSize: number,
+  q: string,
+  searchFields: string[] = ["title"],
+  sort = "updatedAt:desc"
+): string {
   const params = new URLSearchParams();
   params.set("page", String(Math.max(1, page)));
   params.set("pageSize", String(Math.min(50, Math.max(1, pageSize))));
-  params.set("sort", "updatedAt:desc");
+  params.set("sort", sort);
   const query = sanitizeSearch(q);
   if (query) {
     params.set("_q", query);

@@ -1,0 +1,141 @@
+{
+  "kind": "collectionType",
+  "collectionName": "partners",
+  "info": {
+    "singularName": "partner",
+    "pluralName": "partners",
+    "displayName": "Partner",
+    "description": "Partner and stakeholder organisations shown on the public website"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "Government Institution",
+        "Development Partner",
+        "NGO",
+        "Private Sector",
+        "Academic / Research",
+        "Other"
+      ],
+      "default": "Government Institution",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "website": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "email": {
+      "type": "email",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "phone": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "address": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "displayOrder": {
+      "type": "integer",
+      "default": 0,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "startDate": {
+      "type": "date",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "endDate": {
+      "type": "date",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    }
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  }
+}

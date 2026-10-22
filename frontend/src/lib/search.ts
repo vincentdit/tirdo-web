@@ -12,7 +12,7 @@
 // fall back to a local content scan when OpenSearch is unavailable.
 // -----------------------------------------------------------------------
 import * as content from "./content";
-import { getNews, getProjects, getPublications, getVacancies, getTenders, getTechnologies, getDepartments, getServices, getEvents } from "./strapi";
+import { getNews, getProjects, getPublications, getVacancies, getTenders, getTechnologies, getDepartments, getServices, getEvents, getPartners } from "./strapi";
 
 export const OS_NODE = process.env.OPENSEARCH_NODE || "http://opensearch:9200";
 export const OS_INDEX = process.env.OPENSEARCH_INDEX || "tirdo-content";
@@ -74,6 +74,7 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
   { title: "Publications", url: "/publications", excerpt: "Reports, journals and technical publications." },
   { title: "News & Announcements", url: "/news", excerpt: "Latest news and announcements from TIRDO." },
   { title: "Events", url: "/events", excerpt: "Trainings, workshops and upcoming events." },
+  { title: "Our Partners", url: "/about/partners", excerpt: "Government institutions, development partners and stakeholders working with TIRDO." },
   { title: "Gallery", url: "/gallery", excerpt: "Photos from TIRDO activities and facilities." },
   { title: "Documents", url: "/documents", excerpt: "Downloadable forms, guidelines and official documents." },
   { title: "Careers", url: "/careers", excerpt: "Job and career opportunities at TIRDO." },
@@ -86,7 +87,7 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
 
 export async function gatherDocuments(): Promise<SearchDoc[]> {
   // Index the default-locale (English) content for a stable single index.
-  const [news, projects, publications, vacancies, tenders, technologies, services, departments, events] = await Promise.all([
+  const [news, projects, publications, vacancies, tenders, technologies, services, departments, events, partners] = await Promise.all([
     getNews(100, "en").catch(() => content.news),
     getProjects("en").catch(() => content.projects),
     getPublications("en").catch(() => content.publications),
@@ -96,6 +97,7 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
     getServices("en").catch(() => content.services),
     getDepartments("en").catch(() => content.departments),
     getEvents("en").catch(() => content.events),
+    getPartners("en").catch(() => content.partners),
   ]);
 
   const docs: SearchDoc[] = [];
@@ -136,6 +138,9 @@ export async function gatherDocuments(): Promise<SearchDoc[]> {
 
   for (const e of events)
     docs.push({ id: `event:${e.slug}`, title: e.title, type: "Event", url: `/events/${e.slug}`, excerpt: e.description, category: e.category, date: e.date });
+
+  for (const p of partners)
+    docs.push({ id: `partner:${p.slug}`, title: p.name, type: "Partner", url: `/about/partners#${p.slug}`, excerpt: p.description, category: p.category });
 
   for (const s of STATIC_PAGES)
     docs.push({ id: `page:${s.url}`, title: s.title, type: "Page", url: s.url, excerpt: s.excerpt });

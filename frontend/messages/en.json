@@ -33,6 +33,7 @@
       "administration": "Administration",
       "successStories": "Success Stories",
       "comsats": "COMSATS Centre",
+      "partners": "Our Partners",
       "serviceCharter": "Customer Service Charter"
     },
     "divisions": {
@@ -90,7 +91,8 @@
       "about": "About us",
       "departments": "Our departments",
       "products": "Research products",
-      "documents": "Documents"
+      "documents": "Documents",
+      "partners": "Our partners"
     },
     "quick": {
       "services": "Industrial services",

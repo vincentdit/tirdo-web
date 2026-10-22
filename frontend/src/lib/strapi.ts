@@ -13,9 +13,10 @@
 import { cookies } from "next/headers";
 import * as fallback from "./content";
 import { defaultBrand, type SiteBrand } from "./site";
-import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader, EventItem } from "./content";
-import { featuredEvents } from "./content";
+import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader, EventItem, PartnerItem } from "./content";
+import { featuredEvents, isPublicPartner } from "./content";
 import { isLocale, defaultLocale } from "@/i18n/config";
+import { publicFileUrl } from "@/lib/utils";
 
 const INTERNAL = process.env.STRAPI_INTERNAL_URL || "http://cms:1337";
 const PUBLIC = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost/cms";
@@ -41,7 +42,7 @@ async function strapiFetch<T>(path: string): Promise<T | null> {
 type Raw = Record<string, any>;
 
 // Text fields that may be translated per locale (union across content types).
-const LOCALIZED_KEYS = ["title", "summary", "body", "description", "excerpt", "abstract", "citation", "blurb"] as const;
+const LOCALIZED_KEYS = ["title", "name", "summary", "body", "description", "excerpt", "abstract", "citation", "blurb"] as const;
 
 // The locale requested for the current render (NEXT_LOCALE cookie).
 export function activeLocale(): string {
@@ -79,7 +80,7 @@ export async function getNews(limit = 8, locale = activeLocale()): Promise<NewsI
     return {
       slug: a.slug, title: a.title, excerpt: a.excerpt, body: a.body,
       category: a.category ?? "News", date: a.date ?? a.publishedAt,
-      image: a.imageUrl || a.cover?.url, sourceUrl: a.sourceUrl,
+      image: mediaUrl(a.cover) || mediaUrl(a.imageUrl), sourceUrl: a.sourceUrl,
     };
   });
 }
@@ -93,7 +94,7 @@ export async function getNewsBySlug(slug: string, locale = activeLocale()): Prom
     return {
       slug: a.slug, title: a.title, excerpt: a.excerpt, body: a.body,
       category: a.category ?? "News", date: a.date ?? a.publishedAt,
-      image: a.imageUrl || a.cover?.url, sourceUrl: a.sourceUrl,
+      image: mediaUrl(a.cover) || mediaUrl(a.imageUrl), sourceUrl: a.sourceUrl,
     };
   }
   return fallback.news.find((n) => n.slug === slug) ?? null;
@@ -106,7 +107,7 @@ export async function getProjects(locale = activeLocale()): Promise<Project[]> {
     const p = mergeLocale(raw, locale);
     return {
       slug: p.slug, title: p.title, summary: p.summary,
-      department: p.department ?? "", status: p.status ?? "Ongoing", image: p.imageUrl || p.cover?.url,
+      department: p.department ?? "", status: p.status ?? "Ongoing", image: mediaUrl(p.cover) || mediaUrl(p.imageUrl),
       researchArea: p.researchArea, year: p.year, funder: p.funder,
     };
   });
@@ -116,7 +117,7 @@ function mapPublication(raw: Raw, locale: string): Publication {
   const p = mergeLocale(raw, locale);
   return {
     slug: p.slug, title: p.title, type: p.type ?? "Report",
-    year: p.year ?? new Date().getFullYear(), fileUrl: p.fileUrl || p.file?.url,
+    year: p.year ?? new Date().getFullYear(), fileUrl: mediaUrl(p.file) || mediaUrl(p.fileUrl),
     abstract: p.abstract, authors: p.authors,
     keywords: Array.isArray(p.keywords) ? p.keywords : typeof p.keywords === "string" ? p.keywords.split(",").map((k: string) => k.trim()).filter(Boolean) : undefined,
     doi: p.doi, citation: p.citation,
@@ -146,9 +147,9 @@ function mapEvent(raw: Raw, locale: string): EventItem {
     category: e.category ?? "Other",
     description: e.description ?? "",
     body: e.body || undefined,
-    image: e.imageUrl || e.cover?.url,
-    logo: e.logo?.url,
-    documentUrl: e.document?.url,
+    image: mediaUrl(e.cover) || mediaUrl(e.imageUrl),
+    logo: mediaUrl(e.logo),
+    documentUrl: mediaUrl(e.document),
     registerUrl: e.registerUrl || undefined,
     pinned: Boolean(e.pinned),
   };
@@ -178,6 +179,33 @@ export async function getPinnedEvents(locale = activeLocale()): Promise<EventIte
   return (await getEvents(locale)).filter((item) => item.pinned);
 }
 
+function mapPartner(raw: Raw, locale: string): PartnerItem {
+  const p = mergeLocale(raw, locale);
+  return {
+    slug: p.slug,
+    name: p.name,
+    category: p.category || "Other",
+    description: p.description || undefined,
+    website: p.website || undefined,
+    email: p.email || undefined,
+    phone: p.phone || undefined,
+    address: p.address || undefined,
+    logo: mediaUrl(p.logo),
+    displayOrder: Number.isFinite(Number(p.displayOrder)) ? Number(p.displayOrder) : 0,
+    active: p.active !== false,
+    startDate: p.startDate || undefined,
+    endDate: p.endDate || undefined,
+  };
+}
+
+export async function getPartners(locale = activeLocale()): Promise<PartnerItem[]> {
+  const data = await strapiFetch<Raw[]>(
+    `partners?sort=displayOrder:asc,name:asc&pagination[limit]=100&filters[active][$eq]=true&${L}&populate[logo]=true`
+  );
+  const list = !data || data.length === 0 ? fallback.partners : data.map((raw) => mapPartner(raw, locale));
+  return list.filter((item) => isPublicPartner(item)).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0) || a.name.localeCompare(b.name));
+}
+
 export async function getVacancies(locale = activeLocale()): Promise<Vacancy[]> {
   const data = await strapiFetch<Raw[]>(`vacancies?sort=closingDate:desc&${L}`);
   if (!data || data.length === 0) return fallback.vacancies;
@@ -200,7 +228,7 @@ export async function getTenders(locale = activeLocale()): Promise<Tender[]> {
     return {
       slug: t.slug, title: t.title, reference: t.reference ?? "", category: t.category ?? "Goods",
       description: t.description ?? "", postedDate: t.postedDate ?? t.publishedAt, closingDate: t.closingDate,
-      documentUrl: t.documentUrl || t.document?.url,
+      documentUrl: mediaUrl(t.document) || mediaUrl(t.documentUrl),
     };
   });
 }
@@ -269,7 +297,7 @@ export async function getLeaders(group: "board" | "management"): Promise<Leader[
   return data.map((raw) => ({
     name: raw.name,
     role: raw.role,
-    photo: raw.photo?.url,
+    photo: mediaUrl(raw.photo),
     quote: raw.quote,
   }));
 }
@@ -298,7 +326,7 @@ export async function getTechnologies(locale = activeLocale()): Promise<Technolo
       body: Array.isArray(t.body) ? t.body : typeof t.body === "string" && t.body ? [t.body] : undefined,
       benefits: Array.isArray(t.benefits) ? t.benefits : undefined,
       applications: Array.isArray(t.applications) ? t.applications : undefined,
-      image: t.imageUrl || t.cover?.url, relatedServiceSlug: t.relatedServiceSlug,
+      image: mediaUrl(t.cover) || mediaUrl(t.imageUrl), relatedServiceSlug: t.relatedServiceSlug,
     };
   });
 }
@@ -317,9 +345,9 @@ export type { SiteBrand };
 
 function mediaUrl(file: unknown): string | undefined {
   if (!file) return undefined;
-  if (typeof file === "string") return file;
-  const url = (file as { url?: string }).url;
-  return url || undefined;
+  if (typeof file === "string") return publicFileUrl(file);
+  const nested = file as { url?: string; data?: { url?: string } };
+  return publicFileUrl(nested.url || nested.data?.url);
 }
 
 export type CmsPage = { slug: string; title: string; body?: string; path?: string; cover?: string };
@@ -336,7 +364,7 @@ export async function getPageBySlug(slug: string, locale = activeLocale()): Prom
     title: p.title,
     body: p.body || undefined,
     path: p.path,
-    cover: p.cover?.url,
+    cover: mediaUrl(p.cover),
   };
 }
 

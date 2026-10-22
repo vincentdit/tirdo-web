@@ -9,12 +9,14 @@ export function MediaField({
   onChange,
   accept = "image/*",
   clearable = false,
+  maxBytes = 5 * 1024 * 1024,
 }: {
   label: string;
   value: unknown;
   onChange: (next: { id: number; url?: string } | null) => void;
   accept?: string;
   clearable?: boolean;
+  maxBytes?: number;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -25,6 +27,9 @@ export function MediaField({
     setBusy(true);
     setError("");
     try {
+      if (file.size > maxBytes) {
+        throw new Error(`Files must be ${Math.round(maxBytes / (1024 * 1024))} MB or smaller.`);
+      }
       const data = new FormData();
       data.append("files", file);
       const res = await fetch("/api/portal/media", { method: "POST", body: data });
@@ -47,9 +52,9 @@ export function MediaField({
       <div className="mt-2 flex flex-wrap items-center gap-3">
         {preview ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={preview} alt="" className="h-16 w-16 rounded border bg-white object-contain" />
+          <img src={preview} alt="" className="h-20 w-36 rounded-lg border border-slate-200 bg-[#f4f7f8] object-contain p-2" />
         ) : (
-          <div className="grid h-16 w-16 place-items-center rounded border bg-slate-50 text-[10px] text-slate-400">No file</div>
+          <div className="grid h-20 w-36 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-[10px] text-slate-400">No file</div>
         )}
         <label className="cursor-pointer rounded-md border px-3 py-2 text-sm font-medium text-[#0A192F] hover:bg-slate-50">
           {busy ? "Uploading…" : id ? "Replace file" : "Upload file"}

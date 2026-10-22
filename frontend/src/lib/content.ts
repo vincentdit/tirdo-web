@@ -435,9 +435,69 @@ export const eservices = [
   { title: "Staff e-Office", anchor: "eoffice", description: "Internal document management and correspondence system.", href: "#" },
 ];
 
-export const partners = [
-  "COMSATS", "COSTECH", "CTI", "TBS", "SIDO", "TEMDO", "CAMARTEC", "WAITRO",
-  "TIC", "BRELA", "EPZA", "TanTrade",
+export type PartnerItem = {
+  slug: string;
+  name: string;
+  category: string;
+  description?: string;
+  website?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  logo?: string;
+  displayOrder?: number;
+  active?: boolean;
+  startDate?: string;
+  endDate?: string;
+};
+
+export const PARTNER_CATEGORIES = [
+  "Government Institution",
+  "Development Partner",
+  "NGO",
+  "Private Sector",
+  "Academic / Research",
+  "Other",
+] as const;
+
+export function isPublicPartner(item: PartnerItem, now: Date = new Date()): boolean {
+  if (item.active === false) return false;
+  if (item.startDate) {
+    const start = new Date(item.startDate);
+    if (!isNaN(start.getTime())) {
+      start.setHours(0, 0, 0, 0);
+      if (now < start) return false;
+    }
+  }
+  if (item.endDate) {
+    const end = new Date(item.endDate);
+    if (!isNaN(end.getTime())) {
+      end.setHours(23, 59, 59, 999);
+      if (now > end) return false;
+    }
+  }
+  return true;
+}
+
+export function safeWebsiteUrl(value?: string): string | undefined {
+  const url = String(value || "").trim();
+  if (!/^https?:\/\//i.test(url)) return undefined;
+  return url;
+}
+
+export const partners: PartnerItem[] = [
+  { slug: "comsats", name: "COMSATS", category: "Development Partner", website: "https://comsats.org", description: "Commission on Science and Technology for Sustainable Development in the South.", displayOrder: 1, active: true },
+  { slug: "costech", name: "COSTECH", category: "Government Institution", website: "https://www.costech.or.tz", description: "Tanzania Commission for Science and Technology.", displayOrder: 2, active: true },
+  { slug: "cti", name: "CTI", category: "Private Sector", website: "https://www.cti.co.tz", description: "Confederation of Tanzania Industries.", displayOrder: 3, active: true },
+  { slug: "tbs", name: "TBS", category: "Government Institution", description: "Tanzania Bureau of Standards.", displayOrder: 4, active: true },
+  { slug: "sido", name: "SIDO", category: "Government Institution", description: "Small Industries Development Organization.", displayOrder: 5, active: true },
+  { slug: "temdo", name: "TEMDO", category: "Government Institution", description: "Tanzania Engineering and Manufacturing Design Organization.", displayOrder: 6, active: true },
+  { slug: "camartec", name: "CAMARTEC", category: "Government Institution", description: "Centre for Agricultural Mechanization and Rural Technology.", displayOrder: 7, active: true },
+  { slug: "waitro", name: "WAITRO", category: "Development Partner", description: "World Association of Industrial and Technological Research Organizations.", displayOrder: 8, active: true },
+  { slug: "tic", name: "TIC", category: "Government Institution", website: "https://www.tic.go.tz", description: "Tanzania Investment Centre.", displayOrder: 9, active: true },
+  { slug: "brela", name: "BRELA", category: "Government Institution", description: "Business Registrations and Licensing Agency.", displayOrder: 10, active: true },
+  { slug: "epza", name: "EPZA", category: "Government Institution", description: "Export Processing Zones Authority.", displayOrder: 11, active: true },
+  { slug: "tantrade", name: "TanTrade", category: "Government Institution", description: "Tanzania Trade Development Authority.", displayOrder: 12, active: true },
 ];
 
 export type EventItem = {

@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import {
   featuredEvents,
   isCurrentEvent,
+  isPublicPartner,
+  partners,
+  safeWebsiteUrl,
   isOpen,
   projectAreaSlug,
   researchAreaName,
@@ -201,5 +204,27 @@ describe("feedback & service charter (FR-FEEDBACK / FR-CHARTER)", () => {
     }
     expect(serviceCharter.rights.length).toBeGreaterThan(0);
     expect(serviceCharter.responsibilities.length).toBeGreaterThan(0);
+  });
+});
+
+describe("public partners", () => {
+  const now = new Date("2026-10-22T12:00:00Z");
+  const base = partners[0];
+
+  it("keeps active partners without dates visible", () => {
+    expect(isPublicPartner(base, now)).toBe(true);
+  });
+
+  it("hides inactive partners", () => {
+    expect(isPublicPartner({ ...base, active: false }, now)).toBe(false);
+  });
+
+  it("hides partners after the end date", () => {
+    expect(isPublicPartner({ ...base, endDate: "2026-01-01" }, now)).toBe(false);
+  });
+
+  it("rejects unsafe websites", () => {
+    expect(safeWebsiteUrl("javascript:alert(1)")).toBeUndefined();
+    expect(safeWebsiteUrl("https://www.costech.or.tz")).toBe("https://www.costech.or.tz");
   });
 });

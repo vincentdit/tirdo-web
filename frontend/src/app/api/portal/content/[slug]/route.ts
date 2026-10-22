@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cmsListQuery, collectionBySlug, entryStatus, entryTitle, pickAllowedFields, sanitizeSearch } from "@/lib/portal";
+import { cmsListQuery, collectionBySlug, entryStatus, entryTitle, mediaPreviewUrl, pickAllowedFields, sanitizeSearch, validateCollectionPayload } from "@/lib/portal";
 import { canUseCollection, canUsePage, forbidden, loadAccess } from "../../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../../_cms";
 
@@ -24,12 +24,27 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   ).slice(0, 5);
 
   const path = `/content-manager/collection-types/${encodeURIComponent(col.uid)}`;
-  let listQuery = cmsListQuery(page, pageSize, q, searchFields);
+  const sort = col.slug === "partners" ? "displayOrder:asc" : "updatedAt:desc";
+  let listQuery = cmsListQuery(page, pageSize, q, searchFields, sort);
+  const category = sanitizeSearch(request.nextUrl.searchParams.get("category") || "");
+  const statusFilter = sanitizeSearch(request.nextUrl.searchParams.get("status") || "").toLowerCase();
+  const extraFilters = new URLSearchParams();
+  if (col.slug === "partners" && category) extraFilters.set("filters[category][$eq]", category);
+  if (col.slug === "partners" && statusFilter === "inactive") extraFilters.set("filters[active][$eq]", "false");
+  if (col.slug === "partners" && statusFilter === "published") extraFilters.set("filters[active][$ne]", "false");
+  if (extraFilters.toString()) listQuery = `${listQuery}&${extraFilters.toString()}`;
+  if (col.fields.some((f) => f.type === "media" || f.type === "file")) {
+    const mediaKeys = col.fields.filter((f) => f.type === "media" || f.type === "file").map((f) => f.key);
+    mediaKeys.forEach((key) => {
+      listQuery += `&populate[${key}]=true`;
+    });
+  }
   if (col.slug === "pages" && Array.isArray(access.pageSlugs)) {
     if (access.pageSlugs.length === 0) {
       return NextResponse.json({
         collection: { slug: col.slug, label: col.label, description: col.description, fields: col.fields, draftAndPublish: col.draftAndPublish },
         canPublish: access.canPublish,
+        canDelete: access.canDelete,
         pageSlugs: access.pageSlugs,
         canCreate: false,
         query: q,
@@ -60,6 +75,7 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   return NextResponse.json({
     collection: { slug: col.slug, label: col.label, description: col.description, fields: col.fields, draftAndPublish: col.draftAndPublish },
     canPublish: access.canPublish,
+    canDelete: access.canDelete,
     pageSlugs: access.pageSlugs,
     canCreate: col.slug !== "pages" || access.pageSlugs == null,
     query: q,
@@ -77,8 +93,12 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
       status: entryStatus(row, col.draftAndPublish),
       cmsStatus: row.status,
       updatedAt: row.updatedAt || row.publishedAt || row.createdAt,
+      createdAt: row.createdAt,
       email: row.email,
       name: row.name,
+      category: row.category,
+      active: row.active,
+      logo: mediaPreviewUrl(row.logo),
       handled: row.handled,
       publishedAt: row.publishedAt,
     })),
@@ -100,6 +120,8 @@ export async function POST(request: NextRequest, { params }: { params: { slug: s
     return forbidden("You are not assigned to create this page.");
   }
   const payload = pickAllowedFields(col, body);
+  const invalid = validateCollectionPayload(col, payload);
+  if (invalid) return NextResponse.json({ error: invalid }, { status: 400 });
   const res = await cmsAdmin(`/content-manager/collection-types/${encodeURIComponent(col.uid)}`, token, {
     method: "POST",
     body: JSON.stringify(payload),

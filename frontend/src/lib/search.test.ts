@@ -10,7 +10,7 @@ describe("gatherDocuments (search index documents)", () => {
     for (const d of docs) byType.set(d.type, (byType.get(d.type) ?? 0) + 1);
 
     // All the expected content types are represented.
-    for (const t of ["News", "Project", "Publication", "Service", "Department", "Vacancy", "Tender", "Page", "Event"]) {
+    for (const t of ["News", "Project", "Publication", "Service", "Department", "Vacancy", "Tender", "Page", "Event", "Partner"]) {
       expect(byType.get(t) ?? 0).toBeGreaterThan(0);
     }
 

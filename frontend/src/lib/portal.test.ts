@@ -15,8 +15,11 @@ import {
   canAccessPageSlug,
   cmsListQuery,
   sanitizeSearch,
+  validateCollectionPayload,
+  mediaPreviewUrl,
   PORTAL_COLLECTIONS,
 } from "@/lib/portal";
+import { publicFileUrl } from "@/lib/utils";
 
 describe("portal helpers", () => {
   it("accepts TIRDO administrator emails only", () => {
@@ -33,6 +36,9 @@ describe("portal helpers", () => {
     expect(PORTAL_COLLECTIONS.length).toBeGreaterThan(3);
     expect(collectionBySlug("articles")?.uid).toBe("api::article.article");
     expect(collectionBySlug("events")?.uid).toBe("api::event.event");
+    expect(collectionBySlug("partners")?.uid).toBe("api::partner.partner");
+    expect(collectionBySlug("partners")?.group).toBe("content");
+    expect(collectionBySlug("partners")?.label).toBe("Our Partners");
     expect(collectionBySlug("secret")).toBeUndefined();
   });
 
@@ -52,6 +58,7 @@ describe("portal helpers", () => {
     expect(pageEditTarget("/").href).toBe("/portal/branding");
     expect(pageEditTarget("/news/foo").collection).toBe("articles");
     expect(pageEditTarget("/events/training").collection).toBe("events");
+    expect(pageEditTarget("/about/partners").collection).toBe("partners");
     expect(pageEditTarget("/publications/tirdo-profile").collection).toBe("publications");
   });
 
@@ -92,5 +99,20 @@ describe("portal helpers", () => {
     expect(entryStatus({ publishedAt: null }, true)).toBe("Draft");
     expect(entryStatus({ status: "modified" }, true)).toBe("Modified");
     expect(entryStatus({ handled: true }, false)).toBe("Handled");
+    expect(entryStatus({ active: false, publishedAt: "2026-01-01" }, true)).toBe("Inactive");
+  });
+
+  it("rewrites MinIO logo URLs onto the public site origin", () => {
+    expect(publicFileUrl("http://localhost:9100/tirdo-media/sido_5a8f9ea095.jpg")).toBe("/cms-media/sido_5a8f9ea095.jpg");
+    expect(publicFileUrl("http://172.30.30.54:9100/tirdo-media/sido_5a8f9ea095.jpg")).toBe("/cms-media/sido_5a8f9ea095.jpg");
+    expect(mediaPreviewUrl({ url: "http://localhost:9100/tirdo-media/sido_5a8f9ea095.jpg" })).toBe("/cms-media/sido_5a8f9ea095.jpg");
+  });
+
+  it("validates partner records", () => {
+    const col = collectionBySlug("partners")!;
+    expect(validateCollectionPayload(col, { name: "TBS" })).toBeNull();
+    expect(validateCollectionPayload(col, {})).toMatch(/required/i);
+    expect(validateCollectionPayload(col, { name: "TBS", website: "tbs.go.tz" })).toMatch(/http/i);
+    expect(validateCollectionPayload(col, { name: "TBS", email: "not-mail" })).toMatch(/email/i);
   });
 });

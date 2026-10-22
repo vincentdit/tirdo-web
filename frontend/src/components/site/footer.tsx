@@ -14,6 +14,7 @@ const columns = [
       { key: "explore.departments", href: "/departments" },
       { key: "explore.products", href: "/projects" },
       { key: "explore.documents", href: "/documents" },
+      { key: "explore.partners", href: "/about/partners" },
     ],
   },
   {

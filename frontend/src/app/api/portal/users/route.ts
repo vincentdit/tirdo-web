@@ -66,6 +66,7 @@ function mapGrant(g: Record<string, unknown>) {
     canPublish: Boolean(g.canPublish),
     canManageMedia: Boolean(g.canManageMedia),
     canManageUsers: Boolean(g.canManageUsers),
+    canDelete: Boolean(g.canDelete),
     active: g.active !== false,
     notes: g.notes,
   };
@@ -255,6 +256,7 @@ export async function POST(request: NextRequest) {
     canPublish: Boolean(body.canPublish),
     canManageMedia: Boolean(body.canManageMedia),
     canManageUsers: Boolean(body.canManageUsers),
+    canDelete: Boolean(body.canDelete),
     active: body.active !== false,
     notes: String(body.notes || ""),
   };

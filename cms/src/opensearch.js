@@ -15,13 +15,13 @@ function toDoc(uid, e) {
   // id scheme + URLs kept in sync with the frontend indexer (lib/search.ts)
   // so both indexers upsert the SAME documents instead of duplicating them.
   const idKind = { article: 'news' }[kind] || kind;
-  const typeLabel = { article: 'News', project: 'Project', publication: 'Publication', service: 'Service', department: 'Department', page: 'Page', vacancy: 'Vacancy', tender: 'Tender', technology: 'Technology', event: 'Event' }[kind] || 'Content';
-  const urlBase = { article: '/news/', project: '/projects#', publication: '/publications#', service: '/services/', department: '/departments/', page: '/', vacancy: '/careers#', tender: '/tenders#', technology: '/technology/', event: '/events/' }[kind] || '/';
+  const typeLabel = { article: 'News', project: 'Project', publication: 'Publication', service: 'Service', department: 'Department', page: 'Page', vacancy: 'Vacancy', tender: 'Tender', technology: 'Technology', event: 'Event', partner: 'Partner' }[kind] || 'Content';
+  const urlBase = { article: '/news/', project: '/projects#', publication: '/publications#', service: '/services/', department: '/departments/', page: '/', vacancy: '/careers#', tender: '/tenders#', technology: '/technology/', event: '/events/', partner: '/about/partners#' }[kind] || '/';
   const body = Array.isArray(e.body) ? e.body.join(' ') : (e.body || '');
   return {
     id: `${idKind}:${e.slug || e.id}`,
     type: typeLabel,
-    title: e.title,
+    title: e.title || e.name,
     excerpt: e.excerpt || e.summary || e.description || e.blurb || '',
     body,
     url: `${urlBase}${e.slug || ''}`,
@@ -63,6 +63,7 @@ async function reindexAll(strapi) {
     'api::tender.tender',
     'api::technology.technology',
     'api::event.event',
+    'api::partner.partner',
   ];
 
   const body = [];

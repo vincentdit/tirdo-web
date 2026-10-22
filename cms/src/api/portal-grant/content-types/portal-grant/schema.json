@@ -39,6 +39,10 @@
       "type": "boolean",
       "default": false
     },
+    "canDelete": {
+      "type": "boolean",
+      "default": false
+    },
     "active": {
       "type": "boolean",
       "default": true

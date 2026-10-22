@@ -56,6 +56,28 @@ export async function POST(request: NextRequest) {
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "Choose a file to upload." }, { status: 400 });
   }
+  const maxBytes = 5 * 1024 * 1024;
+  if (file.size > maxBytes) {
+    return NextResponse.json({ error: "Files must be 5 MB or smaller." }, { status: 400 });
+  }
+  const allowed = new Set([
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+    "image/svg+xml",
+    "application/pdf",
+  ]);
+  const type = file.type || "";
+  const name = file.name.toLowerCase();
+  const byExt =
+    /\.(jpe?g|png|webp|gif|svg)$/.test(name) ? "image" : /\.pdf$/.test(name) ? "pdf" : "";
+  if (type && !allowed.has(type) && !byExt) {
+    return NextResponse.json({ error: "Use a JPG, PNG, WebP, GIF, SVG or PDF file." }, { status: 400 });
+  }
+  if (!type && !byExt) {
+    return NextResponse.json({ error: "Use a JPG, PNG, WebP, GIF, SVG or PDF file." }, { status: 400 });
+  }
   const form = new FormData();
   form.append("files", file, file.name);
   const res = await cmsAdmin("/upload", token, { method: "POST", body: form });

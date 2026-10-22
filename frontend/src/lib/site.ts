@@ -110,6 +110,7 @@ export const mainNav: NavItem[] = [
       { title: "Administration", key: "aboutMenu.administration", href: "/about/administration" },
       { title: "Success Stories", key: "aboutMenu.successStories", href: "/about/success-stories" },
       { title: "COMSATS Centre", key: "aboutMenu.comsats", href: "/about/comsats" },
+      { title: "Our Partners", key: "aboutMenu.partners", href: "/about/partners" },
       { title: "Customer Service Charter", key: "aboutMenu.serviceCharter", href: "/service-charter" },
     ],
   },

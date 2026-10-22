@@ -17,6 +17,7 @@ const SITE_TYPES = new Set([
   'api::leader.leader',
   'api::site-brand.site-brand',
   'api::event.event',
+  'api::partner.partner',
 ]);
 
 const ACTIONS = new Set(['create', 'update', 'delete', 'publish', 'unpublish']);

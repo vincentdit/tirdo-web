@@ -22,6 +22,7 @@ export type PortalAccess = {
   canPublish: boolean;
   canManageMedia: boolean;
   canManageUsers: boolean;
+  canDelete: boolean;
   canManageSite: boolean;
   departments: { slug: string; title: string }[];
   collections: PortalCollection[];
@@ -73,6 +74,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
       canPublish: true,
       canManageMedia: true,
       canManageUsers: isSuperAdmin || isAdminRole(me.roles),
+      canDelete: true,
       canManageSite: true,
       departments: [{ slug: "*", title: "All departments" }],
       collections: PORTAL_COLLECTIONS,
@@ -86,6 +88,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
   let canPublish = false;
   let canManageMedia = false;
   let canManageUsers = false;
+  let canDelete = false;
 
   for (const row of mine) {
     if (row.active === false) continue;
@@ -93,6 +96,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
     canPublish = canPublish || Boolean(row.canPublish);
     canManageMedia = canManageMedia || Boolean(row.canManageMedia);
     canManageUsers = canManageUsers || Boolean(row.canManageUsers);
+    canDelete = canDelete || Boolean(row.canDelete);
     const title = String(row.departmentTitle || row.departmentSlug || "").trim();
     const slug = String(row.departmentSlug || "").trim();
     if (title && !departments.some((d) => d.slug === slug && d.title === title)) {
@@ -107,6 +111,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
     canPublish,
     canManageMedia,
     canManageUsers,
+    canDelete,
     canManageSite: canManageMedia,
     departments,
     collections: PORTAL_COLLECTIONS.filter((c) => allowed.has(c.slug)),

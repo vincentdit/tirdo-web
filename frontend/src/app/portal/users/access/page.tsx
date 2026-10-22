@@ -32,6 +32,7 @@ function EditAccessForm() {
   const [canPublish, setCanPublish] = useState(false);
   const [canManageMedia, setCanManageMedia] = useState(false);
   const [canManageUsers, setCanManageUsers] = useState(false);
+  const [canDelete, setCanDelete] = useState(false);
   const [notes, setNotes] = useState("");
   const [grantDocumentId, setGrantDocumentId] = useState("");
 
@@ -54,6 +55,7 @@ function EditAccessForm() {
     setCanPublish(Boolean(grant?.canPublish));
     setCanManageMedia(Boolean(grant?.canManageMedia));
     setCanManageUsers(Boolean(grant?.canManageUsers));
+    setCanDelete(Boolean(grant?.canDelete));
     setNotes(String(grant?.notes || ""));
   }
 
@@ -99,6 +101,7 @@ function EditAccessForm() {
           canPublish,
           canManageMedia,
           canManageUsers,
+          canDelete,
           notes,
           active: true,
         }),
@@ -188,7 +191,10 @@ function EditAccessForm() {
             <input type="checkbox" checked={canManageMedia} onChange={(e) => setCanManageMedia(e.target.checked)} /> Can manage gallery, logo and site photos
           </label>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={canManageUsers} onChange={(e) => setCanManageUsers(e.target.checked)} /> Can manage users
+            <input type="checkbox" checked={canManageUsers} onChange={(e) => setCanManageUsers(e.target.checked)} /> Can manage users (including partner access)
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={canDelete} onChange={(e) => setCanDelete(e.target.checked)} /> Can delete assigned records
           </label>
           <textarea className="w-full rounded-md border px-3 py-2 text-sm" rows={2} placeholder="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
         </div>

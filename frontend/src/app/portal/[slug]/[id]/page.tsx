@@ -14,6 +14,7 @@ export default function PortalEntryPage() {
   const isNew = params.id === "new";
   const [values, setValues] = useState<Record<string, unknown>>({});
   const [canPublish, setCanPublish] = useState(false);
+  const [canDelete, setCanDelete] = useState(false);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -27,10 +28,14 @@ export default function PortalEntryPage() {
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         if (j?.canPublish) setCanPublish(true);
+        if (j?.canDelete) setCanDelete(true);
       })
       .catch(() => undefined);
     if (!col || isNew) {
       if (col?.draftAndPublish) setStatus("Draft");
+      if (col?.slug === "partners") {
+        setValues({ active: true, displayOrder: 0, category: "Government Institution" });
+      }
       return;
     }
     fetch(`/api/portal/content/${col.slug}/${params.id}`)
@@ -44,8 +49,11 @@ export default function PortalEntryPage() {
       })
       .then((j) => {
         const data = (j?.data ?? {}) as Record<string, unknown>;
+        if (col.slug === "partners" && data.active == null) data.active = true;
+        if (col.slug === "partners" && data.displayOrder == null) data.displayOrder = 0;
         setValues(data);
         setCanPublish((prev) => Boolean(j?.canPublish) || prev);
+        setCanDelete((prev) => Boolean(j?.canDelete) || prev);
         if (col.draftAndPublish) setStatus(entryStatus(data, true));
         else setStatus(entryStatus(data, false));
         setLoaded(true);
@@ -111,7 +119,9 @@ export default function PortalEntryPage() {
         ← {col.label}
       </Link>
       <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="font-serif text-2xl font-bold text-[#0A192F]">{isNew ? `New ${col.label}` : `Update ${col.label}`}</h1>
+        <h1 className="font-serif text-2xl font-bold text-[#0A192F]">
+          {isNew ? (col.slug === "partners" ? "Add partner" : `New ${col.label}`) : col.slug === "partners" ? "Edit partner" : `Update ${col.label}`}
+        </h1>
         {status && (
           <span
             className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -133,7 +143,8 @@ export default function PortalEntryPage() {
                 key={field.key}
                 label={field.label}
                 value={values[field.key]}
-                accept={field.type === "file" ? "application/pdf,image/*" : "image/*"}
+                accept={field.type === "file" ? "application/pdf,image/*" : "image/jpeg,image/png,image/webp,image/gif,image/svg+xml"}
+                maxBytes={field.type === "file" ? 5 * 1024 * 1024 : 2 * 1024 * 1024}
                 onChange={(next) => setValues((v) => ({ ...v, [field.key]: next }))}
               />
             ) : (
@@ -208,6 +219,29 @@ export default function PortalEntryPage() {
                 className="rounded-md border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-900 disabled:opacity-60"
               >
                 Unpublish
+              </button>
+            )}
+            {!isNew && canDelete && (
+              <button
+                type="button"
+                disabled={saving}
+                onClick={async () => {
+                  if (!window.confirm("Delete this entry? This cannot be undone.")) return;
+                  setSaving(true);
+                  setError("");
+                  try {
+                    const res = await fetch(`/api/portal/content/${collection.slug}/${params.id}`, { method: "DELETE" });
+                    const json = await res.json().catch(() => ({}));
+                    if (!res.ok) throw new Error(json.error || "Could not delete this entry.");
+                    router.replace(`/portal/${collection.slug}`);
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : "Could not delete this entry.");
+                    setSaving(false);
+                  }
+                }}
+                className="rounded-md border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:opacity-60"
+              >
+                Delete
               </button>
             )}
           </div>

@@ -38,6 +38,9 @@ module.exports = {
     // 2d) Ensure events exist so the portal and homepage have content to edit.
     await seedEvents(strapi);
 
+    // 2e) Ensure partner organisations exist for the public partners page.
+    await seedPartners(strapi);
+
     // 3) Seed demo content on an empty database (idempotent).
     if (process.env.SEED_DATA === 'true') {
       await seed(strapi);
@@ -123,7 +126,7 @@ async function setPublicPermissions(strapi) {
     .findOne({ where: { type: 'public' } });
   if (!publicRole) return;
 
-  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology', 'leader', 'site-brand', 'event'];
+  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology', 'leader', 'site-brand', 'event', 'partner'];
   const perms = {};
   for (const t of readTypes) {
     perms[`api::${t}.${t}`] = { controllers: { [t]: { find: { enabled: true }, findOne: { enabled: true } } } };
@@ -208,6 +211,24 @@ async function seedEvents(strapi) {
     if (created) strapi.log.info(`[seed] created ${created} events`);
   } catch (e) {
     strapi.log.warn('[seed] events seed skipped: ' + e.message);
+  }
+}
+
+async function seedPartners(strapi) {
+  const uid = 'api::partner.partner';
+  try {
+    const partners = require('./partner-seed');
+    const existing = await strapi.documents(uid).findMany({ locale: 'en', limit: 200 });
+    const have = new Set((existing || []).map((p) => p.slug).filter(Boolean));
+    let created = 0;
+    for (const partner of partners) {
+      if (have.has(partner.slug)) continue;
+      await strapi.documents(uid).create({ data: partner, status: 'published' });
+      created += 1;
+    }
+    if (created) strapi.log.info(`[seed] created ${created} partners`);
+  } catch (e) {
+    strapi.log.warn('[seed] partners seed skipped: ' + e.message);
   }
 }
 

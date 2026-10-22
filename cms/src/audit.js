@@ -26,6 +26,8 @@ const AUDITED_TYPES = new Set([
   'api::tender.tender',
   'api::leader.leader',
   'api::event.event',
+  'api::partner.partner',
+  'api::portal-grant.portal-grant',
 ]);
 
 const AUDITED_ACTIONS = new Set(['create', 'update', 'delete', 'publish', 'unpublish']);

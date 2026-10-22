@@ -14,6 +14,7 @@ const subPages = [
   { title: "Administration", href: "/about/administration" },
   { title: "Success Stories", href: "/about/success-stories" },
   { title: "COMSATS Centre", href: "/about/comsats" },
+  { title: "Our Partners", href: "/about/partners" },
 ];
 
 export default async function AboutPage() {

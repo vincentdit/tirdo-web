@@ -592,5 +592,19 @@
       "description": "TIRDO showcased its research products, laboratories and industrial services at the annual national trade fair.",
       "imageUrl": "/media/carousel-items/cCiap7vvzT3PcCrqVYJe99reAp4pnPJVZ5SnDDBV.jpg"
     }
+  ],
+  "api::partner.partner": [
+    { "name": "COMSATS", "slug": "comsats", "category": "Development Partner", "description": "Commission on Science and Technology for Sustainable Development in the South.", "website": "https://comsats.org", "displayOrder": 1, "active": true },
+    { "name": "COSTECH", "slug": "costech", "category": "Government Institution", "description": "Tanzania Commission for Science and Technology.", "website": "https://www.costech.or.tz", "displayOrder": 2, "active": true },
+    { "name": "CTI", "slug": "cti", "category": "Private Sector", "description": "Confederation of Tanzania Industries.", "website": "https://www.cti.co.tz", "displayOrder": 3, "active": true },
+    { "name": "TBS", "slug": "tbs", "category": "Government Institution", "description": "Tanzania Bureau of Standards.", "displayOrder": 4, "active": true },
+    { "name": "SIDO", "slug": "sido", "category": "Government Institution", "description": "Small Industries Development Organization.", "displayOrder": 5, "active": true },
+    { "name": "TEMDO", "slug": "temdo", "category": "Government Institution", "description": "Tanzania Engineering and Manufacturing Design Organization.", "displayOrder": 6, "active": true },
+    { "name": "CAMARTEC", "slug": "camartec", "category": "Government Institution", "description": "Centre for Agricultural Mechanization and Rural Technology.", "displayOrder": 7, "active": true },
+    { "name": "WAITRO", "slug": "waitro", "category": "Development Partner", "description": "World Association of Industrial and Technological Research Organizations.", "displayOrder": 8, "active": true },
+    { "name": "TIC", "slug": "tic", "category": "Government Institution", "description": "Tanzania Investment Centre.", "website": "https://www.tic.go.tz", "displayOrder": 9, "active": true },
+    { "name": "BRELA", "slug": "brela", "category": "Government Institution", "description": "Business Registrations and Licensing Agency.", "displayOrder": 10, "active": true },
+    { "name": "EPZA", "slug": "epza", "category": "Government Institution", "description": "Export Processing Zones Authority.", "displayOrder": 11, "active": true },
+    { "name": "TanTrade", "slug": "tantrade", "category": "Government Institution", "description": "Tanzania Trade Development Authority.", "displayOrder": 12, "active": true }
   ]
 }
