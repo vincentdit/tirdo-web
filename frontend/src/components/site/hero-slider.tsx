@@ -35,7 +35,7 @@ export function HeroSlider({ heroImage }: { heroImage?: string }) {
 
   return (
     <section
-      className="relative h-[470px] overflow-hidden bg-brand-blue text-white md:h-[515px]"
+      className="relative h-[70dvh] min-h-[280px] w-full overflow-hidden bg-brand-blue text-white md:h-[78dvh]"
       aria-roledescription="carousel"
       aria-label="TIRDO highlights"
     >

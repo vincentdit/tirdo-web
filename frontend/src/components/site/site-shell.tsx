@@ -25,7 +25,7 @@ export function SiteShell({
   return (
     <BrandProvider brand={brand}>
       <Header />
-      <main id="main">{children}</main>
+      <main id="main" className="w-full">{children}</main>
       <Footer />
       <FloatingEventPin events={pinnedEvents} />
       <PageEditorBar />
