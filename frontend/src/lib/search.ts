@@ -13,6 +13,7 @@
 // -----------------------------------------------------------------------
 import * as content from "./content";
 import { getNews, getProjects, getPublications, getVacancies, getTenders, getTechnologies, getDepartments, getServices, getEvents, getPartners } from "./strapi";
+import { sanitizeSearchHighlight } from "./security";
 
 export const OS_NODE = process.env.OPENSEARCH_NODE || "http://opensearch:9200";
 export const OS_INDEX = process.env.OPENSEARCH_INDEX || "tirdo-content";
@@ -277,13 +278,16 @@ export async function searchContent(
   if (!res.ok) return null;
   const json = await res.json();
 
-  const hits: SearchHit[] = (json.hits?.hits ?? []).map((h: any) => ({
-    title: h._source.title,
-    type: h._source.type ?? "Content",
-    url: h._source.url ?? "#",
-    excerpt: h._source.excerpt,
-    highlight: h.highlight?.excerpt?.[0] ?? h.highlight?.body?.[0],
-  }));
+  const hits: SearchHit[] = (json.hits?.hits ?? []).map((h: any) => {
+    const rawHighlight = h.highlight?.excerpt?.[0] ?? h.highlight?.body?.[0];
+    return {
+      title: h._source.title,
+      type: h._source.type ?? "Content",
+      url: h._source.url ?? "#",
+      excerpt: h._source.excerpt,
+      highlight: rawHighlight ? sanitizeSearchHighlight(String(rawHighlight)) : undefined,
+    };
+  });
   const total = typeof json.hits?.total === "object" ? json.hits.total.value : json.hits?.total ?? hits.length;
   const facets: Facet[] = (json.aggregations?.types?.buckets ?? []).map((b: any) => ({ type: b.key, count: b.doc_count }));
 

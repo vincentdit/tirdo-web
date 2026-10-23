@@ -11,6 +11,10 @@ The documentation set for the TIRDO public website & digital services portal.
   runbook (RPO/RTO).
 - [SECURITY.md](SECURITY.md) — edge hardening (headers, rate limits, CSP) and
   the remaining security tasks.
+- [SECURITY_AUDIT.md](SECURITY_AUDIT.md) — findings and residual risks.
+- [SECURITY_REMEDIATION.md](SECURITY_REMEDIATION.md) — what was changed in code.
+- [SECURITY_TEST_REPORT.md](SECURITY_TEST_REPORT.md) — tests run and not run.
+- [SECURE_DEPLOYMENT_CHECKLIST.md](SECURE_DEPLOYMENT_CHECKLIST.md) — rollout.
 - [WAF.md](WAF.md) — opt-in ModSecurity + OWASP CRS web application firewall.
 - [MFA.md](MFA.md) — multi-factor auth for Keycloak, CMS and other admin consoles.
 - [MONITORING.md](MONITORING.md) — health endpoints and the opt-in uptime/metrics stack.

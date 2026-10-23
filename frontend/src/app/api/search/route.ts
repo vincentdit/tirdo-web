@@ -6,6 +6,7 @@ import {
   type SearchHit,
   type Facet,
 } from "@/lib/search";
+import { clampSearchFrom, clampSearchQuery } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
@@ -29,9 +30,9 @@ async function localResults(q: string, type?: string): Promise<{ hits: SearchHit
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const q = url.searchParams.get("q")?.trim() ?? "";
+  const q = clampSearchQuery(url.searchParams.get("q") ?? "");
   const type = url.searchParams.get("type")?.trim() || undefined;
-  const from = Math.max(0, parseInt(url.searchParams.get("from") ?? "0", 10) || 0);
+  const from = clampSearchFrom(parseInt(url.searchParams.get("from") ?? "0", 10) || 0);
   if (!q) return NextResponse.json({ hits: [], total: 0, facets: [], engine: "none" });
 
   // Try OpenSearch (self-populating on first use), then fall back to local.

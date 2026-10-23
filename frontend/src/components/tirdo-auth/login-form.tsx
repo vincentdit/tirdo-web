@@ -5,11 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isAdminEmail } from "@/lib/portal";
+import { isSafePortalNext } from "@/lib/security-http";
 
 export function TirdoLoginForm() {
   const router = useRouter();
   const search = useSearchParams();
-  const next = search.get("next") || "/portal";
+  const requestedNext = search.get("next") || "/portal";
+  const next = isSafePortalNext(requestedNext) ? requestedNext : "/portal";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,7 +49,7 @@ export function TirdoLoginForm() {
         setError(json.error || "Sign in failed. Try again.");
         return;
       }
-      router.replace(next.startsWith("/portal") ? next : "/portal");
+      router.replace(next);
       router.refresh();
     } catch {
       setError("Could not reach TIRDO Content Manager. Check your connection and try again.");

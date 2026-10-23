@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { ensurePopulated, suggest, gatherDocuments, type SearchHit } from "@/lib/search";
+import { clampSearchQuery } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
 // Autocomplete suggestions for the search-as-you-type box. Prefix match on
 // titles via OpenSearch, with a local title-scan fallback.
 export async function GET(req: Request) {
-  const q = new URL(req.url).searchParams.get("q")?.trim() ?? "";
+  const q = clampSearchQuery(new URL(req.url).searchParams.get("q") ?? "", 80);
   if (q.length < 2) return NextResponse.json({ suggestions: [] });
 
   try {

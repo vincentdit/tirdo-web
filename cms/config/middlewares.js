@@ -1,7 +1,7 @@
 module.exports = ({ env }) => {
   // Strapi's cors middleware always does originList.split() — origin must be a
   // string ("*" or comma-separated URLs), never a boolean or array.
-  const origin = env("STRAPI_CORS_ORIGINS", "*");
+  const origin = env("STRAPI_CORS_ORIGINS", "http://localhost");
 
   return [
     "strapi::logger",

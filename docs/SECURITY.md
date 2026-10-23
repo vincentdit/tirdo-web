@@ -35,6 +35,14 @@ analytics on day one. To enforce it:
 The current policy already allows Google Fonts (`style-src`/`font-src`),
 `data:`/`https:` images, and inline styles/scripts (needed by Next.js).
 
+## Application controls added in code
+
+- Portal writes require a same-origin `Origin`/`Referer` (CSRF defense for cookie auth).
+- `/api/revalidate` and `/api/search/reindex` require `SEARCH_ADMIN_TOKEN` (`x-reindex-token`).
+- Gallery upload requires media/site grant; SVG is rejected.
+- Search highlights are sanitized before HTML render.
+- See `docs/SECURITY_AUDIT.md` for the full audit, residual risks, and checklist.
+
 ## Still to do (needs infrastructure decisions)
 
 - **TLS / HTTPS** — terminate TLS at this Nginx (add a `listen 443 ssl` server

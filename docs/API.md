@@ -23,9 +23,9 @@ Autocomplete. Returns `{ suggestions: [{title, type, url}] }` (min 2 chars).
 
 ### `GET /api/search/reindex`  ·  `POST /api/search/reindex`
 - `GET` → `{ exists, count }` (index status).
-- `POST` → rebuilds the index; returns `{ ok, count }`. If `SEARCH_ADMIN_TOKEN`
-  is set, requires header `x-reindex-token` (or `?token=`). Call after bulk CMS
-  changes.
+- `POST` → rebuilds the index; returns `{ ok, count }`. Both require
+  `SEARCH_ADMIN_TOKEN` in header `x-reindex-token`. Query-string tokens are
+  rejected. Call after bulk CMS changes.
 
 ### `GET /api/analytics`
 Visitor totals for the footer/dashboard: `{ today, month, total }` (unique
@@ -66,7 +66,7 @@ collection is the stored record.
 ### `GET /api/audit-log/verify`
 Verifies the tamper-evident audit chain. Returns
 `{ intact: true, count, head }` or `{ intact: false, brokenAt, reason }`.
-If `AUDIT_LOG_TOKEN` is set, requires header `x-audit-token` (or `?token=`).
+Requires `AUDIT_LOG_TOKEN` in header `x-audit-token`. Query-string tokens are rejected.
 See `docs/AUDIT-LOG.md`. The audit log itself is not exposed over the public
 API — browse it in the admin panel.
 

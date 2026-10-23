@@ -54,6 +54,8 @@ if ($regen) {
         "MINIO_ROOT_PASSWORD"      = (New-Secret)
         "MATOMO_DB_ROOT_PASSWORD"  = (New-Secret)
         "MATOMO_DB_PASSWORD"       = (New-Secret)
+        "SEARCH_ADMIN_TOKEN"       = (New-Secret)
+        "AUDIT_LOG_TOKEN"          = (New-Secret)
     }
     # APP_KEYS needs 4 comma-separated values
     $appKeys = "$(New-Secret),$(New-Secret),$(New-Secret),$(New-Secret)"

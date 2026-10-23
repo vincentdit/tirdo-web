@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
   if (!token) return unauthorized();
   const access = await loadAccess(token);
   if (!access) return NextResponse.json({ error: "Session expired. Sign in again." }, { status: 401 });
+  if (!access.canManageSite) return forbidden("You are not assigned to the gallery.");
 
   const incoming = await request.formData();
   const file = incoming.get("files") || incoming.get("file");
@@ -65,18 +66,20 @@ export async function POST(request: NextRequest) {
     "image/png",
     "image/webp",
     "image/gif",
-    "image/svg+xml",
     "application/pdf",
   ]);
   const type = file.type || "";
   const name = file.name.toLowerCase();
+  if (name.endsWith(".svg") || type === "image/svg+xml") {
+    return NextResponse.json({ error: "SVG uploads are not allowed." }, { status: 400 });
+  }
   const byExt =
-    /\.(jpe?g|png|webp|gif|svg)$/.test(name) ? "image" : /\.pdf$/.test(name) ? "pdf" : "";
+    /\.(jpe?g|png|webp|gif)$/.test(name) ? "image" : /\.pdf$/.test(name) ? "pdf" : "";
   if (type && !allowed.has(type) && !byExt) {
-    return NextResponse.json({ error: "Use a JPG, PNG, WebP, GIF, SVG or PDF file." }, { status: 400 });
+    return NextResponse.json({ error: "Use a JPG, PNG, WebP, GIF or PDF file." }, { status: 400 });
   }
   if (!type && !byExt) {
-    return NextResponse.json({ error: "Use a JPG, PNG, WebP, GIF, SVG or PDF file." }, { status: 400 });
+    return NextResponse.json({ error: "Use a JPG, PNG, WebP, GIF or PDF file." }, { status: 400 });
   }
   const form = new FormData();
   form.append("files", file, file.name);

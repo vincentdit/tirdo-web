@@ -29,7 +29,7 @@ Because each hash depends on the previous entry's hash, **altering or deleting
 any past entry breaks every hash after it**. The chain is verifiable:
 
 ```
-GET /api/audit-log/verify        # optionally: header x-audit-token: <AUDIT_LOG_TOKEN>
+GET /api/audit-log/verify        # required: header x-audit-token: <AUDIT_LOG_TOKEN>
 ```
 
 Returns `{ "intact": true, "count": N, "head": "<hash>" }`, or, if broken,

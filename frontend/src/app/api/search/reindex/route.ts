@@ -1,27 +1,24 @@
 import { NextResponse } from "next/server";
 import { reindexAll, indexStatus } from "@/lib/search";
+import { adminTokenAuthorized } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
+function unauthorized() {
+  return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+}
+
 // GET  /api/search/reindex  -> report index status (exists, doc count)
 // POST /api/search/reindex  -> rebuild the index from all content
-//
-// When SEARCH_ADMIN_TOKEN is set, POST requires a matching x-reindex-token
-// header (or ?token=). Call this after CMS content changes; a scheduled task
-// or a Strapi webhook can hit it to keep search fresh.
-export async function GET() {
+// Both require SEARCH_ADMIN_TOKEN via x-reindex-token (never a query string).
+export async function GET(req: Request) {
+  if (!adminTokenAuthorized(req)) return unauthorized();
   const status = await indexStatus();
   return NextResponse.json(status);
 }
 
 export async function POST(req: Request) {
-  const required = process.env.SEARCH_ADMIN_TOKEN;
-  if (required) {
-    const provided = req.headers.get("x-reindex-token") || new URL(req.url).searchParams.get("token");
-    if (provided !== required) {
-      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-    }
-  }
+  if (!adminTokenAuthorized(req)) return unauthorized();
   const result = await reindexAll();
   return NextResponse.json(result, { status: result.ok ? 200 : 502 });
 }
