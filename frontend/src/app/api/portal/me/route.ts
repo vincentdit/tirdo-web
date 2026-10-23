@@ -4,7 +4,9 @@ import { cmsAdmin, portalToken, unauthorized } from "../_cms";
 
 export async function GET() {
   const token = portalToken();
-  if (!token) return unauthorized();
+  if (!token) {
+    return NextResponse.json({ authenticated: false });
+  }
 
   const access = await loadAccess(token);
   if (!access) {
@@ -12,6 +14,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
+    authenticated: true,
     id: access.id,
     email: access.email,
     firstname: access.firstname,

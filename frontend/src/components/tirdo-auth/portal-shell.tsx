@@ -45,7 +45,7 @@ export function PortalShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     fetch("/api/portal/me")
       .then((r) => (r.ok ? r.json() : null))
-      .then(setMe)
+      .then((j) => setMe(j?.authenticated === false ? null : j))
       .catch(() => setMe(null));
   }, []);
 

@@ -21,7 +21,7 @@ export function PageEditorBar() {
   useEffect(() => {
     fetch("/api/portal/me")
       .then((r) => (r.ok ? r.json() : null))
-      .then(setMe)
+      .then((j) => setMe(j?.authenticated && j.email ? j : null))
       .catch(() => setMe(null));
   }, []);
 
