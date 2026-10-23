@@ -20,6 +20,7 @@ import {
   cmsAdminErrorMessage,
   pickDefaultPortalRoleId,
   portalPasswordIssue,
+  grantedCollectionSlugs,
   PORTAL_COLLECTIONS,
 } from "@/lib/portal";
 import { oidcCallbackUrl, safeReturnTo } from "@/lib/oidc";
@@ -58,6 +59,13 @@ describe("portal helpers", () => {
     expect(isAdminRole(["Editor"])).toBe(false);
     expect(isFullPortalRole(["Administrator"])).toBe(true);
     expect(isFullPortalRole(["Author"])).toBe(false);
+  });
+
+  it("limits content management to granted collections except Super Admin", () => {
+    expect(grantedCollectionSlugs(["Author"], ["publications"])).toEqual(["publications"]);
+    expect(grantedCollectionSlugs(["Admin"], ["articles"])).toEqual(["articles"]);
+    expect(grantedCollectionSlugs(["Editor"], ["articles", "publications"]).sort()).toEqual(["articles", "publications"]);
+    expect(grantedCollectionSlugs(["Super Admin"], ["publications"])).toEqual(PORTAL_COLLECTIONS.map((c) => c.slug));
   });
 
   it("maps public pages to the matching portal editor", () => {

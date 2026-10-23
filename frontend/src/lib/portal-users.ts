@@ -25,7 +25,7 @@ export type PortalGrant = {
   active: boolean;
   notes?: string;
 };
-export type PortalUserCollection = { slug: string; label: string };
+export type PortalUserCollection = { slug: string; label: string; group?: string };
 export type PortalUsersMe = { id?: number; email?: string; isSuperAdmin?: boolean };
 
 export type PortalUsersPayload = {

@@ -360,6 +360,13 @@ export function isFullPortalRole(roles: string[]): boolean {
   return isSuperAdminRole(roles) || isAdminRole(roles);
 }
 
+/** Super Admin sees every collection. Everyone else sees only granted types. */
+export function grantedCollectionSlugs(roles: string[], granted: string[]): string[] {
+  if (isSuperAdminRole(roles)) return PORTAL_COLLECTIONS.map((c) => c.slug);
+  const allowed = new Set(parseCollectionList(granted));
+  return PORTAL_COLLECTIONS.filter((c) => allowed.has(c.slug)).map((c) => c.slug);
+}
+
 export function portalPasswordIssue(password: string): string | null {
   if (password.length < 8) return "Password must be at least 8 characters.";
   if (!/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password)) {

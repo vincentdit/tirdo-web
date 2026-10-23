@@ -1,11 +1,11 @@
 "use client";
 
-import { FormEvent, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { PortalShell } from "@/components/tirdo-auth/portal-shell";
+import { StaffSearchSelect } from "@/components/tirdo-auth/staff-search-select";
 import { UsersHeading } from "@/components/tirdo-auth/users-tabs";
 import {
-  displayUserName,
   emailKey,
   fetchPortalUsers,
   type PortalDept,
@@ -15,101 +15,12 @@ import {
   type PortalUserCollection,
 } from "@/lib/portal-users";
 
-function staffLabel(user: PortalUser) {
-  const inactive = user.isActive === false ? " — inactive" : "";
-  return `${displayUserName(user)} (${user.email})${inactive}`;
-}
-
-function StaffSearchSelect({
-  users,
-  value,
-  onChange,
-}: {
-  users: PortalUser[];
-  value: string;
-  onChange: (email: string) => void;
-}) {
-  const boxRef = useRef<HTMLDivElement>(null);
-  const [query, setQuery] = useState("");
-  const [open, setOpen] = useState(false);
-  const selected = users.find((u) => emailKey(u.email) === emailKey(value));
-
-  useEffect(() => {
-    if (!open) setQuery(selected ? staffLabel(selected) : "");
-  }, [selected, open]);
-
-  useEffect(() => {
-    function close(e: MouseEvent) {
-      if (!boxRef.current?.contains(e.target as Node)) setOpen(false);
-    }
-    document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, []);
-
-  const matches = useMemo(() => {
-    const browsingSelected = Boolean(selected && query === staffLabel(selected));
-    const q = browsingSelected ? "" : query.trim().toLowerCase();
-    const list = q
-      ? users.filter((u) => staffLabel(u).toLowerCase().includes(q) || emailKey(u.email).includes(q))
-      : users;
-    return { list: list.slice(0, 40), total: list.length };
-  }, [users, query, selected]);
-
-  return (
-    <div ref={boxRef} className="relative">
-      <label className="mb-1 block text-sm font-medium text-[#0A192F]">Staff user</label>
-      <input
-        type="search"
-        autoComplete="off"
-        className="w-full rounded-md border px-3 py-2 text-sm"
-        placeholder="Type a name or email to find staff"
-        value={query}
-        onFocus={(e) => {
-          setOpen(true);
-          e.currentTarget.select();
-        }}
-        onChange={(e) => {
-          const next = e.target.value;
-          setQuery(next);
-          setOpen(true);
-          if (!next.trim()) onChange("");
-        }}
-        required={!value}
-      />
-      <input type="hidden" name="staffEmail" value={value} required />
-      {open && (
-        <ul className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-md border bg-white py-1 text-sm shadow-md">
-          {matches.list.length === 0 ? (
-            <li className="px-3 py-2 text-slate-500">No staff match that search.</li>
-          ) : (
-            matches.list.map((u) => (
-              <li key={u.id}>
-                <button
-                  type="button"
-                  className={`block w-full px-3 py-2 text-left hover:bg-slate-100 ${
-                    emailKey(u.email) === emailKey(value) ? "bg-emerald-50" : ""
-                  }`}
-                  onClick={() => {
-                    onChange(u.email);
-                    setQuery(staffLabel(u));
-                    setOpen(false);
-                  }}
-                >
-                  {staffLabel(u)}
-                </button>
-              </li>
-            ))
-          )}
-          {matches.total > matches.list.length ? (
-            <li className="px-3 py-1 text-xs text-slate-500">
-              Showing 40 of {matches.total}. Keep typing a name or email to find someone.
-            </li>
-          ) : null}
-        </ul>
-      )}
-    </div>
-  );
-}
+const COLLECTION_GROUPS: { id: string; label: string }[] = [
+  { id: "content", label: "Content management" },
+  { id: "services", label: "Opportunities" },
+  { id: "directory", label: "Organisation" },
+  { id: "inbox", label: "Inbox" },
+];
 
 function EditAccessForm() {
   const search = useSearchParams();
@@ -226,7 +137,9 @@ function EditAccessForm() {
       {notice && <p className="mt-3 text-sm text-emerald-800">{notice}</p>}
       <form className="mt-6 max-w-3xl rounded-lg border bg-white p-5" onSubmit={saveGrant}>
         <h2 className="font-semibold text-[#0A192F]">Edit access</h2>
-        <p className="mt-1 text-xs text-slate-500">Saving updates the existing assignment for this person.</p>
+        <p className="mt-1 text-xs text-slate-500">
+          Tick only the work this person may see and manage. Example: Publications only shows Publications under Content management.
+        </p>
         <div className="mt-3 space-y-3">
           <StaffSearchSelect users={users} value={staffEmail} onChange={fillAccess} />
           <select className="w-full rounded-md border px-3 py-2 text-sm" value={departmentSlug} onChange={(e) => setDepartmentSlug(e.target.value)}>
@@ -237,13 +150,24 @@ function EditAccessForm() {
               </option>
             ))}
           </select>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            {collections.map((c) => (
-              <label key={c.slug} className="flex items-center gap-2">
-                <input type="checkbox" checked={selected.includes(c.slug)} onChange={() => toggleCollection(c.slug)} />
-                {c.label}
-              </label>
-            ))}
+          <div className="space-y-4">
+            {COLLECTION_GROUPS.map((group) => {
+              const items = collections.filter((c) => (c.group || "content") === group.id);
+              if (!items.length) return null;
+              return (
+                <div key={group.id}>
+                  <p className="mb-2 text-sm font-medium text-[#0A192F]">{group.label}</p>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    {items.map((c) => (
+                      <label key={c.slug} className="flex items-center gap-2">
+                        <input type="checkbox" checked={selected.includes(c.slug)} onChange={() => toggleCollection(c.slug)} />
+                        {c.label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
           {selected.includes("pages") && (
             <div className="rounded-md border bg-slate-50 p-3">
@@ -294,7 +218,7 @@ function EditAccessForm() {
 export default function PortalEditAccessPage() {
   return (
     <PortalShell>
-      <UsersHeading description="Assign department work and page editing rights. Saving updates the existing assignment." />
+      <UsersHeading description="Choose which content this person may see and manage. Publications-only staff only get Publications; news staff only get News Articles." />
       <Suspense fallback={<p className="mt-6 text-sm text-slate-500">Loading…</p>}>
         <EditAccessForm />
       </Suspense>

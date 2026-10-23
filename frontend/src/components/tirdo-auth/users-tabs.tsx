@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const TABS = [
   { href: "/portal/users", label: "Users & access", exact: true },
   { href: "/portal/users/new", label: "Create CMS user" },
+  { href: "/portal/users/edit", label: "Edit user" },
   { href: "/portal/users/access", label: "Edit access" },
 ];
 

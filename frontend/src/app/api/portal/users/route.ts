@@ -275,7 +275,14 @@ export async function POST(request: NextRequest) {
       return forbidden("Only a Super Admin can assign Super Admin.");
     }
     const password = String(body.password || "");
+    const passwordConfirmation = String(body.passwordConfirmation || body.confirmPassword || "");
     if (password) {
+      if (!passwordConfirmation) {
+        return NextResponse.json({ error: "Confirm the password." }, { status: 400 });
+      }
+      if (password !== passwordConfirmation) {
+        return NextResponse.json({ error: "Password and confirmation do not match." }, { status: 400 });
+      }
       const passwordIssue = portalPasswordIssue(password);
       if (passwordIssue) return NextResponse.json({ error: passwordIssue }, { status: 400 });
     }

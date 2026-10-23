@@ -3,8 +3,8 @@ import {
   PORTAL_COLLECTIONS,
   allowedPageSlugsFromGrants,
   canAccessPageSlug,
+  grantedCollectionSlugs,
   isAdminRole,
-  isFullPortalRole,
   isSuperAdminRole,
   parseCollectionList,
   type PortalCollection,
@@ -52,7 +52,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
   const me = asUser(meJson);
   if (!me.isActive) return null;
   const isSuperAdmin = isSuperAdminRole(me.roles);
-  const isFullAccess = isFullPortalRole(me.roles);
+  const isFullAccess = isSuperAdmin;
 
   const grantRes = await cmsAdmin("/portal-internal/grants", token);
   const grantJson = (await grantRes.json().catch(() => ({}))) as {
@@ -110,11 +110,11 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
     isFullAccess: false,
     canPublish,
     canManageMedia,
-    canManageUsers,
+    canManageUsers: isAdminRole(me.roles) || canManageUsers,
     canDelete,
     canManageSite: canManageMedia,
     departments,
-    collections: PORTAL_COLLECTIONS.filter((c) => allowed.has(c.slug)),
+    collections: PORTAL_COLLECTIONS.filter((c) => grantedCollectionSlugs(me.roles, [...allowed]).includes(c.slug)),
     pageSlugs: allowed.has("pages") ? allowedPageSlugsFromGrants(mine) : [],
     grantReady,
   };

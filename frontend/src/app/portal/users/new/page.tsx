@@ -71,7 +71,7 @@ export default function PortalCreateUserPage() {
 
   return (
     <PortalShell>
-      <UsersHeading description="Create each person once. After saving, you can assign department work on Edit access." />
+      <UsersHeading description="Create each person once, choose a role, then assign which content they may manage on Edit access." />
       {error && <p className="mt-3 text-sm text-red-700">{error}</p>}
       {notice && <p className="mt-3 text-sm text-emerald-800">{notice}</p>}
       <form className="mt-6 max-w-xl rounded-lg border bg-white p-5" onSubmit={saveUser}>

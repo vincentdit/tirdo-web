@@ -203,6 +203,12 @@ export default function PortalUsersPage() {
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-2">
                       <Link
+                        href={`/portal/users/edit?email=${encodeURIComponent(user.email)}`}
+                        className="rounded-md border px-3 py-1.5 text-xs font-semibold text-[#0A192F] hover:bg-slate-50"
+                      >
+                        Edit user
+                      </Link>
+                      <Link
                         href={`/portal/users/access?email=${encodeURIComponent(user.email)}`}
                         className="rounded-md border px-3 py-1.5 text-xs font-semibold text-[#0A192F] hover:bg-slate-50"
                       >
