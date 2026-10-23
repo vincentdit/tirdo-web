@@ -7,32 +7,31 @@ import { Users, ArrowUpRight } from "lucide-react";
 
 type Stats = { today: number | null; month: number | null; total: number | null };
 
-const fmt = (n: number | null) => (typeof n === "number" ? n.toLocaleString("en-US") : "—");
+const fmt = (n: number | null) => (typeof n === "number" ? n.toLocaleString("en-US") : "…");
 
-// Footer visitor widget: total (headline) + today + this month, linking to the
-// analytics dashboard. Renders nothing until analytics is configured.
 export function VisitorCounter() {
   const t = useTranslations("visitors");
-  const [s, setS] = useState<Stats | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [s, setS] = useState<Stats>({ today: null, month: null, total: null });
 
   useEffect(() => {
     let alive = true;
-    fetch("/api/analytics")
+    fetch("/api/analytics", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d: Stats | null) => {
-        if (!alive) return;
-        setS(d);
-        setLoaded(true);
+        if (!alive || !d) return;
+        setS({
+          today: typeof d.today === "number" ? d.today : 0,
+          month: typeof d.month === "number" ? d.month : 0,
+          total: typeof d.total === "number" ? d.total : 0,
+        });
       })
-      .catch(() => alive && setLoaded(true));
+      .catch(() => {
+        if (alive) setS({ today: 0, month: 0, total: 0 });
+      });
     return () => {
       alive = false;
     };
   }, []);
-
-  const hasData = s && (s.total !== null || s.today !== null || s.month !== null);
-  if (loaded && !hasData) return null;
 
   return (
     <Link

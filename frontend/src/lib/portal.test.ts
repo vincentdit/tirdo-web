@@ -25,6 +25,7 @@ import {
 import { oidcCallbackUrl, safeReturnTo } from "@/lib/oidc";
 import { publicFileUrl } from "@/lib/utils";
 import { resolveKeycloakPublicUrl } from "@/lib/public-url";
+import { applyUniqueVisit, emptyVisits } from "@/lib/visit-store";
 
 describe("portal helpers", () => {
   it("accepts TIRDO administrator emails only", () => {
@@ -146,6 +147,15 @@ describe("portal helpers", () => {
     expect(publicFileUrl("http://localhost:9100/tirdo-media/sido_5a8f9ea095.jpg")).toBe("/cms-media/sido_5a8f9ea095.jpg");
     expect(publicFileUrl("http://172.30.30.54:9100/tirdo-media/sido_5a8f9ea095.jpg")).toBe("/cms-media/sido_5a8f9ea095.jpg");
     expect(mediaPreviewUrl({ url: "http://localhost:9100/tirdo-media/sido_5a8f9ea095.jpg" })).toBe("/cms-media/sido_5a8f9ea095.jpg");
+  });
+
+  it("counts a unique visit and rolls today on a new day", () => {
+    const first = applyUniqueVisit(emptyVisits(new Date("2026-10-23T09:00:00Z")), new Date("2026-10-23T09:00:00Z"));
+    expect(first.total).toBe(1);
+    expect(first.today).toBe(1);
+    const nextDay = applyUniqueVisit(first, new Date("2026-10-24T09:00:00Z"));
+    expect(nextDay.today).toBe(1);
+    expect(nextDay.total).toBe(2);
   });
 
   it("validates partner records", () => {

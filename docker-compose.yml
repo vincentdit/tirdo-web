@@ -152,6 +152,7 @@ services:
       MATOMO_API_URL: http://nginx:8081
       MATOMO_API_TOKEN: ${MATOMO_API_TOKEN}
       MATOMO_SITE_ID: "1"
+      VISITOR_DATA_PATH: /tmp/tirdo-visits.json
       PUBLIC_URL: ${PUBLIC_URL}
       # Blank KEYCLOAK_PUBLIC_URL => Sign in uses ${PUBLIC_URL}/auth (nginx). No Dockerfile change.
       KEYCLOAK_PUBLIC_URL: ${KEYCLOAK_PUBLIC_URL:-}
