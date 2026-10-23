@@ -514,6 +514,7 @@ export type EventItem = {
   documentUrl?: string;
   registerUrl?: string;
   pinned?: boolean;
+  notifyOnSite?: boolean;
 };
 
 export function isCurrentEvent(item: EventItem, now: Date = new Date()): boolean {
@@ -534,6 +535,10 @@ export function featuredEvents(list: EventItem[], now: Date = new Date(), limit 
     .slice(0, limit);
 }
 
+export function notificationEvents(list: EventItem[]): EventItem[] {
+  return list.filter((item) => item.notifyOnSite);
+}
+
 export const events: EventItem[] = [
   {
     slug: "biomass-briquettes-production-training",
@@ -544,6 +549,7 @@ export const events: EventItem[] = [
     description: "Hands-on, registration-based training on producing biomass briquettes as a clean cooking-fuel alternative to charcoal.",
     image: `${RES}/H1D6ScYYF7ZdoRK9q5V8fxut6gRVKKVeSQaTWjKU.png`,
     pinned: true,
+    notifyOnSite: true,
     registerUrl: "/contact",
   },
   {

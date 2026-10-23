@@ -10,6 +10,7 @@ module.exports = [
     description: 'Hands-on, registration-based training on producing biomass briquettes as a clean cooking-fuel alternative to charcoal.',
     imageUrl: '/media/resources/H1D6ScYYF7ZdoRK9q5V8fxut6gRVKKVeSQaTWjKU.png',
     pinned: true,
+    notifyOnSite: true,
     registerUrl: '/contact',
   },
   {

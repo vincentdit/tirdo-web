@@ -8,7 +8,7 @@ import { formatDate } from "@/lib/utils";
 import { RegisterLink } from "@/components/site/current-event-ribbon";
 
 export function FloatingEventPin({ events }: { events: EventItem[] }) {
-  const pinned = events.filter((item) => item.pinned);
+  const pinned = events.filter((item) => item.pinned && item.notifyOnSite !== false);
   const item = pinned[0];
   const extra = pinned.length - 1;
   const [open, setOpen] = useState(false);

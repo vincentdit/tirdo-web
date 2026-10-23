@@ -7,7 +7,7 @@ import { RegisterLink } from "@/components/site/current-event-ribbon";
 import { coreActivities } from "@/lib/content";
 import { formatDate } from "@/lib/utils";
 import { PartnersGrid } from "@/components/site/partners-grid";
-import { getNews, getServices, getDirectorMessage, getSiteBrand, getFeaturedEvents, getPartners } from "@/lib/strapi";
+import { getNews, getServices, getDirectorMessage, getSiteBrand, getNotificationEvents, getPartners } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -19,11 +19,10 @@ export default async function HomePage() {
     getServices(),
     getDirectorMessage(),
     getSiteBrand(),
-    getFeaturedEvents(2),
+    getNotificationEvents(),
     getPartners(),
   ]);
   const latest = news[0];
-  const spotlight = currentEvents[0];
 
   return (
     <>
@@ -42,43 +41,47 @@ export default async function HomePage() {
         </section>
       )}
 
-      {spotlight && (
+      {currentEvents.length > 0 && (
         <section className="border-b border-brand-pale bg-[#fff8e8]">
-          <div className="container-tirdo grid items-center gap-6 py-8 md:grid-cols-[auto_1fr_auto]">
-            {spotlight.logo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={spotlight.logo} alt="" className="h-16 w-16 rounded-full border border-brand-gold bg-white object-contain p-1" />
-            ) : (
-              <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand-gold text-brand-ink shadow-[0_6px_16px_rgba(242,197,0,0.35)]">
-                <Pin className="h-6 w-6" />
-              </span>
-            )}
-            <div>
-              <p className="mb-1 inline-flex items-center gap-1 text-[0.68rem] font-bold uppercase tracking-wide text-brand-teal">
-                <Pin className="h-3 w-3" /> Current event
-              </p>
-              <h2 className="font-display text-xl text-brand-ink md:text-2xl">{spotlight.title}</h2>
-              <p className="mt-1 text-sm text-brand-muted">
-                {formatDate(spotlight.date)}
-                {spotlight.location ? ` · ${spotlight.location}` : ""}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {spotlight.registerUrl ? (
-                <RegisterLink
-                  href={spotlight.registerUrl}
-                  className="inline-flex items-center rounded-md bg-brand-teal px-4 py-2.5 text-[0.78rem] font-bold uppercase tracking-wide text-white hover:bg-brand-teal-dark"
-                >
-                  Register
-                </RegisterLink>
-              ) : null}
-              <Link
-                href={`/events/${spotlight.slug}`}
-                className="inline-flex items-center gap-1 rounded-md border border-brand-teal px-4 py-2.5 text-[0.78rem] font-bold uppercase tracking-wide text-brand-teal hover:bg-brand-teal hover:text-white"
-              >
-                Event details <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
+          <div className="container-tirdo space-y-4 py-8">
+            {currentEvents.map((spotlight) => (
+              <div key={spotlight.slug} className="grid items-center gap-6 md:grid-cols-[auto_1fr_auto]">
+                {spotlight.logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={spotlight.logo} alt="" className="h-16 w-16 rounded-full border border-brand-gold bg-white object-contain p-1" />
+                ) : (
+                  <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand-gold text-brand-ink shadow-[0_6px_16px_rgba(242,197,0,0.35)]">
+                    <Pin className="h-6 w-6" />
+                  </span>
+                )}
+                <div>
+                  <p className="mb-1 inline-flex items-center gap-1 text-[0.68rem] font-bold uppercase tracking-wide text-brand-teal">
+                    <Pin className="h-3 w-3" /> Event notification
+                  </p>
+                  <h2 className="font-display text-xl text-brand-ink md:text-2xl">{spotlight.title}</h2>
+                  <p className="mt-1 text-sm text-brand-muted">
+                    {formatDate(spotlight.date)}
+                    {spotlight.location ? ` · ${spotlight.location}` : ""}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {spotlight.registerUrl ? (
+                    <RegisterLink
+                      href={spotlight.registerUrl}
+                      className="inline-flex items-center rounded-md bg-brand-teal px-4 py-2.5 text-[0.78rem] font-bold uppercase tracking-wide text-white hover:bg-brand-teal-dark"
+                    >
+                      Register
+                    </RegisterLink>
+                  ) : null}
+                  <Link
+                    href={`/events/${spotlight.slug}`}
+                    className="inline-flex items-center gap-1 rounded-md border border-brand-teal px-4 py-2.5 text-[0.78rem] font-bold uppercase tracking-wide text-brand-teal hover:bg-brand-teal hover:text-white"
+                  >
+                    Event details <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       )}

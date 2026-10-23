@@ -87,7 +87,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     titleField: "title",
     draftAndPublish: true,
     group: "content",
-    description: "Trainings, workshops and public events, with pin, logo, documents and registration.",
+    description: "Trainings, workshops and public events. Turn on website notification for the scrolling bar; add as many events as you need.",
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
@@ -97,7 +97,8 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
       { key: "location", label: "Location", type: "text" },
       { key: "description", label: "Short description", type: "textarea" },
       { key: "body", label: "Details", type: "textarea" },
-      { key: "pinned", label: "Pin (floats on the website with a blinking icon)", type: "boolean" },
+      { key: "notifyOnSite", label: "Website notification (scrolling bar). Turn off to hide this event on the public site.", type: "boolean" },
+      { key: "pinned", label: "Pin (blinking icon). Only shows when website notification is on.", type: "boolean" },
       { key: "registerUrl", label: "Registration link (optional)", type: "text" },
       { key: "logo", label: "Event logo", type: "media" },
       { key: "cover", label: "Photo", type: "media" },

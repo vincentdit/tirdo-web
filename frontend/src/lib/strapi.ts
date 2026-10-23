@@ -14,7 +14,7 @@ import { cookies } from "next/headers";
 import * as fallback from "./content";
 import { defaultBrand, type SiteBrand } from "./site";
 import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader, EventItem, PartnerItem } from "./content";
-import { featuredEvents, isPublicPartner } from "./content";
+import { featuredEvents, isPublicPartner, notificationEvents } from "./content";
 import { isLocale, defaultLocale } from "@/i18n/config";
 import { publicFileUrl } from "@/lib/utils";
 
@@ -152,6 +152,7 @@ function mapEvent(raw: Raw, locale: string): EventItem {
     documentUrl: mediaUrl(e.document),
     registerUrl: e.registerUrl || undefined,
     pinned: Boolean(e.pinned),
+    notifyOnSite: e.notifyOnSite != null ? Boolean(e.notifyOnSite) : Boolean(e.pinned),
   };
 }
 
@@ -176,7 +177,11 @@ export async function getFeaturedEvents(limit = 3, locale = activeLocale()): Pro
 }
 
 export async function getPinnedEvents(locale = activeLocale()): Promise<EventItem[]> {
-  return (await getEvents(locale)).filter((item) => item.pinned);
+  return (await getEvents(locale)).filter((item) => item.pinned && item.notifyOnSite);
+}
+
+export async function getNotificationEvents(locale = activeLocale()): Promise<EventItem[]> {
+  return notificationEvents(await getEvents(locale));
 }
 
 function mapPartner(raw: Raw, locale: string): PartnerItem {

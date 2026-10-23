@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   featuredEvents,
   isCurrentEvent,
+  notificationEvents,
   isPublicPartner,
   partners,
   safeWebsiteUrl,
@@ -53,6 +54,15 @@ describe("featured events", () => {
     );
     expect(list[0].slug).toBe("pinned-past");
     expect(list.map((e) => e.slug)).toContain("later");
+  });
+
+  it("keeps website notifications only when switched on", () => {
+    const list = notificationEvents([
+      { ...sample, slug: "on", notifyOnSite: true },
+      { ...sample, slug: "off", notifyOnSite: false },
+      { ...sample, slug: "unset" },
+    ]);
+    expect(list.map((e) => e.slug)).toEqual(["on"]);
   });
 });
 

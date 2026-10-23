@@ -90,6 +90,15 @@
         }
       }
     },
+    "notifyOnSite": {
+      "type": "boolean",
+      "default": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "registerUrl": {
       "type": "string",
       "pluginOptions": {

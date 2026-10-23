@@ -7,7 +7,7 @@ import { MatomoAnalytics } from "@/components/site/matomo";
 import { AuthProvider } from "@/components/site/auth-provider";
 import { site } from "@/lib/site";
 import { siteUrl, siteKeywords, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
-import { getPinnedEvents, getSiteBrand } from "@/lib/strapi";
+import { getNotificationEvents, getPinnedEvents, getSiteBrand } from "@/lib/strapi";
 
 const description =
   "TIRDO drives industrialization in Tanzania through applied research, engineering development, ICT and technology transfer.";
@@ -58,7 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const locale = await getLocale();
   const messages = await getMessages();
   const brand = await getSiteBrand();
-  const pinnedEvents = await getPinnedEvents();
+  const [pinnedEvents, notificationEvents] = await Promise.all([getPinnedEvents(), getNotificationEvents()]);
   return (
     <html lang={locale}>
       <head>
@@ -83,7 +83,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </a>
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
-            <SiteShell brand={brand} pinnedEvents={pinnedEvents}>{children}</SiteShell>
+            <SiteShell brand={brand} pinnedEvents={pinnedEvents} notificationEvents={notificationEvents}>
+              {children}
+            </SiteShell>
           </AuthProvider>
         </NextIntlClientProvider>
         <MatomoAnalytics />

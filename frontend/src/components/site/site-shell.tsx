@@ -5,6 +5,7 @@ import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { BrandProvider } from "@/components/site/brand-provider";
 import { PageEditorBar } from "@/components/site/page-editor-bar";
+import { CurrentEventRibbon } from "@/components/site/current-event-ribbon";
 import { FloatingEventPin } from "@/components/site/floating-event-pin";
 import type { SiteBrand } from "@/lib/site";
 import type { EventItem } from "@/lib/content";
@@ -13,10 +14,12 @@ export function SiteShell({
   children,
   brand,
   pinnedEvents = [],
+  notificationEvents = [],
 }: {
   children: React.ReactNode;
   brand?: Partial<SiteBrand>;
   pinnedEvents?: EventItem[];
+  notificationEvents?: EventItem[];
 }) {
   const pathname = usePathname();
   if (pathname?.startsWith("/portal")) {
@@ -25,6 +28,7 @@ export function SiteShell({
   return (
     <BrandProvider brand={brand}>
       <Header />
+      <CurrentEventRibbon events={notificationEvents} />
       <main id="main" className="w-full">{children}</main>
       <Footer />
       <FloatingEventPin events={pinnedEvents} />

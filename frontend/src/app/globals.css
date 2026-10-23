@@ -115,6 +115,12 @@
     float: left;
     shape-outside: circle(50%);
   }
+  .event-ticker-track {
+    animation: event-ticker linear infinite;
+  }
+  .event-ticker-track:hover {
+    animation-play-state: paused;
+  }
   /* Org-chart connectors */
   .org-v {
     width: 2px;
@@ -152,6 +158,15 @@
     left: calc(50% / var(--cols));
     right: calc(50% / var(--cols));
     background-color: hsl(var(--primary) / 0.6);
+  }
+}
+
+@keyframes event-ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 
