@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { getKeycloak, initKeycloak, startLogin, startLogout, startRegister } from "@/lib/keycloak";
+import { getKeycloakSession, initKeycloak, startLogin, startLogout, startRegister } from "@/lib/keycloak";
 
 export type AuthState = {
   ready: boolean;
@@ -35,43 +35,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-
     initKeycloak()
       .then((authenticated) => {
         if (cancelled) return;
-        let authed = authenticated;
-        let roles: string[] = [];
-        let username: string | undefined;
-        let name: string | undefined;
-        let email: string | undefined;
-        let token: string | undefined;
-        try {
-          const kc = getKeycloak();
-          roles = kc.tokenParsed?.realm_access?.roles ?? [];
-          username = kc.tokenParsed?.preferred_username as string | undefined;
-          name = kc.tokenParsed?.name as string | undefined;
-          email = kc.tokenParsed?.email as string | undefined;
-          token = kc.token;
-        } catch {
-          authed = false;
-        }
+        const session = getKeycloakSession();
+        const roles = session.roles;
         setState({
           ready: true,
-          authenticated: authed,
-          username,
-          name,
-          email,
+          authenticated,
+          username: session.username,
+          name: session.name,
+          email: session.email,
           roles,
-          token,
-          login: () => {
-            void startLogin();
-          },
-          register: () => {
-            void startRegister();
-          },
-          logout: () => {
-            void startLogout();
-          },
+          token: session.token,
+          login: startLogin,
+          register: startRegister,
+          logout: startLogout,
           hasRole: (role: string) => roles.includes(role),
         });
       })
@@ -80,19 +59,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setState((s) => ({
             ...s,
             ready: true,
-            login: () => {
-              void startLogin();
-            },
-            register: () => {
-              void startRegister();
-            },
-            logout: () => {
-              void startLogout();
-            },
+            login: startLogin,
+            register: startRegister,
+            logout: startLogout,
           }));
         }
       });
-
     return () => {
       cancelled = true;
     };

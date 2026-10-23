@@ -53,6 +53,9 @@ export async function fetchPortalUsers(): Promise<PortalUsersPayload> {
     throw new Error("Sign in required.");
   }
   if (res.status === 403) throw new Error("Only a user administrator can manage access.");
-  if (!res.ok) throw new Error("Could not load users.");
+  if (!res.ok) {
+    const json = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(json.error || "Could not load users.");
+  }
   return res.json();
 }

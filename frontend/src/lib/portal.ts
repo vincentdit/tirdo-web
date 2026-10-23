@@ -359,6 +359,51 @@ export function isFullPortalRole(roles: string[]): boolean {
   return isSuperAdminRole(roles) || isAdminRole(roles);
 }
 
+export function portalPasswordIssue(password: string): string | null {
+  if (password.length < 8) return "Password must be at least 8 characters.";
+  if (!/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password)) {
+    return "Password must include an uppercase letter, a lowercase letter and a number.";
+  }
+  return null;
+}
+
+export function pickDefaultPortalRoleId(
+  roles: { id: number; name: string }[],
+  requestedId?: number
+): number | undefined {
+  if (requestedId && roles.some((r) => r.id === requestedId)) return requestedId;
+  const preferred = roles.find((r) => !isSuperAdminRole([r.name]) && /author|editor/i.test(r.name));
+  const any = roles.find((r) => !isSuperAdminRole([r.name]));
+  return preferred?.id || any?.id;
+}
+
+export function cmsAdminErrorMessage(json: unknown, fallback: string): string {
+  if (!json || typeof json !== "object") return fallback;
+  const err = (json as { error?: unknown }).error;
+  const raw =
+    typeof err === "string"
+      ? err
+      : err && typeof err === "object"
+        ? [
+            ...(Array.isArray((err as { details?: { errors?: { message?: string }[] } }).details?.errors)
+              ? (err as { details: { errors: { message?: string }[] } }).details.errors.map((e) => e.message)
+              : []),
+            (err as { message?: string }).message,
+          ]
+            .filter(Boolean)
+            .join(" ")
+        : "";
+  const text = String(raw || "").toLowerCase();
+  if (/password/.test(text)) {
+    return "Password must be at least 8 characters and include uppercase, lowercase and a number.";
+  }
+  if (/last.?name/.test(text)) return "Last name is required.";
+  if (/first.?name/.test(text)) return "First name is required.";
+  if (/roles/.test(text)) return "Choose a role for this user.";
+  if (/email/.test(text)) return "Enter a valid email address.";
+  return fallback;
+}
+
 export type PageEditTarget = { href: string; label: string; collection?: string };
 
 export function pageEditTarget(pathname: string): PageEditTarget {

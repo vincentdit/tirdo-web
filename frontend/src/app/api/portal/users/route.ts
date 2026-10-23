@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DEPARTMENT_UID, GRANT_UID, PORTAL_COLLECTIONS, SITE_PAGES, isSuperAdminRole, parseCollectionList } from "@/lib/portal";
+import {
+  DEPARTMENT_UID,
+  GRANT_UID,
+  PORTAL_COLLECTIONS,
+  SITE_PAGES,
+  cmsAdminErrorMessage,
+  isSuperAdminRole,
+  parseCollectionList,
+  pickDefaultPortalRoleId,
+  portalPasswordIssue,
+} from "@/lib/portal";
 import { forbidden, loadAccess, type PortalAccess } from "../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../_cms";
 
@@ -73,7 +83,7 @@ function mapGrant(g: Record<string, unknown>) {
 }
 
 async function loadUsers(token: string) {
-  const res = await cmsAdmin("/admin/users?pageSize=200", token);
+  const res = await cmsAdmin("/admin/users?page=1&pageSize=100", token);
   const json = await res.json().catch(() => ({}));
   return asList(json);
 }
@@ -174,16 +184,23 @@ export async function POST(request: NextRequest) {
     const lastname = String(body.lastname || "").trim();
     const password = String(body.password || "");
     const roleId = Number(body.roleId);
-    if (!email || !password || !firstname) {
-      return NextResponse.json({ error: "Email, first name and password are required." }, { status: 400 });
+    if (!email || !password || !firstname || !lastname) {
+      return NextResponse.json({ error: "Email, first name, last name and password are required." }, { status: 400 });
     }
+    const passwordIssue = portalPasswordIssue(password);
+    if (passwordIssue) return NextResponse.json({ error: passwordIssue }, { status: 400 });
     const existing = (await loadUsers(token)).find((u) => emailKey(u.email) === email);
     if (existing) {
       return NextResponse.json({ error: "A user with this email already exists. Edit that account instead." }, { status: 409 });
     }
     const rolesJson = await (await cmsAdmin("/admin/roles", token)).json().catch(() => ({}));
-    const chosen = asList(rolesJson).find((r) => Number(r.id) === roleId);
-    if (chosen && isSuperAdminRole([String(chosen.name || "")]) && !access.isSuperAdmin) {
+    const roles = asList(rolesJson).map((r) => ({ id: Number(r.id), name: String(r.name || "") })).filter((r) => r.id > 0 && r.name);
+    const assignedRoleId = pickDefaultPortalRoleId(roles, Number.isFinite(roleId) && roleId > 0 ? roleId : undefined);
+    const chosen = roles.find((r) => r.id === assignedRoleId);
+    if (!assignedRoleId) {
+      return NextResponse.json({ error: "Choose a role for this user." }, { status: 400 });
+    }
+    if (chosen && isSuperAdminRole([chosen.name]) && !access.isSuperAdmin) {
       return forbidden("Only a Super Admin can create a Super Admin.");
     }
     const res = await cmsAdmin("/admin/users", token, {
@@ -194,7 +211,7 @@ export async function POST(request: NextRequest) {
         lastname,
         password,
         isActive: true,
-        roles: Number.isFinite(roleId) && roleId > 0 ? [roleId] : undefined,
+        roles: [assignedRoleId],
       }),
     });
     const json = await res.json().catch(() => ({}));
@@ -203,7 +220,7 @@ export async function POST(request: NextRequest) {
       if (/already|exist|taken|unique/i.test(message)) {
         return NextResponse.json({ error: "A user with this email already exists. Edit that account instead." }, { status: 409 });
       }
-      return NextResponse.json({ error: "Could not create this user." }, { status: res.status });
+      return NextResponse.json({ error: cmsAdminErrorMessage(json, "Could not create this user.") }, { status: 400 });
     }
     return NextResponse.json({ data: json.data || json });
   }
@@ -223,7 +240,7 @@ export async function POST(request: NextRequest) {
       }
       const res = await saveUser(token, current, { isActive });
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) return NextResponse.json({ error: "Could not update this user." }, { status: res.status });
+      if (!res.ok) return NextResponse.json({ error: cmsAdminErrorMessage(json, "Could not update this user.") }, { status: 400 });
       return NextResponse.json({ data: json.data || json });
     }
 
@@ -234,6 +251,10 @@ export async function POST(request: NextRequest) {
       return forbidden("Only a Super Admin can assign Super Admin.");
     }
     const password = String(body.password || "");
+    if (password) {
+      const passwordIssue = portalPasswordIssue(password);
+      if (passwordIssue) return NextResponse.json({ error: passwordIssue }, { status: 400 });
+    }
     const res = await saveUser(token, current, {
       firstname: String(body.firstname || current.firstname || "").trim(),
       lastname: String(body.lastname || "").trim(),
@@ -241,7 +262,7 @@ export async function POST(request: NextRequest) {
       password: password || undefined,
     });
     const json = await res.json().catch(() => ({}));
-    if (!res.ok) return NextResponse.json({ error: "Could not update this user." }, { status: res.status });
+    if (!res.ok) return NextResponse.json({ error: cmsAdminErrorMessage(json, "Could not update this user.") }, { status: 400 });
     return NextResponse.json({ data: json.data || json });
   }
 
@@ -273,7 +294,7 @@ export async function POST(request: NextRequest) {
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) {
-    return NextResponse.json({ error: "Could not save this access assignment." }, { status: res.status });
+    return NextResponse.json({ error: cmsAdminErrorMessage(json, "Could not save this access assignment.") }, { status: 400 });
   }
   return NextResponse.json({ data: json.data || json });
 }

@@ -155,6 +155,7 @@ services:
       PUBLIC_URL: ${PUBLIC_URL}
       # Blank KEYCLOAK_PUBLIC_URL => Sign in uses ${PUBLIC_URL}/auth (nginx). No Dockerfile change.
       KEYCLOAK_PUBLIC_URL: ${KEYCLOAK_PUBLIC_URL:-}
+      KEYCLOAK_INTERNAL_URL: http://keycloak:8080/auth
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
     depends_on:

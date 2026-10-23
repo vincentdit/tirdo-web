@@ -17,8 +17,12 @@ import {
   sanitizeSearch,
   validateCollectionPayload,
   mediaPreviewUrl,
+  cmsAdminErrorMessage,
+  pickDefaultPortalRoleId,
+  portalPasswordIssue,
   PORTAL_COLLECTIONS,
 } from "@/lib/portal";
+import { oidcCallbackUrl, safeReturnTo } from "@/lib/oidc";
 import { publicFileUrl } from "@/lib/utils";
 import { resolveKeycloakPublicUrl } from "@/lib/public-url";
 
@@ -101,6 +105,24 @@ describe("portal helpers", () => {
     expect(entryStatus({ status: "modified" }, true)).toBe("Modified");
     expect(entryStatus({ handled: true }, false)).toBe("Handled");
     expect(entryStatus({ active: false, publishedAt: "2026-01-01" }, true)).toBe("Inactive");
+  });
+
+  it("maps CMS user-create validation into a clear message", () => {
+    expect(portalPasswordIssue("short")).toMatch(/8/);
+    expect(portalPasswordIssue("password1")).toMatch(/uppercase/i);
+    expect(portalPasswordIssue("Password1")).toBeNull();
+    expect(pickDefaultPortalRoleId([{ id: 1, name: "Super Admin" }, { id: 2, name: "Author" }], undefined)).toBe(2);
+    expect(
+      cmsAdminErrorMessage({ error: { message: "lastname is a required field" } }, "Could not create this user.")
+    ).toMatch(/last name/i);
+  });
+
+  it("keeps OIDC return URLs on the public site", () => {
+    expect(oidcCallbackUrl({ PUBLIC_URL: "http://172.30.30.54:3001" })).toBe(
+      "http://172.30.30.54:3001/api/auth/callback"
+    );
+    expect(safeReturnTo("http://evil.example/phish", "http://172.30.30.54:3001")).toBe("http://172.30.30.54:3001");
+    expect(safeReturnTo("/staff", "http://172.30.30.54:3001")).toBe("http://172.30.30.54:3001/staff");
   });
 
   it("points Sign in at the public site Keycloak path", () => {

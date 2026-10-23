@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PortalShell } from "@/components/tirdo-auth/portal-shell";
 import { UsersHeading } from "@/components/tirdo-auth/users-tabs";
+import { portalPasswordIssue } from "@/lib/portal";
 import { emailKey, fetchPortalUsers, type PortalRole, type PortalUser } from "@/lib/portal-users";
 
 export default function PortalCreateUserPage() {
@@ -23,7 +24,9 @@ export default function PortalCreateUserPage() {
     fetchPortalUsers()
       .then((j) => {
         setUsers(j.users ?? []);
-        setRoles(j.roles ?? []);
+        const nextRoles = j.roles ?? [];
+        setRoles(nextRoles);
+        setNewRoleId((current) => current || (nextRoles[0] ? String(nextRoles[0].id) : ""));
       })
       .catch((e) => setError(e instanceof Error ? e.message : "Could not load users."));
   }, []);
@@ -36,6 +39,10 @@ export default function PortalCreateUserPage() {
     try {
       const duplicate = users.some((u) => emailKey(u.email) === emailKey(newEmail));
       if (duplicate) throw new Error("A user with this email already exists. Edit that account from Users & access.");
+      if (!newLast.trim()) throw new Error("Last name is required.");
+      const passwordIssue = portalPasswordIssue(newPassword);
+      if (passwordIssue) throw new Error(passwordIssue);
+      if (!newRoleId) throw new Error("Choose a role for this user.");
       const res = await fetch("/api/portal/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -65,10 +72,10 @@ export default function PortalCreateUserPage() {
       {notice && <p className="mt-3 text-sm text-emerald-800">{notice}</p>}
       <form className="mt-6 max-w-xl rounded-lg border bg-white p-5" onSubmit={saveUser}>
         <h2 className="font-semibold text-[#0A192F]">Create CMS user</h2>
-        <p className="mt-1 text-xs text-slate-500">Each email can be created only once.</p>
+        <p className="mt-1 text-xs text-slate-500">Each email can be created only once. Password needs 8+ characters with uppercase, lowercase and a number.</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <input className="rounded-md border px-3 py-2 text-sm" placeholder="First name" value={newFirst} onChange={(e) => setNewFirst(e.target.value)} required />
-          <input className="rounded-md border px-3 py-2 text-sm" placeholder="Last name" value={newLast} onChange={(e) => setNewLast(e.target.value)} />
+          <input className="rounded-md border px-3 py-2 text-sm" placeholder="Last name" value={newLast} onChange={(e) => setNewLast(e.target.value)} required />
           <input
             className="rounded-md border px-3 py-2 text-sm sm:col-span-2"
             type="email"
@@ -83,10 +90,11 @@ export default function PortalCreateUserPage() {
             placeholder="Temporary password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
+            minLength={8}
             required
           />
-          <select className="rounded-md border px-3 py-2 text-sm" value={newRoleId} onChange={(e) => setNewRoleId(e.target.value)}>
-            <option value="">Default role</option>
+          <select className="rounded-md border px-3 py-2 text-sm" value={newRoleId} onChange={(e) => setNewRoleId(e.target.value)} required>
+            <option value="">Choose a role</option>
             {roles.map((r) => (
               <option key={r.id} value={r.id}>
                 {r.name}
