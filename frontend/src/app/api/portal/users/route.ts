@@ -210,26 +210,43 @@ export async function POST(request: NextRequest) {
     if (chosen && isSuperAdminRole([chosen.name]) && !access.isSuperAdmin) {
       return forbidden("Only a Super Admin can create a Super Admin.");
     }
-    const res = await cmsAdmin("/admin/users", token, {
+    const createdRes = await cmsAdmin("/admin/users", token, {
       method: "POST",
       body: JSON.stringify({
         email,
         firstname,
         lastname,
-        password,
-        isActive: true,
         roles: [assignedRoleId],
       }),
     });
-    const json = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      const message = String((json as { error?: { message?: string } }).error?.message || "");
+    const createdJson = await createdRes.json().catch(() => ({}));
+    if (!createdRes.ok) {
+      const message = String((createdJson as { error?: { message?: string } }).error?.message || "");
       if (/already|exist|taken|unique/i.test(message)) {
         return NextResponse.json({ error: "A user with this email already exists. Edit that account instead." }, { status: 409 });
       }
-      return NextResponse.json({ error: cmsAdminErrorMessage(json, "Could not create this user.") }, { status: 400 });
+      return NextResponse.json({ error: cmsAdminErrorMessage(createdJson, "Could not create this user.") }, { status: 400 });
     }
-    return NextResponse.json({ data: json.data || json });
+    const created = asRecord(createdJson);
+    const newId = Number(created.id);
+    if (!Number.isFinite(newId)) {
+      return NextResponse.json({ data: createdJson.data || createdJson });
+    }
+    const saved = await saveUser(token, { ...created, email, firstname, lastname }, {
+      firstname,
+      lastname,
+      isActive: true,
+      roles: [assignedRoleId],
+      password,
+    });
+    const savedJson = await saved.json().catch(() => ({}));
+    if (!saved.ok) {
+      return NextResponse.json(
+        { error: cmsAdminErrorMessage(savedJson, "The user was created but the password could not be set. Use Forgot password.") },
+        { status: 400 }
+      );
+    }
+    return NextResponse.json({ data: savedJson.data || savedJson });
   }
 
   if (action === "update-user" || action === "set-active") {
