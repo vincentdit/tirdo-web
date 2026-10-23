@@ -121,10 +121,7 @@ async function saveUser(
     isActive: patch.isActive ?? current.isActive !== false,
     roles: patch.roles ?? roleIds(current),
   };
-  if (patch.password) {
-    body.password = patch.password;
-    body.passwordConfirmation = patch.password;
-  }
+  if (patch.password) body.password = patch.password;
   return cmsAdmin(`/admin/users/${current.id}`, token, {
     method: "PUT",
     body: JSON.stringify(body),
@@ -186,9 +183,16 @@ export async function POST(request: NextRequest) {
     const firstname = String(body.firstname || "").trim();
     const lastname = String(body.lastname || "").trim();
     const password = String(body.password || "");
+    const passwordConfirmation = String(body.passwordConfirmation || body.confirmPassword || "");
     const roleId = Number(body.roleId);
     if (!email || !password || !firstname || !lastname) {
       return NextResponse.json({ error: "Email, first name, last name and password are required." }, { status: 400 });
+    }
+    if (!passwordConfirmation) {
+      return NextResponse.json({ error: "Confirm the password." }, { status: 400 });
+    }
+    if (password !== passwordConfirmation) {
+      return NextResponse.json({ error: "Password and confirmation do not match." }, { status: 400 });
     }
     const passwordIssue = portalPasswordIssue(password);
     if (passwordIssue) return NextResponse.json({ error: passwordIssue }, { status: 400 });
@@ -213,7 +217,6 @@ export async function POST(request: NextRequest) {
         firstname,
         lastname,
         password,
-        passwordConfirmation: password,
         isActive: true,
         roles: [assignedRoleId],
       }),

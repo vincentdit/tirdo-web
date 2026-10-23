@@ -396,7 +396,7 @@ export function cmsAdminErrorMessage(json: unknown, fallback: string): string {
         : "";
   const text = String(raw || "").toLowerCase();
   if (/passwordconfirmation|password confirmation/.test(text)) {
-    return "Could not save the password confirmation. Try again.";
+    return "Password and confirmation do not match.";
   }
   if (/min\.?\s*8|at least 8|uppercase|lowercase|number|too short/.test(text)) {
     return "Password must be at least 8 characters and include uppercase, lowercase and a number.";

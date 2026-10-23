@@ -18,6 +18,7 @@ export default function PortalCreateUserPage() {
   const [newFirst, setNewFirst] = useState("");
   const [newLast, setNewLast] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [newRoleId, setNewRoleId] = useState("");
 
   useEffect(() => {
@@ -42,6 +43,8 @@ export default function PortalCreateUserPage() {
       if (!newLast.trim()) throw new Error("Last name is required.");
       const passwordIssue = portalPasswordIssue(newPassword);
       if (passwordIssue) throw new Error(passwordIssue);
+      if (!confirmPassword) throw new Error("Confirm the password.");
+      if (newPassword !== confirmPassword) throw new Error("Password and confirmation do not match.");
       if (!newRoleId) throw new Error("Choose a role for this user.");
       const res = await fetch("/api/portal/users", {
         method: "POST",
@@ -52,6 +55,7 @@ export default function PortalCreateUserPage() {
           firstname: newFirst,
           lastname: newLast,
           password: newPassword,
+          passwordConfirmation: confirmPassword,
           roleId: newRoleId ? Number(newRoleId) : undefined,
         }),
       });
@@ -87,13 +91,24 @@ export default function PortalCreateUserPage() {
           <input
             className="rounded-md border px-3 py-2 text-sm"
             type="password"
-            placeholder="Temporary password"
+            autoComplete="new-password"
+            placeholder="Password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             minLength={8}
             required
           />
-          <select className="rounded-md border px-3 py-2 text-sm" value={newRoleId} onChange={(e) => setNewRoleId(e.target.value)} required>
+          <input
+            className="rounded-md border px-3 py-2 text-sm"
+            type="password"
+            autoComplete="new-password"
+            placeholder="Confirm password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            minLength={8}
+            required
+          />
+          <select className="rounded-md border px-3 py-2 text-sm sm:col-span-2" value={newRoleId} onChange={(e) => setNewRoleId(e.target.value)} required>
             <option value="">Choose a role</option>
             {roles.map((r) => (
               <option key={r.id} value={r.id}>
