@@ -121,6 +121,12 @@
   .event-ticker-track:hover {
     animation-play-state: paused;
   }
+  .event-ticker-y {
+    animation: event-ticker-y linear infinite;
+  }
+  .event-ticker-y:hover {
+    animation-play-state: paused;
+  }
   /* Org-chart connectors */
   .org-v {
     width: 2px;
@@ -167,6 +173,15 @@
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes event-ticker-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
   }
 }
 
