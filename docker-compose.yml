@@ -198,6 +198,27 @@ services:
         condition: service_healthy
     networks: [tirdo-net]
 
+  # Existing Keycloak DBs ignore realm JSON. This sets tirdo-web redirect URIs
+  # from PUBLIC_URL so website Sign in works on :3001. No Dockerfile change.
+  keycloak-config:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: tirdo-keycloak-config
+    restart: on-failure
+    entrypoint: ["/bin/bash", "/opt/tirdo/keycloak-set-client.sh"]
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      PUBLIC_URL: ${PUBLIC_URL}
+      KEYCLOAK_URL: http://keycloak:8080/auth
+    volumes:
+      - ./scripts/keycloak-set-client.sh:/opt/tirdo/keycloak-set-client.sh:ro
+    depends_on:
+      keycloak:
+        condition: service_started
+    networks: [tirdo-net]
+
   # ----------------------------------------------------------------------
   # MinIO - S3-compatible object storage
   # ----------------------------------------------------------------------

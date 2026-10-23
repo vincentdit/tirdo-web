@@ -33,22 +33,24 @@
       "publicClient": true,
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": true,
-      "rootUrl": "",
+      "rootUrl": "http://172.30.30.54:3001",
       "baseUrl": "/",
       "redirectUris": [
         "/*",
         "http://localhost/*",
-        "http://localhost:*/*",
+        "http://localhost/api/auth/callback",
         "http://127.0.0.1/*",
+        "http://127.0.0.1/api/auth/callback",
         "http://172.30.30.54/*",
-        "http://172.30.30.54:*/*",
+        "http://172.30.30.54:3001",
+        "http://172.30.30.54:3001/",
         "http://172.30.30.54:3001/*",
         "http://172.30.30.54:3001/api/auth/callback"
       ],
       "webOrigins": ["+", "*"],
       "attributes": {
         "post.logout.redirect.uris": "+",
-        "pkce.code.challenge.method": ""
+        "pkce.code.challenge.method": "S256"
       }
     },
     {
