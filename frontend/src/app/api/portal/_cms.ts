@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { cmsBase, PORTAL_COOKIE } from "@/lib/portal";
+import { publicSiteUrl } from "@/lib/public-url";
 
 export function portalToken(): string | undefined {
   return cookies().get(PORTAL_COOKIE)?.value;
@@ -30,7 +31,7 @@ export async function cmsAdmin(
 }
 
 export function cookieOptions(remember: boolean) {
-  const secure = (process.env.PUBLIC_URL || process.env.NEXT_PUBLIC_SITE_URL || "").startsWith("https");
+  const secure = publicSiteUrl().startsWith("https");
   return {
     httpOnly: true as const,
     sameSite: "lax" as const,

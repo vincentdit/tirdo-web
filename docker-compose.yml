@@ -86,7 +86,7 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       MINIO_BUCKET: ${MINIO_BUCKET}
-      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:${HOST_MINIO_API_PORT:-9100}/${MINIO_BUCKET}}
+      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-${PUBLIC_URL}/cms-media}
       # OpenSearch (for content sync hook)
       OPENSEARCH_NODE: http://opensearch:9200
       OPENSEARCH_INDEX: ${OPENSEARCH_INDEX}
@@ -134,7 +134,7 @@ services:
         # First-party analytics paths (proxied to Matomo by Nginx) — evade ad blockers.
         NEXT_PUBLIC_MATOMO_JS_URL: /s/js
         NEXT_PUBLIC_MATOMO_TRACK_URL: /s/e
-        NEXT_PUBLIC_KEYCLOAK_URL: ${KEYCLOAK_PUBLIC_URL:-http://localhost:${HOST_KEYCLOAK_PORT:-8080}/auth}
+        NEXT_PUBLIC_KEYCLOAK_URL: ${KEYCLOAK_PUBLIC_URL:-${PUBLIC_URL}/auth}
         NEXT_PUBLIC_KEYCLOAK_REALM: ${KEYCLOAK_REALM}
         NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
     container_name: tirdo-frontend
@@ -152,13 +152,16 @@ services:
       MATOMO_API_URL: http://nginx:8081
       MATOMO_API_TOKEN: ${MATOMO_API_TOKEN}
       MATOMO_SITE_ID: "1"
-      # Runtime SSO (browser reads these via /api/public-config — no image rebuild)
-      KEYCLOAK_PUBLIC_URL: ${KEYCLOAK_PUBLIC_URL:-http://localhost:${HOST_KEYCLOAK_PORT:-8080}/auth}
+      PUBLIC_URL: ${PUBLIC_URL}
+      # Blank KEYCLOAK_PUBLIC_URL => Sign in uses ${PUBLIC_URL}/auth (nginx). No Dockerfile change.
+      KEYCLOAK_PUBLIC_URL: ${KEYCLOAK_PUBLIC_URL:-}
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
     depends_on:
-      - cms
-      - opensearch
+      cms:
+        condition: service_healthy
+      opensearch:
+        condition: service_started
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/api/healthz',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
       interval: 30s
@@ -184,8 +187,9 @@ services:
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
+      KC_PROXY_HEADERS: xforwarded
     ports:
-      - "${HOST_KEYCLOAK_PORT:-8080}:8080"
+      - "${BIND_ADMIN:-127.0.0.1}:${HOST_KEYCLOAK_PORT:-8080}:8080"
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     depends_on:
@@ -205,8 +209,8 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     ports:
-      - "${HOST_MINIO_API_PORT:-9100}:9000"
-      - "${HOST_MINIO_CONSOLE_PORT:-9101}:9001"
+      - "${BIND_ADMIN:-127.0.0.1}:${HOST_MINIO_API_PORT:-9100}:9000"
+      - "${BIND_ADMIN:-127.0.0.1}:${HOST_MINIO_CONSOLE_PORT:-9101}:9001"
     volumes:
       - minio_data:/data
     healthcheck:
@@ -265,7 +269,7 @@ services:
       OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
       DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
     ports:
-      - "${HOST_OPENSEARCH_DASHBOARDS_PORT:-5601}:5601"
+      - "${BIND_ADMIN:-127.0.0.1}:${HOST_OPENSEARCH_DASHBOARDS_PORT:-5601}:5601"
     depends_on:
       - opensearch
     networks: [tirdo-net]
@@ -285,7 +289,7 @@ services:
       MATOMO_DATABASE_USERNAME: ${MATOMO_DB_USER}
       MATOMO_DATABASE_PASSWORD: ${MATOMO_DB_PASSWORD}
     ports:
-      - "${HOST_MATOMO_PORT:-8095}:80"
+      - "${BIND_ADMIN:-127.0.0.1}:${HOST_MATOMO_PORT:-8095}:80"
     volumes:
       - matomo_data:/var/www/html
     depends_on:
@@ -304,7 +308,7 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: "true"
       MP_SMTP_AUTH_ALLOW_INSECURE: "true"
     ports:
-      - "${HOST_MAILPIT_PORT:-8025}:8025"   # web UI to read captured emails
+      - "${BIND_ADMIN:-127.0.0.1}:${HOST_MAILPIT_PORT:-8025}:8025"   # web UI on the host only
     networks: [tirdo-net]
 
   # ----------------------------------------------------------------------
@@ -315,8 +319,8 @@ services:
     container_name: tirdo-nginx
     restart: unless-stopped
     ports:
-      - "${HOST_HTTP_PORT:-80}:80"
-      - "${HOST_HTTPS_PORT:-443}:443"   # unused until HTTPS is enabled (scripts/tls-setup.sh)
+      - "${BIND_HTTP:-0.0.0.0}:${HOST_HTTP_PORT:-80}:80"
+      - "${BIND_HTTP:-0.0.0.0}:${HOST_HTTPS_PORT:-443}:443"   # unused until HTTPS is enabled (scripts/tls-setup.sh)
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
@@ -324,6 +328,7 @@ services:
       - ./nginx/acme:/var/www/acme:ro       # ACME http-01 challenge webroot
     depends_on:
       - frontend
+      - keycloak
     networks: [tirdo-net]
 
 networks:

@@ -20,6 +20,7 @@ import {
   PORTAL_COLLECTIONS,
 } from "@/lib/portal";
 import { publicFileUrl } from "@/lib/utils";
+import { resolveKeycloakPublicUrl } from "@/lib/public-url";
 
 describe("portal helpers", () => {
   it("accepts TIRDO administrator emails only", () => {
@@ -100,6 +101,17 @@ describe("portal helpers", () => {
     expect(entryStatus({ status: "modified" }, true)).toBe("Modified");
     expect(entryStatus({ handled: true }, false)).toBe("Handled");
     expect(entryStatus({ active: false, publishedAt: "2026-01-01" }, true)).toBe("Inactive");
+  });
+
+  it("points Sign in at the public site Keycloak path", () => {
+    expect(resolveKeycloakPublicUrl({ PUBLIC_URL: "http://172.30.30.54" })).toBe("http://172.30.30.54/auth");
+    expect(
+      resolveKeycloakPublicUrl({
+        PUBLIC_URL: "http://172.30.30.54",
+        KEYCLOAK_PUBLIC_URL: "http://localhost:8080/auth",
+      })
+    ).toBe("http://172.30.30.54/auth");
+    expect(resolveKeycloakPublicUrl({ PUBLIC_URL: "http://localhost" })).toBe("http://localhost/auth");
   });
 
   it("rewrites MinIO logo URLs onto the public site origin", () => {

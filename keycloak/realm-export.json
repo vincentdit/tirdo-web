@@ -36,13 +36,14 @@
       "rootUrl": "",
       "baseUrl": "/",
       "redirectUris": [
+        "/*",
         "http://localhost/*",
-        "http://localhost:3000/*",
-        "http://localhost:3001/*",
-        "http://172.30.30.54:3001/*",
-        "http://172.30.30.54/*"
+        "http://localhost:*/*",
+        "http://127.0.0.1/*",
+        "http://172.30.30.54/*",
+        "http://172.30.30.54:*/*"
       ],
-      "webOrigins": ["http://localhost", "http://172.30.30.54:3001", "http://172.30.30.54", "+"],
+      "webOrigins": ["+", "*"],
       "attributes": { "post.logout.redirect.uris": "+" }
     },
     {
