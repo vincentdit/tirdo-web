@@ -45,7 +45,10 @@
         "http://172.30.30.54:3001/*"
       ],
       "webOrigins": ["+", "*"],
-      "attributes": { "post.logout.redirect.uris": "+" }
+      "attributes": {
+        "post.logout.redirect.uris": "+",
+        "pkce.code.challenge.method": ""
+      }
     },
     {
       "clientId": "tirdo-cms",
