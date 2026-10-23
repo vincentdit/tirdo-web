@@ -112,6 +112,10 @@ describe("portal helpers", () => {
     expect(portalPasswordIssue("short")).toMatch(/8/);
     expect(portalPasswordIssue("password1")).toMatch(/uppercase/i);
     expect(portalPasswordIssue("Password1")).toBeNull();
+    expect(portalPasswordIssue("Tanzania@64")).toBeNull();
+    expect(
+      cmsAdminErrorMessage({ error: { message: "passwordConfirmation is a required field" } }, "Could not create this user.")
+    ).toMatch(/confirmation/i);
     expect(pickDefaultPortalRoleId([{ id: 1, name: "Super Admin" }, { id: 2, name: "Author" }], undefined)).toBe(2);
     expect(
       cmsAdminErrorMessage({ error: { message: "lastname is a required field" } }, "Could not create this user.")

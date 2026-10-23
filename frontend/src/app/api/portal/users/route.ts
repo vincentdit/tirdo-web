@@ -121,7 +121,10 @@ async function saveUser(
     isActive: patch.isActive ?? current.isActive !== false,
     roles: patch.roles ?? roleIds(current),
   };
-  if (patch.password) body.password = patch.password;
+  if (patch.password) {
+    body.password = patch.password;
+    body.passwordConfirmation = patch.password;
+  }
   return cmsAdmin(`/admin/users/${current.id}`, token, {
     method: "PUT",
     body: JSON.stringify(body),
@@ -210,6 +213,7 @@ export async function POST(request: NextRequest) {
         firstname,
         lastname,
         password,
+        passwordConfirmation: password,
         isActive: true,
         roles: [assignedRoleId],
       }),

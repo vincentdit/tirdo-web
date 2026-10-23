@@ -395,8 +395,14 @@ export function cmsAdminErrorMessage(json: unknown, fallback: string): string {
             .join(" ")
         : "";
   const text = String(raw || "").toLowerCase();
-  if (/password/.test(text)) {
+  if (/passwordconfirmation|password confirmation/.test(text)) {
+    return "Could not save the password confirmation. Try again.";
+  }
+  if (/min\.?\s*8|at least 8|uppercase|lowercase|number|too short/.test(text)) {
     return "Password must be at least 8 characters and include uppercase, lowercase and a number.";
+  }
+  if (/password/.test(text)) {
+    return fallback;
   }
   if (/last.?name/.test(text)) return "Last name is required.";
   if (/first.?name/.test(text)) return "First name is required.";
