@@ -111,6 +111,12 @@ describe("portal helpers", () => {
         KEYCLOAK_PUBLIC_URL: "http://localhost:8080/auth",
       })
     ).toBe("http://172.30.30.54/auth");
+    expect(
+      resolveKeycloakPublicUrl({
+        PUBLIC_URL: "http://172.30.30.54:3001",
+        KEYCLOAK_PUBLIC_URL: "http://172.30.30.54:8082/auth",
+      })
+    ).toBe("http://172.30.30.54:3001/auth");
     expect(resolveKeycloakPublicUrl({ PUBLIC_URL: "http://localhost" })).toBe("http://localhost/auth");
   });
 

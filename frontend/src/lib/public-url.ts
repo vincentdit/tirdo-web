@@ -15,10 +15,21 @@ export function publicSiteUrl(env: NodeJS.Dict<string> = process.env) {
   return stripSlash(env.PUBLIC_URL || env.NEXT_PUBLIC_SITE_URL || "http://localhost");
 }
 
-/** Sign-in uses Keycloak on the same public origin unless a non-local SSO URL is set. */
+function sameHostname(a: string, b: string) {
+  try {
+    return new URL(a).hostname === new URL(b).hostname;
+  } catch {
+    return false;
+  }
+}
+
+/** Sign-in uses nginx /auth on the public site. Ignore :8082-style Keycloak ports. */
 export function resolveKeycloakPublicUrl(env: NodeJS.Dict<string> = process.env) {
   const site = publicSiteUrl(env);
+  const viaSite = `${site}/auth`;
   const explicit = stripSlash(env.KEYCLOAK_PUBLIC_URL || env.NEXT_PUBLIC_KEYCLOAK_URL || "");
-  if (explicit && !isLoopbackUrl(explicit)) return explicit;
-  return `${site}/auth`;
+  if (!explicit) return viaSite;
+  if (isLoopbackUrl(explicit)) return viaSite;
+  if (sameHostname(explicit, site)) return viaSite;
+  return explicit;
 }
