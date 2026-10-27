@@ -7,7 +7,7 @@ import { PortalGateway } from "@/components/site/gateway";
 import { Clock, MapPin } from "lucide-react";
 import { training } from "@/lib/content";
 import { portals } from "@/lib/site";
-import { getEvents } from "@/lib/strapi";
+import { getEvents, getEServiceHref } from "@/lib/strapi";
 import { EventCompactRow } from "@/components/site/event-card";
 
 export const metadata: Metadata = {
@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 
 export default async function TrainingPage() {
   const trainingEvents = (await getEvents()).filter((e) => e.category === "Training");
+  const teltpHref = await getEServiceHref("teltp", portals.teltp);
   return (
     <>
       <PageBanner
@@ -71,7 +72,7 @@ export default async function TrainingPage() {
             acronym="TeLTP"
             icon="GraduationCap"
             tagline="Browse the course calendar, enrol online and access learning materials — TIRDO's e-learning and training platform."
-            href={portals.teltp}
+            href={teltpHref}
             features={["Course catalogue and schedules", "Online registration and payment", "Learning materials and resources", "Certificates of completion"]}
           />
         </div>

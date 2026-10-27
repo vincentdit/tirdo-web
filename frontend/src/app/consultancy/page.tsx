@@ -6,6 +6,7 @@ import { PortalGateway } from "@/components/site/gateway";
 import { Icon } from "@/components/site/icon";
 import { consultancy } from "@/lib/content";
 import { portals } from "@/lib/site";
+import { getEServiceHref } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   title: "Consultancy & Advisory",
@@ -13,7 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/consultancy" },
 };
 
-export default function ConsultancyPage() {
+export default async function ConsultancyPage() {
+  const href = await getEServiceHref("ciap", portals.ciap);
   return (
     <>
       <PageBanner
@@ -67,7 +69,7 @@ export default function ConsultancyPage() {
             acronym="CIAP"
             icon="Handshake"
             tagline="Submit a consultancy request and follow it from proposal through delivery to closure — TIRDO's consultancy workflow portal."
-            href={portals.ciap}
+            href={href}
             features={["Submit and scope requests", "Track proposals and approvals", "Manage deliverables and reports", "Engagement history and closure"]}
           />
         </div>

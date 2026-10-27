@@ -4,6 +4,8 @@ import {
   allowedPageSlugsFromGrants,
   canAccessPageSlug,
   grantedCollectionSlugs,
+  canExportAudit,
+  canViewAudit,
   isAdminRole,
   isSuperAdminRole,
   parseCollectionList,
@@ -24,6 +26,8 @@ export type PortalAccess = {
   canManageUsers: boolean;
   canDelete: boolean;
   canManageSite: boolean;
+  canViewAudit: boolean;
+  canExportAudit: boolean;
   departments: { slug: string; title: string }[];
   collections: PortalCollection[];
   pageSlugs: string[] | null;
@@ -76,6 +80,8 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
       canManageUsers: isSuperAdmin || isAdminRole(me.roles),
       canDelete: true,
       canManageSite: true,
+      canViewAudit: canViewAudit(me.roles),
+      canExportAudit: canExportAudit(me.roles),
       departments: [{ slug: "*", title: "All departments" }],
       collections: PORTAL_COLLECTIONS,
       pageSlugs: null,
@@ -113,6 +119,8 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
     canManageUsers: isAdminRole(me.roles) || canManageUsers,
     canDelete,
     canManageSite: canManageMedia,
+    canViewAudit: canViewAudit(me.roles),
+    canExportAudit: canExportAudit(me.roles),
     departments,
     collections: PORTAL_COLLECTIONS.filter((c) => grantedCollectionSlugs(me.roles, [...allowed]).includes(c.slug)),
     pageSlugs: allowed.has("pages") ? allowedPageSlugsFromGrants(mine) : [],

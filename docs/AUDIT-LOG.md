@@ -1,5 +1,10 @@
 # Tamper-evident audit log
 
+Extended documentation lives under `docs/security/` (`AUDIT_TRAIL_ARCHITECTURE.md`,
+event catalog, access control, retention, deployment, test report).
+
+The CMS portal UI is **Content management → Audit trail** (`/portal/audit`).
+
 The CMS keeps an **append-only, hash-chained audit log** of administrative
 content actions — an e-GA governance requirement.
 

@@ -7,7 +7,19 @@ import {
   safeReturnTo,
   siteCookieOptions,
 } from "@/lib/oidc";
+import { ingestAuditEvent } from "@/lib/audit-ingest";
 import { publicSiteUrl } from "@/lib/public-url";
+
+function idTokenClaims(idToken?: string): { sub?: string; email?: string } {
+  if (!idToken) return {};
+  try {
+    const payload = idToken.split(".")[1];
+    if (!payload) return {};
+    return JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { sub?: string; email?: string };
+  } catch {
+    return {};
+  }
+}
 
 export async function GET(request: NextRequest) {
   const site = publicSiteUrl();
@@ -44,10 +56,34 @@ export async function GET(request: NextRequest) {
       id_token?: string;
       expires_in?: number;
     };
-    if (!res.ok || !json.access_token) return fail();
+    if (!res.ok || !json.access_token) {
+      await ingestAuditEvent({
+        action: "login_failed",
+        eventType: "authentication",
+        outcome: "failure",
+        identityProvider: "keycloak",
+        sourceService: "frontend",
+        actorType: "user",
+        reason: "token_exchange_failed",
+        changeSummary: "Keycloak sign-in failed (application observed)",
+      });
+      return fail();
+    }
     const maxAge = Math.max(60, Number(json.expires_in) || 3600);
     jar.set("tirdo_oidc_at", json.access_token, siteCookieOptions(maxAge));
     if (json.id_token) jar.set("tirdo_oidc_it", json.id_token, siteCookieOptions(maxAge));
+    const claims = idTokenClaims(json.id_token);
+    await ingestAuditEvent({
+      action: "login",
+      eventType: "authentication",
+      outcome: "success",
+      actor: claims.email || claims.sub || "keycloak-user",
+      actorId: claims.sub || "",
+      actorType: "user",
+      identityProvider: "keycloak",
+      sourceService: "frontend",
+      changeSummary: "Keycloak sign-in succeeded (application observed)",
+    });
     return NextResponse.redirect(returnTo);
   } catch {
     return fail();

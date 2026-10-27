@@ -21,7 +21,11 @@ import {
   pickDefaultPortalRoleId,
   portalPasswordIssue,
   grantedCollectionSlugs,
+  canViewAudit,
+  canExportAudit,
   PORTAL_COLLECTIONS,
+  slugFromTitle,
+  prepareEServicePayload,
 } from "@/lib/portal";
 import { oidcCallbackUrl, safeReturnTo } from "@/lib/oidc";
 import { publicFileUrl } from "@/lib/utils";
@@ -52,6 +56,8 @@ describe("portal helpers", () => {
   it("treats Super Admin as full-access role", () => {
     expect(isSuperAdminRole(["Editor"])).toBe(false);
     expect(isSuperAdminRole(["Super Admin"])).toBe(true);
+    expect(canViewAudit(["Admin"])).toBe(true);
+    expect(canExportAudit(["Editor"])).toBe(false);
   });
 
   it("treats Admin like Super Admin for site editing", () => {
@@ -74,6 +80,21 @@ describe("portal helpers", () => {
     expect(pageEditTarget("/events/training").collection).toBe("events");
     expect(pageEditTarget("/about/partners").collection).toBe("partners");
     expect(pageEditTarget("/publications/tirdo-profile").collection).toBe("publications");
+    expect(pageEditTarget("/e-services").href).toBe("/portal/e-services");
+    expect(pageEditTarget("/e-services").collection).toBe("e-services");
+  });
+
+  it("lets Super Admin set e-service system URLs", () => {
+    const col = collectionBySlug("e-services")!;
+    expect(col.label).toMatch(/e-service/i);
+    expect(PORTAL_COLLECTIONS.map((c) => c.slug)).toContain("e-services");
+    expect(validateCollectionPayload(col, { title: "CIAP", href: "https://ciap.tirdo.or.tz" })).toBeNull();
+    expect(validateCollectionPayload(col, { title: "NILIMS", href: "/industrial-information-centre" })).toBeNull();
+    expect(validateCollectionPayload(col, { title: "Client Portal", href: "" })).toBeNull();
+    expect(validateCollectionPayload(col, { title: "Bad", href: "javascript:alert(1)" })).toMatch(/https/i);
+    expect(slugFromTitle("New Lab Portal")).toBe("new-lab-portal");
+    expect(prepareEServicePayload({ title: "Staff Intranet" }).slug).toBe("staff-intranet");
+    expect(prepareEServicePayload({ title: "Staff Intranet" }).category).toBe("Other");
   });
 
   it("sends media fields as numeric ids", () => {

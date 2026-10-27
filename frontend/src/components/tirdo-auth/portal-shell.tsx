@@ -8,6 +8,7 @@ import {
   KeyRound,
   LogOut,
   LayoutDashboard,
+  ScrollText,
   Images,
   Settings,
   UserRound,
@@ -22,6 +23,7 @@ type Me = {
   lastname?: string;
   roles?: string[];
   isSuperAdmin?: boolean;
+  canViewAudit?: boolean;
   canManageMedia?: boolean;
   canManageUsers?: boolean;
   canManageSite?: boolean;
@@ -99,6 +101,11 @@ export function PortalShell({ children }: { children: React.ReactNode }) {
           {me?.canManageUsers && (
             <NavItem href="/portal/users" active={pathname.startsWith("/portal/users")} icon={<Users className="h-4 w-4" />}>
               Users & access
+            </NavItem>
+          )}
+          {me?.canViewAudit && (
+            <NavItem href="/portal/audit" active={pathname.startsWith("/portal/audit")} icon={<ScrollText className="h-4 w-4" />}>
+              Audit trail
             </NavItem>
           )}
           <NavItem href="/portal/settings" active={pathname.startsWith("/portal/settings")} icon={<Settings className="h-4 w-4" />}>

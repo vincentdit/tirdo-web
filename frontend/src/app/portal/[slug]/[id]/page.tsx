@@ -36,6 +36,16 @@ export default function PortalEntryPage() {
       if (col?.slug === "partners") {
         setValues({ active: true, displayOrder: 0, category: "Government Institution" });
       }
+      if (col?.slug === "e-services") {
+        setValues({
+          active: true,
+          showOnPublic: true,
+          showInPortal: true,
+          displayOrder: 100,
+          category: "Other",
+          href: "",
+        });
+      }
       return;
     }
     fetch(`/api/portal/content/${col.slug}/${params.id}`)
@@ -120,7 +130,17 @@ export default function PortalEntryPage() {
       </Link>
       <div className="mt-2 flex flex-wrap items-center gap-3">
         <h1 className="font-serif text-2xl font-bold text-[#0A192F]">
-          {isNew ? (col.slug === "partners" ? "Add partner" : `New ${col.label}`) : col.slug === "partners" ? "Edit partner" : `Update ${col.label}`}
+          {isNew
+            ? col.slug === "partners"
+              ? "Add partner"
+              : col.slug === "e-services"
+                ? "Add a system"
+                : `New ${col.label}`
+            : col.slug === "partners"
+              ? "Edit partner"
+              : col.slug === "e-services"
+                ? "Edit system link"
+                : `Update ${col.label}`}
         </h1>
         {status && (
           <span

@@ -9,7 +9,7 @@ try {
 } catch {
   seedData = require('./seed-data');
 }
-const { auditMiddleware } = require('./audit');
+const { auditMiddleware, registerAuditRoutes, repairMismatchedV2 } = require('./audit');
 const { frontendSyncMiddleware } = require('./sync-site');
 
 module.exports = {
@@ -20,6 +20,7 @@ module.exports = {
     // Refresh the public website cache after CMS content changes.
     strapi.documents.use(frontendSyncMiddleware(strapi));
     registerPortalGrantRoute(strapi);
+    registerAuditRoutes(strapi);
   },
 
   async bootstrap({ strapi }) {
@@ -41,9 +42,20 @@ module.exports = {
     // 2e) Ensure partner organisations exist for the public partners page.
     await seedPartners(strapi);
 
+    // 2f) Ensure e-Services system links exist so Super Admin can set live URLs.
+    await seedEServices(strapi);
+
     // 3) Seed demo content on an empty database (idempotent).
     if (process.env.SEED_DATA === 'true') {
       await seed(strapi);
+    }
+
+    try {
+      const repaired = await repairMismatchedV2(strapi);
+      if (!repaired.intact) strapi.log.error('[audit] chain verify failed: ' + (repaired.reason || 'unknown'));
+      else if (repaired.count) strapi.log.info('[audit] chain intact (' + repaired.count + ' events)');
+    } catch (e) {
+      strapi.log.warn('[audit] chain check skipped: ' + e.message);
     }
 
     // 3) Best-effort: push everything to OpenSearch so search works immediately.
@@ -126,7 +138,7 @@ async function setPublicPermissions(strapi) {
     .findOne({ where: { type: 'public' } });
   if (!publicRole) return;
 
-  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology', 'leader', 'site-brand', 'event', 'partner'];
+  const readTypes = ['article', 'project', 'publication', 'department', 'service', 'page', 'vacancy', 'tender', 'technology', 'leader', 'site-brand', 'event', 'partner', 'e-service'];
   const perms = {};
   for (const t of readTypes) {
     perms[`api::${t}.${t}`] = { controllers: { [t]: { find: { enabled: true }, findOne: { enabled: true } } } };
@@ -211,6 +223,24 @@ async function seedEvents(strapi) {
     if (created) strapi.log.info(`[seed] created ${created} events`);
   } catch (e) {
     strapi.log.warn('[seed] events seed skipped: ' + e.message);
+  }
+}
+
+async function seedEServices(strapi) {
+  const uid = 'api::e-service.e-service';
+  try {
+    const items = require('./e-service-seed');
+    const existing = await strapi.documents(uid).findMany({ locale: 'en', limit: 200 });
+    const have = new Set((existing || []).map((p) => p.slug).filter(Boolean));
+    let created = 0;
+    for (const item of items) {
+      if (have.has(item.slug)) continue;
+      await strapi.documents(uid).create({ data: item, status: 'published' });
+      created += 1;
+    }
+    if (created) strapi.log.info(`[seed] created ${created} e-service links`);
+  } catch (e) {
+    strapi.log.warn('[seed] e-service links skipped: ' + e.message);
   }
 }
 

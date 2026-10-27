@@ -7,6 +7,7 @@ import { Icon } from "@/components/site/icon";
 import { ShieldCheck } from "lucide-react";
 import { laboratory } from "@/lib/content";
 import { portals } from "@/lib/site";
+import { getEServiceHref } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   title: "Laboratory Services",
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/laboratory" },
 };
 
-export default function LaboratoryPage() {
+export default async function LaboratoryPage() {
+  const href = await getEServiceHref("nilims", portals.nilims);
   return (
     <>
       <PageBanner
@@ -80,7 +82,7 @@ export default function LaboratoryPage() {
             acronym="NILIMS"
             icon="Microscope"
             tagline="Register samples, track your jobs and download certified test results online — TIRDO's laboratory information management system."
-            href={portals.nilims}
+            href={href}
             features={["Online sample registration", "Real-time job tracking", "Digital test reports", "Client history and re-orders"]}
           />
         </div>

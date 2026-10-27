@@ -13,8 +13,8 @@
 import { cookies } from "next/headers";
 import * as fallback from "./content";
 import { defaultBrand, type SiteBrand } from "./site";
-import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader, EventItem, PartnerItem } from "./content";
-import { featuredEvents, isPublicPartner, notificationEvents } from "./content";
+import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader, EventItem, PartnerItem, EServiceItem } from "./content";
+import { featuredEvents, isPublicPartner, notificationEvents, safeServiceHref } from "./content";
 import { isLocale, defaultLocale } from "@/i18n/config";
 import { publicFileUrl } from "@/lib/utils";
 
@@ -376,6 +376,34 @@ export async function getPageBySlug(slug: string, locale = activeLocale()): Prom
 export function pageParagraphs(body?: string): string[] {
   if (!body) return [];
   return body.split(/\n\s*\n/).map((part) => part.trim()).filter(Boolean);
+}
+
+function mapEService(raw: Raw, locale: string): EServiceItem {
+  const a = mergeLocale(raw, locale);
+  return {
+    slug: String(a.slug || ""),
+    title: String(a.title || ""),
+    description: String(a.description || ""),
+    href: String(a.href || ""),
+    acronym: a.acronym ? String(a.acronym) : undefined,
+    category: String(a.category || "Other"),
+    showOnPublic: a.showOnPublic !== false,
+    showInPortal: a.showInPortal !== false,
+    displayOrder: Number(a.displayOrder) || 0,
+    active: a.active !== false,
+  };
+}
+
+export async function getEServices(locale = activeLocale()): Promise<EServiceItem[]> {
+  const data = await strapiFetch<Raw[]>(`e-services?sort=displayOrder:asc&pagination[limit]=100&${L}`);
+  if (!data || data.length === 0) return fallback.eservices.filter((e) => e.active);
+  return data.map((raw) => mapEService(raw, locale)).filter((e) => e.active && e.slug && e.title);
+}
+
+export async function getEServiceHref(slug: string, fallbackHref: string, locale = activeLocale()): Promise<string> {
+  const items = await getEServices(locale);
+  const match = items.find((e) => e.slug === slug);
+  return safeServiceHref(match?.href) || fallbackHref;
 }
 
 export async function getSiteBrand(): Promise<SiteBrand> {

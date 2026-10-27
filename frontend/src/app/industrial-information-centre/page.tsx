@@ -2,11 +2,15 @@ import { CheckCircle2 } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { Card, CardContent } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
-import { iic } from "@/lib/content";
+import { iic, safeServiceHref } from "@/lib/content";
+import { getEServiceHref } from "@/lib/strapi";
 
 export const metadata = { title: "Industrial Information Centre" };
 
-export default function IICPage() {
+export default async function IICPage() {
+  const nilimsHref = await getEServiceHref("nilims", "");
+  const externalNilims = safeServiceHref(nilimsHref);
+  const openExternal = externalNilims && /^https?:\/\//i.test(externalNilims) ? externalNilims : undefined;
   return (
     <>
       <PageBanner
@@ -39,7 +43,15 @@ export default function IICPage() {
                   advisory support.
                 </p>
                 <ButtonLink href="/publications" variant="accent" className="mb-2 w-full justify-center">Browse publications</ButtonLink>
-                <ButtonLink href="/contact" variant="outline" className="w-full justify-center">Request support</ButtonLink>
+                {openExternal ? (
+                  <ButtonLink href={openExternal} variant="outline" className="w-full justify-center" target="_blank" rel="noreferrer">
+                    Open NILIMS
+                  </ButtonLink>
+                ) : (
+                  <ButtonLink href="/contact?service=Industrial%20Information%20System" variant="outline" className="w-full justify-center">
+                    Request support
+                  </ButtonLink>
+                )}
               </CardContent>
             </Card>
           </aside>

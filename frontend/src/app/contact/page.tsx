@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 
 export const metadata = { title: "Contact Us" };
 
-export default function ContactPage() {
+export default function ContactPage({ searchParams }: { searchParams?: { service?: string } }) {
   return (
     <>
       <PageBanner title="Contact Us" subtitle="Get in touch with TIRDO for research, testing, consultancy and partnerships." crumbs={[{ label: "Contact" }]} />
@@ -44,7 +44,7 @@ export default function ContactPage() {
 
           <div className="rounded-xl border bg-card p-6 shadow-sm">
             <h2 className="mb-6 text-xl font-bold text-primary">Send us a message</h2>
-            <ContactForm />
+            <ContactForm defaultSubject={searchParams?.service ? `Access: ${searchParams.service}` : undefined} />
           </div>
         </div>
       </section>

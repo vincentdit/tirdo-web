@@ -150,6 +150,7 @@ services:
       OPENSEARCH_INDEX: ${OPENSEARCH_INDEX}
       # Optional: require this token for POST /api/search/reindex.
       SEARCH_ADMIN_TOKEN: ${SEARCH_ADMIN_TOKEN}
+      AUDIT_LOG_TOKEN: ${AUDIT_LOG_TOKEN}
       # Matomo reporting API (server-side; token never reaches the browser).
       # Routed via Nginx's internal :8081 upstream, which pins the trusted Host.
       MATOMO_API_URL: http://nginx:8081

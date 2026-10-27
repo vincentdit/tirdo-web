@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Send, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export function ContactForm() {
+export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -62,7 +62,7 @@ export function ContactForm() {
       </div>
       <div>
         <label htmlFor="cf-subject" className="mb-1 block text-sm font-medium">Subject</label>
-        <input id="cf-subject" name="subject" required className={input} />
+          <input id="cf-subject" name="subject" required defaultValue={defaultSubject} className={input} />
       </div>
       {/* Honeypot: hidden from users; bots that fill it are dropped server-side. */}
       <div aria-hidden="true" className="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden">

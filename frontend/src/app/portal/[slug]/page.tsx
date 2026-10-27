@@ -18,6 +18,7 @@ type Row = {
   email?: string;
   name?: string;
   category?: string;
+  href?: string;
   logo?: string;
   active?: boolean;
 };
@@ -185,7 +186,7 @@ export default function PortalCollectionPage() {
             href={`/portal/${collection.slug}/new`}
             className="rounded-md bg-[#059669] px-4 py-2 text-sm font-semibold text-white hover:bg-[#047857]"
           >
-            {collection.slug === "partners" ? "Add partner" : "New entry"}
+            {collection.slug === "partners" ? "Add partner" : collection.slug === "e-services" ? "Add system" : "New entry"}
           </Link>
         )}
       </div>
@@ -216,7 +217,7 @@ export default function PortalCollectionPage() {
             <option value={25}>25</option>
           </select>
         </label>
-        {col.slug === "partners" && (
+        {(col.slug === "partners" || col.slug === "e-services") && (
           <>
             <label className="flex items-center gap-2 text-sm text-slate-600">
               Category
@@ -236,6 +237,7 @@ export default function PortalCollectionPage() {
                 ))}
               </select>
             </label>
+            {col.slug === "partners" && (
             <label className="flex items-center gap-2 text-sm text-slate-600">
               Status
               <select
@@ -251,6 +253,7 @@ export default function PortalCollectionPage() {
                 <option value="inactive">Inactive</option>
               </select>
             </label>
+            )}
           </>
         )}
       </div>
@@ -260,7 +263,8 @@ export default function PortalCollectionPage() {
           <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
             <tr>
               <th className="px-4 py-3 font-semibold">{col.slug === "partners" ? "Organisation" : "Title"}</th>
-              {col.slug === "partners" ? <th className="px-4 py-3 font-semibold">Category</th> : null}
+              {col.slug === "partners" || col.slug === "e-services" ? <th className="px-4 py-3 font-semibold">Category</th> : null}
+              {col.slug === "e-services" ? <th className="px-4 py-3 font-semibold">System URL</th> : null}
               <th className="px-4 py-3 font-semibold">Status</th>
               <th className="px-4 py-3 font-semibold">Updated</th>
               <th className="px-4 py-3 font-semibold">Actions</th>
@@ -269,14 +273,14 @@ export default function PortalCollectionPage() {
           <tbody>
             {rows === null && (
               <tr>
-                <td colSpan={col.slug === "partners" ? 5 : 4} className="px-4 py-8 text-center text-slate-500">
+                <td colSpan={col.slug === "e-services" ? 6 : col.slug === "partners" ? 5 : 4} className="px-4 py-8 text-center text-slate-500">
                   Loading…
                 </td>
               </tr>
             )}
             {rows?.length === 0 && (
               <tr>
-                <td colSpan={col.slug === "partners" ? 5 : 4} className="px-4 py-8 text-center text-slate-500">
+                <td colSpan={col.slug === "e-services" ? 6 : col.slug === "partners" ? 5 : 4} className="px-4 py-8 text-center text-slate-500">
                   {qDebounced ? "No matching entries." : "No entries yet."}
                 </td>
               </tr>
@@ -310,7 +314,12 @@ export default function PortalCollectionPage() {
                     </div>
                   </div>
                 </td>
-                {col.slug === "partners" ? <td className="px-4 py-3 text-slate-600">{row.category || "—"}</td> : null}
+                {col.slug === "partners" || col.slug === "e-services" ? <td className="px-4 py-3 text-slate-600">{row.category || "—"}</td> : null}
+                {col.slug === "e-services" ? (
+                  <td className="px-4 py-3 text-slate-600">
+                    {row.href ? <span className="break-all text-xs">{row.href}</span> : <span className="text-xs text-amber-800">Not connected</span>}
+                  </td>
+                ) : null}
                 <td className="px-4 py-3">
                   <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${statusClass(row.status)}`}>
                     {row.status}

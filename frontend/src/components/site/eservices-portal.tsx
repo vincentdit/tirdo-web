@@ -1,14 +1,23 @@
 "use client";
 
-import { Lock, LogIn, ShieldCheck, FileText, Inbox, ExternalLink } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Lock, LogIn, ShieldCheck, ExternalLink } from "lucide-react";
 import { useAuth } from "@/components/site/auth-provider";
 import { Button } from "@/components/ui/button";
+import { eServiceOpen, eservices, type EServiceItem } from "@/lib/content";
 
-// The gated Client Portal on the e-Services page. Signed-out visitors see a
-// sign-in prompt; signed-in users see their portal, role-aware.
 export function EServicesPortal() {
   const auth = useAuth();
-  const cmsUrl = "/portal";
+  const [links, setLinks] = useState<EServiceItem[]>(eservices.filter((e) => e.showInPortal));
+
+  useEffect(() => {
+    fetch("/api/e-services")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (Array.isArray(j?.items) && j.items.length) setLinks(j.items);
+      })
+      .catch(() => undefined);
+  }, []);
 
   if (!auth.ready) {
     return <div className="h-40 animate-pulse rounded-xl border bg-secondary/40" />;
@@ -22,8 +31,8 @@ export function EServicesPortal() {
         </span>
         <h3 className="text-lg font-bold text-primary">Sign in to the TIRDO Client Portal</h3>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-          Access your service requests, submitted documents and internal systems. Authentication is
-          provided by TIRDO single sign-on (Keycloak).
+          Access connected TIRDO systems after sign-in. Super Admin sets each system address in Content management.
+          Authentication is provided by TIRDO single sign-on (Keycloak).
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button variant="accent" onClick={auth.login}>
@@ -58,19 +67,24 @@ export function EServicesPortal() {
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        <PortalTile icon={FileText} title="My Service Requests" desc="Track research, testing and consultancy requests." href="/contact" />
-        <PortalTile icon={Inbox} title="Messages & Documents" desc="Correspondence and shared documents." href="#" />
+        {links.map((item) => {
+          const open = eServiceOpen(item);
+          return (
+            <PortalTile
+              key={item.slug}
+              title={item.acronym ? `${item.title} (${item.acronym})` : item.title}
+              desc={item.description}
+              href={open.href}
+              external={open.external}
+              badge={open.label === "Request access" ? "Not connected" : undefined}
+            />
+          );
+        })}
         {isStaff && (
-          <PortalTile icon={ExternalLink} title="Staff Portal" desc="Internal tools and systems for TIRDO staff." href="/staff" />
+          <PortalTile title="Staff Portal" desc="Internal tools and systems for TIRDO staff." href="/staff" />
         )}
         {isEditor && (
-          <PortalTile
-            icon={ExternalLink}
-            title="Content Management"
-            desc="Manage news, publications and projects."
-            href={cmsUrl}
-            badge="Editor"
-          />
+          <PortalTile title="Content Management" desc="Manage news, publications, e-service links and projects." href="/portal" badge="Editor" />
         )}
       </div>
     </div>
@@ -78,14 +92,12 @@ export function EServicesPortal() {
 }
 
 function PortalTile({
-  icon: Icon,
   title,
   desc,
   href,
   external,
   badge,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
   title: string;
   desc: string;
   href: string;
@@ -100,10 +112,10 @@ function PortalTile({
       className="group flex items-start gap-3 rounded-lg border p-4 transition-colors hover:border-accent hover:bg-secondary/40"
     >
       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground">
-        <Icon className="h-5 w-5" />
+        <ExternalLink className="h-5 w-5" />
       </span>
       <div>
-        <div className="flex items-center gap-2 font-semibold text-primary">
+        <div className="flex flex-wrap items-center gap-2 font-semibold text-primary">
           {title}
           {badge && <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-bold text-accent-foreground">{badge}</span>}
         </div>

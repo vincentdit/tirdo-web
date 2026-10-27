@@ -81,6 +81,27 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     ],
   },
   {
+    slug: "e-services",
+    uid: "api::e-service.e-service",
+    label: "E-service links",
+    titleField: "title",
+    draftAndPublish: true,
+    group: "content",
+    description: "Add any TIRDO system shown on e-Services (Client Portal, NILIMS, CIAP, consultation, e-learning, e-office, or a new one). Set its live URL when ready; leave it blank until then.",
+    fields: [
+      { key: "title", label: "Title", type: "text", required: true },
+      { key: "slug", label: "URL slug (optional — filled from the title)", type: "text" },
+      { key: "acronym", label: "Acronym (CIAP, NILIMS, …)", type: "text" },
+      { key: "description", label: "Short description", type: "textarea" },
+      { key: "href", label: "System URL (https://… or /path). Blank = Request access via Contact.", type: "text" },
+      { key: "category", label: "Category", type: "select", options: ["Client portal", "Industrial information", "Consultancy", "Learning", "Staff", "Other"] },
+      { key: "showOnPublic", label: "Show on the public e-Services page", type: "boolean" },
+      { key: "showInPortal", label: "Show after sign-in on the Client Portal", type: "boolean" },
+      { key: "displayOrder", label: "Display order", type: "number" },
+      { key: "active", label: "Active (shown when published)", type: "boolean" },
+    ],
+  },
+  {
     slug: "events",
     uid: "api::event.event",
     label: "Events",
@@ -360,6 +381,14 @@ export function isFullPortalRole(roles: string[]): boolean {
   return isSuperAdminRole(roles) || isAdminRole(roles);
 }
 
+export function canViewAudit(roles: string[]): boolean {
+  return isSuperAdminRole(roles) || isAdminRole(roles);
+}
+
+export function canExportAudit(roles: string[]): boolean {
+  return isSuperAdminRole(roles);
+}
+
 /** Super Admin sees every collection. Everyone else sees only granted types. */
 export function grantedCollectionSlugs(roles: string[], granted: string[]): string[] {
   if (isSuperAdminRole(roles)) return PORTAL_COLLECTIONS.map((c) => c.slug);
@@ -438,6 +467,7 @@ export function pageEditTarget(pathname: string): PageEditTarget {
   if (path.startsWith("/careers")) return { href: "/portal/vacancies", label: "Vacancies", collection: "vacancies" };
   if (path.startsWith("/tenders")) return { href: "/portal/tenders", label: "Tenders", collection: "tenders" };
   if (path.startsWith("/departments")) return { href: "/portal/departments", label: "Departments", collection: "departments" };
+  if (path.startsWith("/e-services")) return { href: "/portal/e-services", label: "E-service links", collection: "e-services" };
   if (path.startsWith("/services") || path.startsWith("/laboratory") || path.startsWith("/consultancy")) {
     return { href: "/portal/services", label: "Services", collection: "services" };
   }
@@ -509,11 +539,40 @@ export function entryStatus(row: Record<string, unknown>, draftAndPublish: boole
   return row.publishedAt ? "Published" : "Draft";
 }
 
+export function slugFromTitle(title: string): string {
+  return String(title || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+export function prepareEServicePayload(payload: Record<string, unknown>): Record<string, unknown> {
+  const next = { ...payload };
+  const slug = String(next.slug || "").trim() || slugFromTitle(String(next.title || ""));
+  if (slug) next.slug = slug;
+  if (next.category == null || next.category === "") next.category = "Other";
+  if (next.showOnPublic == null) next.showOnPublic = true;
+  if (next.showInPortal == null) next.showInPortal = true;
+  if (next.active == null) next.active = true;
+  if (next.displayOrder == null || next.displayOrder === "") next.displayOrder = 100;
+  return next;
+}
+
 export function validateCollectionPayload(col: PortalCollection, payload: Record<string, unknown>): string | null {
   for (const field of col.fields) {
     if (!field.required) continue;
     const value = payload[field.key];
     if (value == null || value === "") return `${field.label} is required.`;
+  }
+  if (col.slug === "e-services") {
+    const href = String(payload.href || "").trim();
+    if (href && !/^https?:\/\/.+/i.test(href) && !/^\/(?!\/)/.test(href)) {
+      return "System URL must start with https://, http://, or /";
+    }
+    return null;
   }
   if (col.slug !== "partners") return null;
   const email = String(payload.email || "").trim();

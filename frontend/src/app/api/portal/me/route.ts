@@ -27,6 +27,8 @@ export async function GET() {
     canManageUsers: access.canManageUsers,
     canDelete: access.canDelete,
     canManageSite: access.canManageSite,
+    canViewAudit: access.canViewAudit,
+    canExportAudit: access.canExportAudit,
     departments: access.departments,
     collections: access.collections.map((c) => ({
       slug: c.slug,

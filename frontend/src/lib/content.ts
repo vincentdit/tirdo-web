@@ -429,11 +429,120 @@ export const mission = {
   ],
 };
 
-export const eservices = [
-  { title: "Industrial Information Centre", anchor: "iic", description: "Search technical reports, standards and industrial data.", href: "/industrial-information-centre" },
-  { title: "Client Service Portal", anchor: "portal", description: "Request research, testing and consultancy services online.", href: "/contact" },
-  { title: "Staff e-Office", anchor: "eoffice", description: "Internal document management and correspondence system.", href: "#" },
+export type EServiceItem = {
+  slug: string;
+  title: string;
+  description: string;
+  href: string;
+  acronym?: string;
+  category: string;
+  showOnPublic: boolean;
+  showInPortal: boolean;
+  displayOrder: number;
+  active: boolean;
+};
+
+export const ESERVICE_CATEGORIES = [
+  "Client portal",
+  "Industrial information",
+  "Consultancy",
+  "Learning",
+  "Staff",
+  "Other",
+] as const;
+
+export const eservices: EServiceItem[] = [
+  {
+    slug: "client-portal",
+    title: "Client Portal",
+    description: "Request research, testing and consultancy services online.",
+    href: "",
+    category: "Client portal",
+    showOnPublic: true,
+    showInPortal: true,
+    displayOrder: 10,
+    active: true,
+  },
+  {
+    slug: "nilims",
+    title: "Industrial Information System",
+    acronym: "NILIMS",
+    description: "Search technical reports, standards and industrial data.",
+    href: "/industrial-information-centre",
+    category: "Industrial information",
+    showOnPublic: true,
+    showInPortal: true,
+    displayOrder: 20,
+    active: true,
+  },
+  {
+    slug: "ciap",
+    title: "Consultancy & Industrial Advisory Portal",
+    acronym: "CIAP",
+    description: "Submit consultancy requests and follow them from proposal to closure.",
+    href: "",
+    category: "Consultancy",
+    showOnPublic: true,
+    showInPortal: true,
+    displayOrder: 30,
+    active: true,
+  },
+  {
+    slug: "consultation",
+    title: "Consultation System",
+    description: "Book and manage technical consultations with TIRDO specialists.",
+    href: "",
+    category: "Consultancy",
+    showOnPublic: true,
+    showInPortal: true,
+    displayOrder: 40,
+    active: true,
+  },
+  {
+    slug: "teltp",
+    title: "e-Learning",
+    acronym: "TeLTP",
+    description: "TIRDO e-learning and training programmes for industry and staff.",
+    href: "",
+    category: "Learning",
+    showOnPublic: true,
+    showInPortal: true,
+    displayOrder: 50,
+    active: true,
+  },
+  {
+    slug: "eoffice",
+    title: "Staff e-Office",
+    description: "Internal document management and correspondence system.",
+    href: "",
+    category: "Staff",
+    showOnPublic: true,
+    showInPortal: true,
+    displayOrder: 60,
+    active: true,
+  },
 ];
+
+export function safeServiceHref(value?: string): string | undefined {
+  const url = String(value || "").trim();
+  if (!url || url === "#") return undefined;
+  if (url.startsWith("/") && !url.startsWith("//") && !url.includes("://")) return url;
+  if (/^https?:\/\//i.test(url)) return url;
+  return undefined;
+}
+
+export function eServiceCategory(value?: string): (typeof ESERVICE_CATEGORIES)[number] {
+  const category = String(value || "").trim();
+  return (ESERVICE_CATEGORIES as readonly string[]).includes(category)
+    ? (category as (typeof ESERVICE_CATEGORIES)[number])
+    : "Other";
+}
+
+export function eServiceOpen(item: Pick<EServiceItem, "title" | "href">): { href: string; external: boolean; label: string } {
+  const href = safeServiceHref(item.href);
+  if (href) return { href, external: /^https?:\/\//i.test(href), label: "Open" };
+  return { href: `/contact?service=${encodeURIComponent(item.title)}`, external: false, label: "Request access" };
+}
 
 export type PartnerItem = {
   slug: string;

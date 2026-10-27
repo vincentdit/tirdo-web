@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 type Row = { slug: string; label: string; description: string; group: string; total: number; ok: boolean };
 type Access = {
   isSuperAdmin?: boolean;
+  canViewAudit?: boolean;
   canManageMedia?: boolean;
   canManageUsers?: boolean;
   canManageSite?: boolean;
@@ -105,6 +106,18 @@ export default function PortalDashboardPage() {
             </CardContent>
           </Card>
         </Link>
+        {access?.canViewAudit && (
+          <Link href="/portal/audit">
+            <Card className="h-full transition hover:border-[#059669] hover:shadow-md">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base text-[#0A192F]">Audit trail</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-slate-600">Search persisted security and content events.</p>
+              </CardContent>
+            </Card>
+          </Link>
+        )}
         {access?.canManageUsers && (
           <Link href="/portal/users">
             <Card className="h-full transition hover:border-[#059669] hover:shadow-md">

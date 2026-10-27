@@ -34,6 +34,8 @@ export async function GET() {
       canManageUsers: access.canManageUsers,
       canDelete: access.canDelete,
       canManageSite: access.canManageSite,
+      canViewAudit: access.canViewAudit,
+      canExportAudit: access.canExportAudit,
       pageSlugs: access.pageSlugs,
       departments: access.departments,
       grantReady: access.grantReady,

@@ -1,0 +1,76 @@
+{
+  "kind": "collectionType",
+  "collectionName": "e_services",
+  "info": {
+    "singularName": "e-service",
+    "pluralName": "e-services",
+    "displayName": "E-service link",
+    "description": "Public and staff system links shown on e-Services (CIAP, NILIMS, e-learning, and others)"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "acronym": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "description": {
+      "type": "text",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "href": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "Client portal",
+        "Industrial information",
+        "Consultancy",
+        "Learning",
+        "Staff",
+        "Other"
+      ],
+      "default": "Other",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "showOnPublic": {
+      "type": "boolean",
+      "default": true,
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "showInPortal": {
+      "type": "boolean",
+      "default": true,
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "displayOrder": {
+      "type": "integer",
+      "default": 0,
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "pluginOptions": { "i18n": { "localized": false } }
+    }
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  }
+}

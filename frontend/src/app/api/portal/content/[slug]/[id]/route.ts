@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { collectionBySlug, pickAllowedFields, validateCollectionPayload } from "@/lib/portal";
+import { collectionBySlug, pickAllowedFields, prepareEServicePayload, validateCollectionPayload } from "@/lib/portal";
 import { canUseCollection, canUsePage, forbidden, loadAccess } from "../../../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../../../_cms";
 
@@ -57,7 +57,7 @@ export async function PUT(request: NextRequest, { params }: { params: { slug: st
   if (col.slug === "pages" && body.slug && !canUsePage(access, String(body.slug))) {
     return forbidden("You are not assigned to this page.");
   }
-  const payload = pickAllowedFields(col, body);
+  const payload = col.slug === "e-services" ? prepareEServicePayload(pickAllowedFields(col, body)) : pickAllowedFields(col, body);
   const invalid = validateCollectionPayload(col, { ...currentData, ...payload });
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 });
   const res = await cmsAdmin(

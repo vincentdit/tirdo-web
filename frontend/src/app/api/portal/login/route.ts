@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ingestAuditEvent } from "@/lib/audit-ingest";
+import { clientIp } from "@/lib/audit";
 import { cmsBase, friendlyAuthError, isAdminEmail, PORTAL_COOKIE } from "@/lib/portal";
 import { cookieOptions } from "../_cms";
 
@@ -56,6 +58,18 @@ export async function POST(request: NextRequest) {
 
   if (!cmsRes.ok || !token) {
     const msg = json?.error?.message || json?.message;
+    await ingestAuditEvent({
+      action: "login_failed",
+      eventType: "authentication",
+      outcome: "failure",
+      actor: email,
+      actorType: "user",
+      identityProvider: "strapi",
+      sourceService: "portal",
+      reason: "invalid_credentials",
+      changeSummary: "CMS portal sign-in failed",
+      metadata: { ip: clientIp(request.headers) },
+    });
     return NextResponse.json({ error: friendlyAuthError(cmsRes.status, msg) }, { status: cmsRes.status === 400 ? 401 : cmsRes.status });
   }
 
@@ -63,6 +77,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "This account is deactivated. Ask an administrator to activate it." }, { status: 403 });
   }
 
+  await ingestAuditEvent({
+    action: "login",
+    eventType: "authentication",
+    outcome: "success",
+    actor: String(user?.email || email),
+    actorId: user?.id != null ? String(user.id) : "",
+    actorType: "user",
+    identityProvider: "strapi",
+    sourceService: "portal",
+    changeSummary: "CMS portal sign-in succeeded",
+    metadata: { ip: clientIp(request.headers) },
+  });
   const res = NextResponse.json({
     ok: true,
     user: {

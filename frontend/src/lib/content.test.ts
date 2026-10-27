@@ -22,6 +22,8 @@ import {
   serviceCharter,
   serviceAreas,
   feedbackTypes,
+  eServiceOpen,
+  safeServiceHref,
   type Project,
 } from "@/lib/content";
 
@@ -236,5 +238,23 @@ describe("public partners", () => {
   it("rejects unsafe websites", () => {
     expect(safeWebsiteUrl("javascript:alert(1)")).toBeUndefined();
     expect(safeWebsiteUrl("https://www.costech.or.tz")).toBe("https://www.costech.or.tz");
+  });
+});
+
+describe("e-service links", () => {
+  it("opens an http(s) or site-relative URL when Super Admin has set one", () => {
+    expect(safeServiceHref("javascript:alert(1)")).toBeUndefined();
+    expect(eServiceOpen({ title: "CIAP", href: "https://ciap.example.go.tz" })).toEqual({
+      href: "https://ciap.example.go.tz",
+      external: true,
+      label: "Open",
+    });
+    expect(eServiceOpen({ title: "NILIMS", href: "/industrial-information-centre" }).label).toBe("Open");
+  });
+
+  it("falls back to Contact when the system URL is still blank", () => {
+    const open = eServiceOpen({ title: "Client Portal", href: "" });
+    expect(open.label).toBe("Request access");
+    expect(open.href).toBe("/contact?service=Client%20Portal");
   });
 });

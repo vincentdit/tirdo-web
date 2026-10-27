@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cmsListQuery, collectionBySlug, entryStatus, entryTitle, mediaPreviewUrl, pickAllowedFields, sanitizeSearch, validateCollectionPayload } from "@/lib/portal";
+import { cmsListQuery, collectionBySlug, entryStatus, entryTitle, mediaPreviewUrl, pickAllowedFields, prepareEServicePayload, sanitizeSearch, validateCollectionPayload } from "@/lib/portal";
 import { canUseCollection, canUsePage, forbidden, loadAccess } from "../../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../../_cms";
 
@@ -24,12 +24,12 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   ).slice(0, 5);
 
   const path = `/content-manager/collection-types/${encodeURIComponent(col.uid)}`;
-  const sort = col.slug === "partners" ? "displayOrder:asc" : "updatedAt:desc";
+  const sort = col.slug === "partners" || col.slug === "e-services" ? "displayOrder:asc" : "updatedAt:desc";
   let listQuery = cmsListQuery(page, pageSize, q, searchFields, sort);
   const category = sanitizeSearch(request.nextUrl.searchParams.get("category") || "");
   const statusFilter = sanitizeSearch(request.nextUrl.searchParams.get("status") || "").toLowerCase();
   const extraFilters = new URLSearchParams();
-  if (col.slug === "partners" && category) extraFilters.set("filters[category][$eq]", category);
+  if ((col.slug === "partners" || col.slug === "e-services") && category) extraFilters.set("filters[category][$eq]", category);
   if (col.slug === "partners" && statusFilter === "inactive") extraFilters.set("filters[active][$eq]", "false");
   if (col.slug === "partners" && statusFilter === "published") extraFilters.set("filters[active][$ne]", "false");
   if (extraFilters.toString()) listQuery = `${listQuery}&${extraFilters.toString()}`;
@@ -97,6 +97,7 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
       email: row.email,
       name: row.name,
       category: row.category,
+      href: row.href,
       active: row.active,
       logo: mediaPreviewUrl(row.logo),
       handled: row.handled,
@@ -119,7 +120,7 @@ export async function POST(request: NextRequest, { params }: { params: { slug: s
   if (col.slug === "pages" && !canUsePage(access, String(body.slug || ""))) {
     return forbidden("You are not assigned to create this page.");
   }
-  const payload = pickAllowedFields(col, body);
+  const payload = col.slug === "e-services" ? prepareEServicePayload(pickAllowedFields(col, body)) : pickAllowedFields(col, body);
   const invalid = validateCollectionPayload(col, payload);
   if (invalid) return NextResponse.json({ error: invalid }, { status: 400 });
   const res = await cmsAdmin(`/content-manager/collection-types/${encodeURIComponent(col.uid)}`, token, {
