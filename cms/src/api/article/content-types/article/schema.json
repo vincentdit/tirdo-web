@@ -64,6 +64,15 @@
         }
       }
     },
+    "notifyOnSite": {
+      "type": "boolean",
+      "default": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "imageUrl": {
       "type": "string",
       "pluginOptions": {

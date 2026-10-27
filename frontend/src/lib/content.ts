@@ -13,6 +13,7 @@ export type NewsItem = {
   date: string;
   image?: string;
   sourceUrl?: string;
+  notifyOnSite?: boolean;
 };
 
 export type Project = {
@@ -644,8 +645,100 @@ export function featuredEvents(list: EventItem[], now: Date = new Date(), limit 
     .slice(0, limit);
 }
 
-export function notificationEvents(list: EventItem[]): EventItem[] {
-  return list.filter((item) => item.notifyOnSite);
+export function notificationEvents(list: EventItem[], now: Date = new Date()): EventItem[] {
+  return list
+    .filter((item) => item.notifyOnSite && isCurrentEvent(item, now))
+    .sort((a, b) => {
+      if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1;
+      return String(a.date).localeCompare(String(b.date));
+    });
+}
+
+export const NOTICE_DISMISS_KEY = "tirdo-notice-dismissed";
+
+/** Keep a floating notice title to three or four words. */
+export function shortNoticeTitle(title: string, maxWords = 4): string {
+  const words = String(title || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (words.length <= maxWords) return words.join(" ");
+  return words.slice(0, maxWords).join(" ");
+}
+
+export type FloatingNotice = {
+  id: string;
+  title: string;
+  message: string;
+  date?: string;
+  href: string;
+  actionLabel: string;
+  external: boolean;
+  pinned?: boolean;
+  logo?: string;
+};
+
+export function eventNoticeHref(item: Pick<EventItem, "slug" | "title" | "registerUrl">): {
+  href: string;
+  label: string;
+  external: boolean;
+} {
+  const misconduct = /misconduct/i.test(item.title || "");
+  if (misconduct) {
+    const configured = safeServiceHref(item.registerUrl);
+    if (configured) {
+      return { href: configured, label: "Report", external: /^https?:\/\//i.test(configured) };
+    }
+  }
+  return { href: `/events/${item.slug}`, label: "Learn more", external: false };
+}
+
+export function eventToFloatingNotice(item: EventItem): FloatingNotice {
+  const action = eventNoticeHref(item);
+  return {
+    id: `event:${item.slug}`,
+    title: shortNoticeTitle(item.title),
+    message: "",
+    date: item.date,
+    href: action.href,
+    actionLabel: action.label,
+    external: action.external,
+    pinned: item.pinned,
+    logo: item.logo,
+  };
+}
+
+export function parseDismissedNotices(raw: string | null): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((id) => typeof id === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+export function newsToFloatingNotice(item: NewsItem): FloatingNotice {
+  return {
+    id: `news:${item.slug}`,
+    title: shortNoticeTitle(item.title),
+    message: "",
+    date: item.date,
+    href: `/news/${item.slug}`,
+    actionLabel: "Read more",
+    external: false,
+    pinned: /announcement/i.test(item.category || ""),
+  };
+}
+
+export function mergeFloatingNotices(events: EventItem[], news: NewsItem[] = [], now: Date = new Date()): FloatingNotice[] {
+  const fromEvents = notificationEvents(events, now).map(eventToFloatingNotice);
+  const fromNews = news.filter((item) => item.notifyOnSite).map(newsToFloatingNotice);
+  return [...fromEvents, ...fromNews].sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)));
+}
+
+export function nextFloatingNotice(notices: FloatingNotice[], dismissed: string[]): FloatingNotice | null {
+  return notices.find((item) => !dismissed.includes(item.id)) ?? null;
 }
 
 export const events: EventItem[] = [

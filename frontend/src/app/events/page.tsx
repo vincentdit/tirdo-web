@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
-import { SectionHeading } from "@/components/site/section-heading";
 import { EventCard } from "@/components/site/event-card";
 import { isCurrentEvent } from "@/lib/content";
 import { getEvents } from "@/lib/strapi";
@@ -23,8 +22,6 @@ export default async function EventsPage() {
   const past = events
     .filter((e) => !upcoming.some((u) => u.slug === e.slug))
     .sort((a, b) => String(b.date).localeCompare(String(a.date)));
-  const spotlight = upcoming[0];
-  const restUpcoming = upcoming.slice(1);
 
   return (
     <>
@@ -33,7 +30,7 @@ export default async function EventsPage() {
         subtitle="Workshops, training, exhibitions and industry engagements hosted by TIRDO."
         crumbs={[{ label: "Media" }, { label: "Events" }]}
       />
-      <section className="bg-brand-pale/60 py-12 md:py-16">
+      <section className="bg-[#f4f7fb] py-12 md:py-16">
         <div className="container-tirdo">
           {upcoming.length === 0 && past.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-brand-teal/30 bg-white p-10 text-center">
@@ -43,25 +40,26 @@ export default async function EventsPage() {
             </div>
           ) : null}
 
-          {spotlight ? (
+          {upcoming.length > 0 ? (
             <>
-              <SectionHeading eyebrow="Featured" title="Happening now and upcoming" />
-              <EventCard item={spotlight} featured />
+              <div className="mb-6 border-l-4 border-brand-teal pl-4">
+                <h2 className="font-display text-2xl text-brand-ink">Upcoming events</h2>
+                <p className="text-sm text-brand-muted">Happenings now and programmes you can still attend.</p>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {upcoming.map((e) => (
+                  <EventCard key={e.slug} item={e} />
+                ))}
+              </div>
             </>
-          ) : null}
-
-          {restUpcoming.length > 0 ? (
-            <div className={`grid gap-6 md:grid-cols-2 ${spotlight ? "mt-8" : ""}`}>
-              {restUpcoming.map((e) => (
-                <EventCard key={e.slug} item={e} />
-              ))}
-            </div>
           ) : null}
 
           {past.length > 0 ? (
             <div className={upcoming.length ? "mt-14" : ""}>
-              <SectionHeading eyebrow="Archive" title="Past events" />
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="mb-6 border-l-4 border-brand-gold pl-4">
+                <h2 className="font-display text-2xl text-brand-ink">Past events</h2>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {past.map((e) => (
                   <EventCard key={e.slug} item={e} />
                 ))}

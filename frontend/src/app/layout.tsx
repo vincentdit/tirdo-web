@@ -7,7 +7,7 @@ import { MatomoAnalytics } from "@/components/site/matomo";
 import { AuthProvider } from "@/components/site/auth-provider";
 import { site } from "@/lib/site";
 import { siteUrl, siteKeywords, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
-import { getNotificationEvents, getSiteBrand } from "@/lib/strapi";
+import { getFloatingNotices, getSiteBrand } from "@/lib/strapi";
 
 const description =
   "TIRDO drives industrialization in Tanzania through applied research, engineering development, ICT and technology transfer.";
@@ -58,7 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const locale = await getLocale();
   const messages = await getMessages();
   const brand = await getSiteBrand();
-  const notificationEvents = await getNotificationEvents();
+  const notices = await getFloatingNotices();
   return (
     <html lang={locale}>
       <head>
@@ -83,7 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </a>
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
-            <SiteShell brand={brand} notificationEvents={notificationEvents}>
+            <SiteShell brand={brand} notices={notices}>
               {children}
             </SiteShell>
           </AuthProvider>

@@ -22,6 +22,17 @@ export function formatDateRange(start?: string, end?: string): string {
   return from;
 }
 
+/** Day + short month for NACTVET-style event date badges. */
+export function eventDateBadge(input?: string | Date | null): { day: string; month: string } {
+  if (!input) return { day: "", month: "" };
+  const d = typeof input === "string" ? new Date(input) : input;
+  if (isNaN(d.getTime())) return { day: "", month: "" };
+  return {
+    day: String(d.getDate()),
+    month: d.toLocaleDateString("en-GB", { month: "short" }).replace(".", "").toUpperCase(),
+  };
+}
+
 /** Serve MinIO objects through the public site so logos work on LAN, not only localhost:9100. */
 export function publicFileUrl(url?: string | null): string | undefined {
   if (!url || typeof url !== "string") return undefined;

@@ -8,7 +8,7 @@ export default async function NewsPage() {
   const news = await getNews(24);
   return (
     <>
-      <PageBanner title="News & Announcements" subtitle="Latest updates, research milestones and events from TIRDO." crumbs={[{ label: "Media" }, { label: "News" }]} />
+      <PageBanner title="News & Announcements" subtitle="Latest updates, research milestones and announcements from TIRDO." crumbs={[{ label: "Media" }, { label: "News" }]} />
       <section className="py-14">
         <div className="container-tirdo grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {news.map((n) => <NewsCard key={n.slug} item={n} />)}

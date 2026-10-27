@@ -3,6 +3,13 @@ import {
   featuredEvents,
   isCurrentEvent,
   notificationEvents,
+  eventNoticeHref,
+  shortNoticeTitle,
+  eventToFloatingNotice,
+  mergeFloatingNotices,
+  newsToFloatingNotice,
+  nextFloatingNotice,
+  parseDismissedNotices,
   isPublicPartner,
   partners,
   safeWebsiteUrl,
@@ -26,6 +33,13 @@ import {
   safeServiceHref,
   type Project,
 } from "@/lib/content";
+import { eventDateBadge } from "@/lib/utils";
+
+describe("event date badge", () => {
+  it("splits a date into day and short month", () => {
+    expect(eventDateBadge(new Date(2026, 10, 15))).toEqual({ day: "15", month: "NOV" });
+  });
+});
 
 describe("featured events", () => {
   const now = new Date("2026-10-22T12:00:00Z");
@@ -59,12 +73,102 @@ describe("featured events", () => {
   });
 
   it("keeps website notifications only when switched on", () => {
-    const list = notificationEvents([
-      { ...sample, slug: "on", notifyOnSite: true },
-      { ...sample, slug: "off", notifyOnSite: false },
-      { ...sample, slug: "unset" },
-    ]);
+    const list = notificationEvents(
+      [
+        { ...sample, slug: "on", notifyOnSite: true },
+        { ...sample, slug: "off", notifyOnSite: false },
+        { ...sample, slug: "unset" },
+      ],
+      now
+    );
     expect(list.map((e) => e.slug)).toEqual(["on"]);
+  });
+
+  it("hides expired notifications even if they were featured", () => {
+    const list = notificationEvents(
+      [
+        { ...sample, slug: "expired", date: "2025-01-01", notifyOnSite: true, pinned: true },
+        { ...sample, slug: "live", date: "2026-11-01", notifyOnSite: true },
+      ],
+      now
+    );
+    expect(list.map((e) => e.slug)).toEqual(["live"]);
+  });
+
+  it("shows pinned notices first", () => {
+    const list = notificationEvents(
+      [
+        { ...sample, slug: "later", date: "2026-12-01", notifyOnSite: true },
+        { ...sample, slug: "priority", date: "2026-11-20", notifyOnSite: true, pinned: true },
+      ],
+      now
+    );
+    expect(list[0].slug).toBe("priority");
+  });
+});
+
+describe("floating notices", () => {
+  it("keeps a notice title to four words", () => {
+    expect(shortNoticeTitle("Biomass Briquettes Production Training for industry")).toBe("Biomass Briquettes Production Training");
+    expect(shortNoticeTitle("Public notice")).toBe("Public notice");
+  });
+
+  const sample = {
+    slug: "sample",
+    title: "Sample",
+    date: "2026-11-01",
+    location: "Dar es Salaam",
+    category: "Training",
+    description: "A training.",
+    notifyOnSite: true,
+  };
+
+  it("opens the event page even if a contact register link is set", () => {
+    expect(eventNoticeHref(sample)).toEqual({ href: "/events/sample", label: "Learn more", external: false });
+    expect(eventNoticeHref({ ...sample, registerUrl: "/contact" })).toEqual({
+      href: "/events/sample",
+      label: "Learn more",
+      external: false,
+    });
+  });
+
+  it("uses a configured action link for staff misconduct without inventing an API", () => {
+    expect(eventNoticeHref({ ...sample, title: "Report Staff Misconduct", registerUrl: "/feedback" })).toEqual({
+      href: "/feedback",
+      label: "Report",
+      external: false,
+    });
+    expect(eventNoticeHref({ ...sample, title: "Report Staff Misconduct", registerUrl: "javascript:alert(1)" }).href).toBe(
+      "/events/sample"
+    );
+  });
+
+  it("skips dismissed notices and ignores malformed session data", () => {
+    const notices = [eventToFloatingNotice(sample), eventToFloatingNotice({ ...sample, slug: "second", title: "Second" })];
+    expect(nextFloatingNotice(notices, ["event:sample"])?.id).toBe("event:second");
+    expect(nextFloatingNotice(notices, ["event:sample", "event:second"])).toBeNull();
+    expect(parseDismissedNotices("not-json")).toEqual([]);
+  });
+
+  it("merges a published announcement notice behind a pinned event", () => {
+    const list = mergeFloatingNotices(
+      [{ ...sample, pinned: true }],
+      [
+        {
+          slug: "public-notice",
+          title: "Public notice",
+          excerpt: "Please read.",
+          category: "Announcement",
+          date: "2026-10-20",
+          notifyOnSite: true,
+        },
+      ],
+      new Date("2026-10-22T12:00:00Z")
+    );
+    expect(list.map((item) => item.id)).toEqual(["event:sample", "news:public-notice"]);
+    expect(newsToFloatingNotice({ slug: "x", title: "X", excerpt: "", category: "News", date: "2026-01-01" }).actionLabel).toBe(
+      "Read more"
+    );
   });
 });
 

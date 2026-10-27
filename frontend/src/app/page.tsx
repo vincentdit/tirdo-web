@@ -4,40 +4,30 @@ import { ArrowRight } from "lucide-react";
 import { HeroSlider } from "@/components/site/hero-slider";
 import { Icon } from "@/components/site/icon";
 import { coreActivities } from "@/lib/content";
-import { formatDate } from "@/lib/utils";
 import { PartnersGrid } from "@/components/site/partners-grid";
-import { getNews, getServices, getDirectorMessage, getSiteBrand, getPartners } from "@/lib/strapi";
+import { NewsListItem } from "@/components/site/cards";
+import { EventCard } from "@/components/site/event-card";
+import { getNews, getServices, getDirectorMessage, getSiteBrand, getPartners, getFeaturedEvents } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
 export default async function HomePage() {
-  const [news, services, directorMessage, brand, partnerList] = await Promise.all([
-    getNews(3),
+  const [news, featuredEvents, services, directorMessage, brand, partnerList] = await Promise.all([
+    getNews(8),
+    getFeaturedEvents(6),
     getServices(),
     getDirectorMessage(),
     getSiteBrand(),
     getPartners(),
   ]);
-  const latest = news[0];
+  const homeEvents = featuredEvents.slice(0, 4);
+  const homeNews = news.slice(0, 4);
 
   return (
     <>
       {brand.showHero !== false && <HeroSlider heroImage={brand.heroImage} />}
-
-      {/* Latest announcement */}
-      {latest && (
-        <section className="border-b border-brand-pale">
-          <div className="container-tirdo flex min-h-[75px] flex-wrap items-center gap-x-5 gap-y-2 py-4 text-sm">
-            <span className="bg-brand-gold px-2 py-1 text-[0.68rem] font-bold tracking-wide text-brand-ink">LATEST</span>
-            <strong className="text-brand-ink">{latest.title}</strong>
-            <Link href={`/news/${latest.slug}`} className="ml-auto inline-flex shrink-0 items-center gap-1 font-bold text-brand-teal hover:gap-2">
-              Read announcement <ArrowRight className="h-4 w-4 transition-all" />
-            </Link>
-          </div>
-        </section>
-      )}
 
       {/* Welcome / intro */}
       <section className="container-tirdo grid gap-12 py-20 md:grid-cols-2 md:gap-20 md:py-24">
@@ -133,37 +123,46 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* News & innovations */}
-      <section className="container-tirdo py-20 md:py-24">
-        <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <p className="eyebrow mb-2 text-brand-teal">From TIRDO</p>
-            <h2 className="font-display text-[2rem] text-brand-ink md:text-[2.6rem]">News &amp; innovations</h2>
+      <section className="bg-[#f4f7fb] py-16 md:py-20">
+        <div className="container-tirdo">
+          <div className="mb-10 border-l-4 border-brand-teal pl-4">
+            <h2 className="font-display text-[2rem] text-brand-ink md:text-[2.5rem]">News &amp; Events</h2>
+            <p className="mt-1 text-brand-muted">Stay updated with the latest announcements and upcoming TIRDO events.</p>
           </div>
-          <Link href="/news" className="inline-flex items-center gap-1 text-sm font-bold uppercase tracking-wide text-brand-teal hover:gap-2">
-            View all news <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="grid gap-5 lg:grid-cols-[2fr_1fr_1fr]">
-          {latest && (
-            <Link href={`/news/${latest.slug}`} className="group relative h-[350px] overflow-hidden text-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img loading="lazy" decoding="async" src={latest.image} alt={latest.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(8,40,62,0.85),transparent_65%)]" />
-              <div className="absolute bottom-0 z-10 p-6">
-                <span className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-gold">{latest.category} · {formatDate(latest.date)}</span>
-                <h3 className="my-2 text-[1.3rem] font-semibold leading-snug">{latest.title}</h3>
-                <span className="inline-flex items-center gap-1 text-sm font-bold uppercase tracking-wide">Read story <ArrowRight className="h-4 w-4" /></span>
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-12">
+            <div>
+              <div className="mb-5 flex items-end justify-between gap-3">
+                <h3 className="text-xl font-bold text-brand-ink">Events</h3>
+                <Link href="/events" className="text-sm font-bold text-brand-teal hover:underline">
+                  View all
+                </Link>
               </div>
-            </Link>
-          )}
-          {news.slice(1, 3).map((n) => (
-            <Link key={n.slug} href={`/news/${n.slug}`} className="flex h-[350px] flex-col justify-end border-t-4 border-brand-teal bg-brand-pale p-6">
-              <span className="text-[0.65rem] font-bold uppercase tracking-wide text-brand-teal">{n.category} · {formatDate(n.date)}</span>
-              <h3 className="my-3 text-[1.2rem] font-semibold leading-snug text-brand-ink">{n.title}</h3>
-              <span className="inline-flex items-center gap-1 text-[0.76rem] font-bold uppercase tracking-wide text-brand-teal">Read story <ArrowRight className="h-4 w-4" /></span>
-            </Link>
-          ))}
+              {homeEvents.length > 0 ? (
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {homeEvents.map((item) => (
+                    <EventCard key={item.slug} item={item} />
+                  ))}
+                </div>
+              ) : (
+                <p className="rounded-2xl border border-dashed border-brand-teal/30 bg-white p-6 text-sm text-brand-muted">
+                  Upcoming events will appear here.
+                </p>
+              )}
+            </div>
+            <div>
+              <div className="mb-5 flex items-end justify-between gap-3">
+                <h3 className="text-xl font-bold text-brand-ink">Latest News</h3>
+                <Link href="/news" className="text-sm font-bold text-[#c8102e] hover:underline">
+                  Explore all news
+                </Link>
+              </div>
+              <div className="space-y-4">
+                {homeNews.map((item) => (
+                  <NewsListItem key={item.slug} item={item} />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
       {partnerList.length > 0 && (

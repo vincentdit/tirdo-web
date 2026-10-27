@@ -87,6 +87,16 @@ const config: Config = {
           "0%": { transform: "scale(1)", opacity: "0.55" },
           "100%": { transform: "scale(1.85)", opacity: "0" },
         },
+        "notice-pop": {
+          "0%": { opacity: "0", transform: "translateY(32px) scale(0.7)" },
+          "55%": { opacity: "1", transform: "translateY(-10px) scale(1.08)" },
+          "78%": { transform: "translateY(4px) scale(0.97)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        "notice-float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -94,6 +104,8 @@ const config: Config = {
         "fade-in": "fade-in 0.6s ease-out both",
         "pin-blink": "pin-blink 1.15s ease-in-out infinite",
         "pin-ping": "pin-ping 1.6s ease-out infinite",
+        "notice-pop": "notice-pop 0.7s cubic-bezier(0.22, 1.4, 0.36, 1) both",
+        "notice-float": "notice-float 2.4s ease-in-out 0.7s infinite",
       },
     },
   },

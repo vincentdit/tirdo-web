@@ -1,84 +1,125 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { Bell, ChevronRight, X } from "lucide-react";
-import type { EventItem } from "@/lib/content";
-import { formatDate } from "@/lib/utils";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { X } from "lucide-react";
+import type { EventItem, FloatingNotice } from "@/lib/content";
+import {
+  mergeFloatingNotices,
+  nextFloatingNotice,
+  NOTICE_DISMISS_KEY,
+  parseDismissedNotices,
+} from "@/lib/content";
+import { useBrand } from "@/components/site/brand-provider";
 import { RegisterLink } from "@/components/site/current-event-ribbon";
 
-export function FloatingEventPin({ events }: { events: EventItem[] }) {
-  const items = events.filter((item) => item.notifyOnSite !== false);
-  const [open, setOpen] = useState(true);
-  if (!items.length) return null;
-
-  const loop = items.length > 1 ? [...items, ...items] : items;
-  const duration = Math.max(16, items.length * 8);
-
-  if (!open) {
-    return (
-      <button
-        type="button"
-        className="fixed right-0 top-1/3 z-[90] rounded-l-md bg-brand-gold px-2 py-4 text-[0.65rem] font-bold uppercase tracking-wide text-brand-ink shadow-lg"
-        aria-label="Open event notification"
-        onClick={() => setOpen(true)}
-      >
-        <span className="flex flex-col items-center gap-1">
-          <Bell className="h-4 w-4" />
-          <span className="[writing-mode:vertical-rl] rotate-180">Notification</span>
-        </span>
-      </button>
-    );
+function readDismissed(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return parseDismissedNotices(sessionStorage.getItem(NOTICE_DISMISS_KEY));
+  } catch {
+    return [];
   }
+}
+
+function writeDismissed(ids: string[]) {
+  try {
+    sessionStorage.setItem(NOTICE_DISMISS_KEY, JSON.stringify(ids));
+  } catch {
+    /* private mode */
+  }
+}
+
+export function FloatingEventPin({
+  events = [],
+  notices: incoming = [],
+}: {
+  events?: EventItem[];
+  notices?: FloatingNotice[];
+}) {
+  const brand = useBrand();
+  const notices = useMemo(
+    () => (incoming.length ? incoming : mergeFloatingNotices(events)),
+    [incoming, events]
+  );
+  const [ready, setReady] = useState(false);
+  const [dismissed, setDismissed] = useState<string[]>([]);
+
+  useEffect(() => {
+    setDismissed(readDismissed());
+    setReady(true);
+  }, []);
+
+  const notice = ready ? nextFloatingNotice(notices, dismissed) : null;
+
+  const dismiss = useCallback((item: FloatingNotice) => {
+    setDismissed((prev) => {
+      const next = prev.includes(item.id) ? prev : [...prev, item.id];
+      writeDismissed(next);
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!notice) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") dismiss(notice);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [notice, dismiss]);
+
+  if (!notice) return null;
+
+  const logo = notice.logo || brand.logo;
 
   return (
     <aside
-      className="fixed right-0 top-28 z-[90] w-[min(18.5rem,calc(100vw-1rem))] overflow-hidden rounded-l-xl border border-r-0 border-brand-gold/60 bg-white shadow-[0_12px_32px_rgba(9,42,69,0.18)] sm:top-32"
-      aria-label="Event notification"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-[90] flex justify-end p-3 sm:p-4"
+      style={{
+        paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
+        paddingRight: "max(0.75rem, env(safe-area-inset-right))",
+      }}
+      aria-label="Site notification"
     >
-      <div className="flex items-center justify-between bg-brand-gold px-3 py-2 text-brand-ink">
-        <span className="inline-flex items-center gap-1.5 text-[0.72rem] font-bold uppercase tracking-wide">
-          <Bell className="h-3.5 w-3.5" /> Notification
-        </span>
-        <button
-          type="button"
-          className="rounded p-0.5 hover:bg-black/10"
-          aria-label="Hide notification"
-          onClick={() => setOpen(false)}
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
-      <div className="h-[220px] overflow-hidden bg-[#fffdf6]">
-        <div
-          className="event-ticker-y motion-reduce:animate-none"
-          style={{ animationDuration: `${duration}s` }}
-        >
-          {loop.map((item, index) => (
-            <article key={`${item.slug}-${index}`} className="border-b border-brand-gold/20 px-3 py-3 hover:bg-white">
-              <span className="inline-block bg-brand-teal px-1.5 py-0.5 text-[0.58rem] font-bold uppercase tracking-wide text-white">
-                New
-              </span>
-              <Link href={`/events/${item.slug}`} className="mt-1 block text-sm font-semibold leading-snug text-brand-ink hover:underline">
-                {item.title}
-              </Link>
-              <p className="mt-1 text-[11px] text-brand-muted">{formatDate(item.date)}</p>
-              {item.registerUrl ? (
-                <RegisterLink href={item.registerUrl} className="mt-1 inline-block text-[11px] font-bold text-brand-teal">
-                  Register
-                </RegisterLink>
-              ) : null}
-            </article>
-          ))}
+      <div className="pointer-events-auto origin-bottom-right motion-safe:animate-notice-float motion-reduce:animate-none">
+      <div
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="tirdo-notice-title"
+        className="relative w-[min(16.5rem,calc(100vw-1.5rem))] origin-bottom-right overflow-hidden rounded-2xl bg-primary text-primary-foreground shadow-[0_16px_40px_rgba(9,42,69,0.28)] motion-safe:animate-notice-pop motion-reduce:animate-none"
+      >
+        <div className="pointer-events-none absolute inset-0 opacity-20" aria-hidden>
+          <div className="absolute -right-10 top-0 h-28 w-28 rounded-full bg-accent blur-2xl" />
+        </div>
+        <div className="relative flex items-center gap-2.5 px-3 py-2.5">
+          {logo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logo} alt="" className="h-8 w-8 shrink-0 rounded-md border border-white/25 bg-white object-contain p-0.5" />
+          ) : null}
+          <div className="min-w-0 flex-1">
+            <h2 id="tirdo-notice-title" className="text-sm font-semibold leading-snug text-white">
+              {notice.title}
+            </h2>
+          </div>
+          <button
+            type="button"
+            className="rounded-md p-1 text-white/80 hover:bg-white/10 hover:text-white"
+            aria-label="Dismiss notification"
+            onClick={() => dismiss(notice)}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="relative border-t border-white/15 px-4 py-3">
+          <RegisterLink
+            href={notice.href}
+            className="inline-flex w-full items-center justify-center rounded-md bg-accent px-3 py-2 text-xs font-bold uppercase tracking-wide text-accent-foreground transition hover:brightness-95"
+          >
+            {notice.actionLabel}
+          </RegisterLink>
         </div>
       </div>
-      <Link
-        href="/events"
-        className="flex items-center justify-between bg-brand-navy px-3 py-2 text-xs font-semibold text-white hover:bg-brand-blue"
-      >
-        View events
-        <ChevronRight className="h-4 w-4" />
-      </Link>
+      </div>
     </aside>
   );
 }

@@ -2,13 +2,15 @@ import Link from "next/link";
 import { ArrowRight, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { NewsBadge } from "@/components/site/news-ribbon";
 import { formatDate } from "@/lib/utils";
 import { technologySectorName, type NewsItem, type Project, type Technology } from "@/lib/content";
 
 export function NewsCard({ item }: { item: NewsItem }) {
   const href = `/news/${item.slug}`;
   return (
-    <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
+    <Card className="group relative flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
+      <NewsBadge className="absolute left-3 top-3 z-10" />
       <div className="relative aspect-[16/9] overflow-hidden bg-primary/10">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -18,7 +20,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
             <span className="text-4xl font-black">TIRDO</span>
           </div>
         )}
-        <Badge variant="accent" className="absolute left-3 top-3">{item.category}</Badge>
+        <Badge variant="accent" className="absolute right-3 top-3">{item.category}</Badge>
       </div>
       <CardContent className="flex flex-1 flex-col p-5">
         <div className="mb-2 flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -33,6 +35,27 @@ export function NewsCard({ item }: { item: NewsItem }) {
         </Link>
       </CardContent>
     </Card>
+  );
+}
+
+export function NewsListItem({ item }: { item: NewsItem }) {
+  const href = `/news/${item.slug}`;
+  return (
+    <article className="relative rounded-xl border border-[#e6eef0] bg-white p-5 pt-6 shadow-sm">
+      <NewsBadge className="absolute -top-2 left-4" />
+      <h3 className="font-semibold uppercase leading-snug text-brand-ink">
+        <Link href={href} className="hover:text-[#c8102e]">
+          {item.title}
+        </Link>
+      </h3>
+      {item.excerpt ? <p className="mt-2 line-clamp-3 text-sm text-brand-muted">{item.excerpt}</p> : null}
+      <div className="mt-3 flex items-center justify-between gap-3 text-xs">
+        <span className="text-brand-muted">{formatDate(item.date)}</span>
+        <Link href={href} className="inline-flex items-center gap-1 font-bold text-brand-teal hover:gap-1.5">
+          Read more <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    </article>
   );
 }
 

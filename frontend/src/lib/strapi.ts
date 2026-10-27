@@ -13,8 +13,8 @@
 import { cookies } from "next/headers";
 import * as fallback from "./content";
 import { defaultBrand, type SiteBrand } from "./site";
-import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader, EventItem, PartnerItem, EServiceItem } from "./content";
-import { featuredEvents, isPublicPartner, notificationEvents, safeServiceHref } from "./content";
+import type { NewsItem, Project, Publication, Vacancy, Tender, Technology, Department, ServiceItem, Leader, EventItem, PartnerItem, EServiceItem, FloatingNotice } from "./content";
+import { featuredEvents, isPublicPartner, mergeFloatingNotices, notificationEvents, safeServiceHref } from "./content";
 import { isLocale, defaultLocale } from "@/i18n/config";
 import { publicFileUrl } from "@/lib/utils";
 
@@ -80,7 +80,7 @@ export async function getNews(limit = 8, locale = activeLocale()): Promise<NewsI
     return {
       slug: a.slug, title: a.title, excerpt: a.excerpt, body: a.body,
       category: a.category ?? "News", date: a.date ?? a.publishedAt,
-      image: mediaUrl(a.cover) || mediaUrl(a.imageUrl), sourceUrl: a.sourceUrl,
+      image: mediaUrl(a.cover) || mediaUrl(a.imageUrl), sourceUrl: a.sourceUrl, notifyOnSite: Boolean(a.notifyOnSite),
     };
   });
 }
@@ -94,7 +94,7 @@ export async function getNewsBySlug(slug: string, locale = activeLocale()): Prom
     return {
       slug: a.slug, title: a.title, excerpt: a.excerpt, body: a.body,
       category: a.category ?? "News", date: a.date ?? a.publishedAt,
-      image: mediaUrl(a.cover) || mediaUrl(a.imageUrl), sourceUrl: a.sourceUrl,
+      image: mediaUrl(a.cover) || mediaUrl(a.imageUrl), sourceUrl: a.sourceUrl, notifyOnSite: Boolean(a.notifyOnSite),
     };
   }
   return fallback.news.find((n) => n.slug === slug) ?? null;
@@ -181,7 +181,12 @@ export async function getPinnedEvents(locale = activeLocale()): Promise<EventIte
 }
 
 export async function getNotificationEvents(locale = activeLocale()): Promise<EventItem[]> {
-  return notificationEvents(await getEvents(locale));
+  return notificationEvents(await getEvents(locale), new Date());
+}
+
+export async function getFloatingNotices(locale = activeLocale()): Promise<FloatingNotice[]> {
+  const [events, news] = await Promise.all([getEvents(locale), getNews(24, locale)]);
+  return mergeFloatingNotices(events, news, new Date());
 }
 
 function mapPartner(raw: Raw, locale: string): PartnerItem {

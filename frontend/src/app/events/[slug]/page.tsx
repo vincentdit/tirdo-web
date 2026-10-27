@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Download, MapPin, Pin, Tag } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { Badge } from "@/components/ui/badge";
 import { RegisterLink } from "@/components/site/current-event-ribbon";
+import { EventDateBadge } from "@/components/site/event-card";
 import { formatDate, formatDateRange } from "@/lib/utils";
 import { getEventBySlug, getEvents } from "@/lib/strapi";
 
@@ -41,6 +42,7 @@ export default async function EventDetail({ params }: { params: { slug: string }
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-ink/40 to-transparent" />
+                <EventDateBadge date={item.date} className="absolute right-4 top-4" />
                 {item.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -147,11 +149,14 @@ export default async function EventDetail({ params }: { params: { slug: string }
                 <h2 className="mb-4 font-display text-lg text-brand-ink">Other events</h2>
                 <ul className="space-y-4">
                   {related.map((e) => (
-                    <li key={e.slug} className="border-t border-[#eef3f4] pt-4 first:border-0 first:pt-0">
-                      <Link href={`/events/${e.slug}`} className="block text-sm font-semibold text-brand-ink hover:text-brand-teal">
-                        {e.title}
-                      </Link>
-                      <span className="mt-1 block text-xs text-brand-muted">{formatDate(e.date)}</span>
+                    <li key={e.slug} className="flex gap-3 border-t border-[#eef3f4] pt-4 first:border-0 first:pt-0">
+                      <EventDateBadge date={e.date} className="h-12 min-w-[2.8rem] rounded-lg px-1.5 py-1" />
+                      <div className="min-w-0">
+                        <Link href={`/events/${e.slug}`} className="block text-sm font-semibold uppercase leading-snug text-brand-ink hover:text-brand-teal">
+                          {e.title}
+                        </Link>
+                        <span className="mt-1 block text-xs text-brand-muted">{formatDate(e.date)}</span>
+                      </div>
                     </li>
                   ))}
                 </ul>

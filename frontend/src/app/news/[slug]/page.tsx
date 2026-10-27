@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Calendar, ArrowLeft } from "lucide-react";
 import { PageBanner } from "@/components/site/page-banner";
 import { Badge } from "@/components/ui/badge";
+import { NewsBadge } from "@/components/site/news-ribbon";
 import { formatDate } from "@/lib/utils";
 import { getNews, getNewsBySlug } from "@/lib/strapi";
 
@@ -36,7 +37,8 @@ export default async function NewsDetail({ params }: { params: { slug: string } 
       <section className="py-14">
         <div className="container-tirdo grid gap-10 lg:grid-cols-[1.6fr_1fr]">
           <article className="max-w-none">
-            <div className="mb-6 flex items-center gap-3 text-sm text-muted-foreground">
+            <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              <NewsBadge />
               <Badge variant="accent">{item.category}</Badge>
               <span className="inline-flex items-center gap-1"><Calendar className="h-4 w-4" /> {formatDate(item.date)}</span>
             </div>
@@ -75,8 +77,9 @@ export default async function NewsDetail({ params }: { params: { slug: string } 
               <h3 className="mb-3 font-bold text-primary">Related news</h3>
               <ul className="space-y-3">
                 {related.map((n) => (
-                  <li key={n.slug}>
-                    <Link href={`/news/${n.slug}`} className="block text-sm font-medium text-foreground/80 hover:text-brand-teal">
+                  <li key={n.slug} className="relative rounded-lg border border-[#e6eef0] bg-white p-3 pt-4">
+                    <NewsBadge className="absolute -top-2 left-3" />
+                    <Link href={`/news/${n.slug}`} className="block text-sm font-medium text-foreground/80 hover:text-[#c8102e]">
                       {n.title}
                     </Link>
                     <span className="text-xs text-muted-foreground">{formatDate(n.date)}</span>
