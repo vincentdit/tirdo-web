@@ -194,7 +194,7 @@ export const mainNav: NavItem[] = [
 // production URLs via NEXT_PUBLIC_* env vars; when unset the gateway falls back
 // to the on-site e-Services SSO hub so the call-to-action is never a dead link.
 export const portals = {
-  nilims: process.env.NEXT_PUBLIC_NILIMS_URL || "/e-services",
+  nilims: process.env.NEXT_PUBLIC_LIMS_URL || "/e-services",
   ciap: process.env.NEXT_PUBLIC_CIAP_URL || "/e-services",
   teltp: process.env.NEXT_PUBLIC_TELTP_URL || "/e-services",
 };

@@ -467,7 +467,7 @@ export const eservices: EServiceItem[] = [
   {
     slug: "nilims",
     title: "Industrial Information System",
-    acronym: "NILIMS",
+    acronym: "LIMS",
     description: "Search technical reports, standards and industrial data.",
     href: "/industrial-information-centre",
     category: "Industrial information",
@@ -1339,7 +1339,7 @@ export function technologySectorName(slug: string | undefined): string | undefin
 
 // -----------------------------------------------------------------------
 // Laboratory services (FR-LAB) — accredited testing, with a gateway to the
-// National Industrial Laboratory Information Management System (NILIMS).
+// Laboratory Information Management System (LIMS).
 // -----------------------------------------------------------------------
 
 export type LabGroup = { name: string; tests: string[] };
@@ -1352,7 +1352,7 @@ export const laboratory: {
 } = {
   intro: [
     "TIRDO operates specialised, standards-based laboratories serving industry, government, SMEs and the public. Testing spans food and microbiology, industrial chemistry, materials, energy and the environment — supporting quality assurance, regulatory compliance and product development.",
-    "Samples and results are managed through NILIMS, TIRDO's National Industrial Laboratory Information Management System, which lets clients register samples, track progress and receive results online.",
+    "Samples and results are managed through LIMS, TIRDO's Laboratory Information Management System, which lets clients register samples, track progress and receive results online.",
   ],
   accreditation:
     "TIRDO's food laboratory has operated since 1995 and has been accredited since 2009. Laboratories work to recognised international standards (including ISO/IEC 17025 methods) with quality-assured procedures, calibrated instruments and qualified analysts.",
@@ -1364,10 +1364,10 @@ export const laboratory: {
     { name: "Environment & Occupational Safety", tests: ["Air quality (particulates, gases, emissions)", "Noise, light and vibration", "Wastewater and potable-water analysis", "Environmental impact assessment and audit"] },
   ],
   process: [
-    { title: "Register the sample", text: "Create a request in NILIMS (or at the TIRDO front desk) describing the sample and tests required." },
-    { title: "Submit & pay", text: "Deliver the sample to TIRDO; a job number and cost estimate are issued and tracked in NILIMS." },
+    { title: "Register the sample", text: "Create a request in LIMS (or at the TIRDO front desk) describing the sample and tests required." },
+    { title: "Submit & pay", text: "Deliver the sample to TIRDO; a job number and cost estimate are issued and tracked in LIMS." },
     { title: "Analysis", text: "Accredited analysts run the requested tests under quality-assured procedures." },
-    { title: "Receive results", text: "Download the test report from NILIMS or collect a certified copy from TIRDO." },
+    { title: "Receive results", text: "Download the test report from LIMS or collect a certified copy from TIRDO." },
   ],
 };
 
@@ -1470,7 +1470,7 @@ export const serviceCharter: {
   standards: [
     { service: "General enquiries", standard: "Acknowledge every enquiry and respond with the information requested or a clear next step.", turnaround: "Within 3 working days" },
     { service: "Service & consultancy requests", standard: "Acknowledge the request and issue a technical and cost proposal.", turnaround: "Within 7 working days" },
-    { service: "Laboratory testing (NILIMS)", standard: "Register the sample, confirm the job and cost, and issue results on completion.", turnaround: "Results within 10–21 working days by test type" },
+    { service: "Laboratory testing (LIMS)", standard: "Register the sample, confirm the job and cost, and issue results on completion.", turnaround: "Results within 10–21 working days by test type" },
     { service: "Training enrolment (TeLTP)", standard: "Confirm registration and share the schedule and joining details.", turnaround: "Within 5 working days" },
     { service: "Tender & procurement queries", standard: "Respond to clarifications during the tender window.", turnaround: "Within 3 working days" },
     { service: "Complaints", standard: "Acknowledge the complaint, investigate, and communicate the outcome.", turnaround: "Acknowledge in 2 days; resolve within 14 working days" },

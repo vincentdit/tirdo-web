@@ -16,7 +16,7 @@ module.exports = [
   {
     title: 'Industrial Information System',
     slug: 'nilims',
-    acronym: 'NILIMS',
+    acronym: 'LIMS',
     description: 'Search technical reports, standards and industrial data.',
     href: '/industrial-information-centre',
     category: 'Industrial information',

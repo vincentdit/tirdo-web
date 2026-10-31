@@ -15,7 +15,7 @@ module.exports = {
     standards: [
       { service: "General enquiries", standard: "Acknowledge every enquiry and respond with the information requested or a clear next step.", turnaround: "Within 3 working days" },
       { service: "Service & consultancy requests", standard: "Acknowledge the request and issue a technical and cost proposal.", turnaround: "Within 7 working days" },
-      { service: "Laboratory testing (NILIMS)", standard: "Register the sample, confirm the job and cost, and issue results on completion.", turnaround: "Results within 10–21 working days by test type" },
+      { service: "Laboratory testing (LIMS)", standard: "Register the sample, confirm the job and cost, and issue results on completion.", turnaround: "Results within 10–21 working days by test type" },
       { service: "Training enrolment (TeLTP)", standard: "Confirm registration and share the schedule and joining details.", turnaround: "Within 5 working days" },
       { service: "Tender & procurement queries", standard: "Respond to clarifications during the tender window.", turnaround: "Within 3 working days" },
       { service: "Complaints", standard: "Acknowledge the complaint, investigate, and communicate the outcome.", turnaround: "Acknowledge in 2 days; resolve within 14 working days" },
@@ -42,7 +42,7 @@ module.exports = {
     standards: [
       { service: "Maswali ya jumla", standard: "Kupokea kila ombi na kujibu kwa taarifa iliyoombwa au kueleza hatua inayofuata kwa uwazi.", turnaround: "Ndani ya siku 3 za kazi" },
       { service: "Maombi ya huduma na ushauri", standard: "Kupokea ombi na kutoa andiko la kiufundi pamoja na gharama.", turnaround: "Ndani ya siku 7 za kazi" },
-      { service: "Upimaji wa maabara (NILIMS)", standard: "Kusajili sampuli, kuthibitisha kazi na gharama, na kutoa majibu baada ya kukamilika.", turnaround: "Majibu ndani ya siku 10–21 za kazi kulingana na aina ya kipimo" },
+      { service: "Upimaji wa maabara (LIMS)", standard: "Kusajili sampuli, kuthibitisha kazi na gharama, na kutoa majibu baada ya kukamilika.", turnaround: "Majibu ndani ya siku 10–21 za kazi kulingana na aina ya kipimo" },
       { service: "Usajili wa mafunzo (TeLTP)", standard: "Kuthibitisha usajili na kutoa ratiba na taarifa za kujiunga.", turnaround: "Ndani ya siku 5 za kazi" },
       { service: "Maswali ya zabuni na manunuzi", standard: "Kujibu maombi ya ufafanuzi katika kipindi cha zabuni.", turnaround: "Ndani ya siku 3 za kazi" },
       { service: "Malalamiko", standard: "Kupokea lalamiko, kulifanyia uchunguzi, na kutoa taarifa ya matokeo.", turnaround: "Kupokea ndani ya siku 2; kutatua ndani ya siku 14 za kazi" },

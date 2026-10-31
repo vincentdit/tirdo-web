@@ -11,7 +11,7 @@ import { getEServiceHref } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   title: "Laboratory Services",
-  description: "TIRDO's accredited laboratories for food, chemistry, materials, energy and environmental testing — with online sample submission and results through NILIMS.",
+  description: "TIRDO's accredited laboratories for food, chemistry, materials, energy and environmental testing — with online sample submission and results through LIMS.",
   alternates: { canonical: "/laboratory" },
 };
 
@@ -78,8 +78,8 @@ export default async function LaboratoryPage() {
       <section className="border-t bg-secondary/30 py-14">
         <div className="container-tirdo">
           <PortalGateway
-            name="National Industrial Laboratory Information Management System"
-            acronym="NILIMS"
+            name="Laboratory Information Management System"
+            acronym="LIMS"
             icon="Microscope"
             tagline="Register samples, track your jobs and download certified test results online — TIRDO's laboratory information management system."
             href={href}

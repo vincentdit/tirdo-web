@@ -88,11 +88,11 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     titleField: "title",
     draftAndPublish: true,
     group: "content",
-    description: "Add any TIRDO system shown on e-Services (Client Portal, NILIMS, CIAP, consultation, e-learning, e-office, or a new one). Set its live URL when ready; leave it blank until then.",
+    description: "Add any TIRDO system shown on e-Services (Client Portal, LIMS, CIAP, consultation, e-learning, e-office, or a new one). Set its live URL when ready; leave it blank until then.",
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug (optional — filled from the title)", type: "text" },
-      { key: "acronym", label: "Acronym (CIAP, NILIMS, …)", type: "text" },
+      { key: "acronym", label: "Acronym (CIAP, LIMS, …)", type: "text" },
       { key: "description", label: "Short description", type: "textarea" },
       { key: "href", label: "System URL (https://… or /path). Blank = Request access via Contact.", type: "text" },
       { key: "category", label: "Category", type: "select", options: ["Client portal", "Industrial information", "Consultancy", "Learning", "Staff", "Other"] },

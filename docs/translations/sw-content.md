@@ -117,7 +117,7 @@ the *content*.
 > kemia ya viwanda, vifaa, nishati na mazingira — ukiunga mkono uthibitisho wa
 > ubora, ufuasi wa kanuni na uendelezaji wa bidhaa.
 >
-> Sampuli na majibu husimamiwa kupitia NILIMS, Mfumo wa Kitaifa wa Usimamizi wa
+> Sampuli na majibu husimamiwa kupitia LIMS, Mfumo wa Kitaifa wa Usimamizi wa
 > Taarifa za Maabara za Viwanda wa TIRDO, unaowawezesha wateja kusajili sampuli,
 > kufuatilia hatua na kupokea majibu mtandaoni.
 
@@ -152,7 +152,7 @@ the *content*.
 | Learn more | Jifunze zaidi |
 | Read more | Soma zaidi |
 | View section | Tazama sehemu |
-| Open NILIMS / CIAP / TeLTP | Fungua NILIMS / CIAP / TeLTP |
+| Open LIMS / CIAP / TeLTP | Fungua LIMS / CIAP / TeLTP |
 
 ---
 
@@ -189,7 +189,7 @@ is filled in, so the site is never blank while translation is in progress.
 |---|---|---|
 | Maswali ya jumla | Kupokea kila ombi na kujibu kwa taarifa iliyoombwa au kueleza hatua inayofuata kwa uwazi. | Ndani ya siku 3 za kazi |
 | Maombi ya huduma na ushauri | Kupokea ombi na kutoa andiko la kiufundi pamoja na gharama. | Ndani ya siku 7 za kazi |
-| Upimaji wa maabara (NILIMS) | Kusajili sampuli, kuthibitisha kazi na gharama, na kutoa majibu baada ya kukamilika. | Majibu ndani ya siku 10–21 za kazi kulingana na aina ya kipimo |
+| Upimaji wa maabara (LIMS) | Kusajili sampuli, kuthibitisha kazi na gharama, na kutoa majibu baada ya kukamilika. | Majibu ndani ya siku 10–21 za kazi kulingana na aina ya kipimo |
 | Usajili wa mafunzo (TeLTP) | Kuthibitisha usajili na kutoa ratiba na taarifa za kujiunga. | Ndani ya siku 5 za kazi |
 | Maswali ya zabuni na manunuzi | Kujibu maombi ya ufafanuzi katika kipindi cha zabuni. | Ndani ya siku 3 za kazi |
 | Malalamiko | Kupokea lalamiko, kulifanyia uchunguzi, na kutoa taarifa ya matokeo. | Kupokea ndani ya siku 2; kutatua ndani ya siku 14 za kazi |

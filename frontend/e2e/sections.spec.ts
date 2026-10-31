@@ -20,11 +20,11 @@ test.describe("new content sections", () => {
     await expect(page.getByRole("link", { name: /Request technology transfer/i })).toBeVisible();
   });
 
-  test("laboratory section shows capabilities and the NILIMS gateway", async ({ page }) => {
+  test("laboratory section shows capabilities and the LIMS gateway", async ({ page }) => {
     await page.goto("/laboratory");
     await expect(page.getByRole("heading", { name: /Laboratory Services/i })).toBeVisible();
     await expect(page.getByText(/What we test/i)).toBeVisible();
-    await expect(page.getByText("NILIMS").first()).toBeVisible();
+    await expect(page.getByText("LIMS").first()).toBeVisible();
   });
 
   test("consultancy section shows service lines and the CIAP gateway", async ({ page }) => {

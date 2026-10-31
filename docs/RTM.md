@@ -23,7 +23,7 @@ record the e-GA governance framework expects — update it as work lands.
 | FR-CMS | Content management | Done | Strapi (`cms/`) content types | manual |
 | FR-I18N | Bilingual EN/Kiswahili | Partial | `next-intl` chrome + Strapi i18n on all content types, `strapi.mergeLocale` per-field EN fallback | unit: mergeLocale; e2e: language switch (content translation still to author) |
 | FR-TECH | Technology catalogue | Done | `app/technology/**`, `technology-explorer.tsx`, CMS `technology` type, `getTechnologies` | unit: catalogue integrity; e2e: catalogue + detail |
-| FR-LAB | Laboratory services + LIMS gateway | Done | `app/laboratory/page.tsx`, `gateway.tsx` (NILIMS) | unit: lab content; e2e: `/laboratory` + a11y |
+| FR-LAB | Laboratory services + LIMS gateway | Done | `app/laboratory/page.tsx`, `gateway.tsx` (LIMS) | unit: lab content; e2e: `/laboratory` + a11y |
 | FR-CON | Consultancy | Done | `app/consultancy/page.tsx`, `gateway.tsx` (CIAP) | unit: consultancy content; e2e: `/consultancy` + a11y |
 | FR-TRN | Training | Done | `app/training/page.tsx`, `gateway.tsx` (TeLTP) | unit: training content; e2e: `/training` + a11y |
 | FR-AUD | Audit trail of admin actions | Done | `cms/src/audit.js`, `/api/audit-log/verify` | chain logic test |

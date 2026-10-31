@@ -29,7 +29,7 @@ Legend: ☐ = to do. Record who/when in the sign-off table at the end.
   (Postgres/MariaDB passwords, Strapi `APP_KEYS`/`API_TOKEN_SALT`/`ADMIN_JWT_SECRET`/`JWT_SECRET`,
   Keycloak admin, MinIO keys, `MATOMO_API_TOKEN`, `SEARCH_ADMIN_TOKEN`).
 - ☐ Set `PUBLIC_URL`/`NEXT_PUBLIC_SITE_URL` to the real https domain; `NODE_ENV=production`.
-- ☐ Set portal gateway URLs: `NEXT_PUBLIC_NILIMS_URL`, `NEXT_PUBLIC_CIAP_URL`,
+- ☐ Set portal gateway URLs: `NEXT_PUBLIC_LIMS_URL`, `NEXT_PUBLIC_CIAP_URL`,
   `NEXT_PUBLIC_TELTP_URL` (else the gateways fall back to `/e-services`).
 - ☐ Configure outbound email for the contact form: point Strapi's email provider
   at a real SMTP relay and set `CONTACT_RECIPIENT` (see `docs/ADMIN-MANUAL.md`).
@@ -79,7 +79,7 @@ Legend: ☐ = to do. Record who/when in the sign-off table at the end.
 - ☐ e-Services sign-in via Keycloak works (and MFA prompts).
 - ☐ `robots.txt` and `sitemap.xml` served; new sections present in the sitemap.
 - ☐ Analytics: Matomo records a visit via the first-party `/s/` proxy.
-- ☐ Portal gateways (NILIMS/CIAP/TeLTP) point at the right systems.
+- ☐ Portal gateways (LIMS/CIAP/TeLTP) point at the right systems.
 
 ## 7. Monitoring & alerting
 

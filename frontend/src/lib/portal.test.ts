@@ -89,7 +89,7 @@ describe("portal helpers", () => {
     expect(col.label).toMatch(/e-service/i);
     expect(PORTAL_COLLECTIONS.map((c) => c.slug)).toContain("e-services");
     expect(validateCollectionPayload(col, { title: "CIAP", href: "https://ciap.tirdo.or.tz" })).toBeNull();
-    expect(validateCollectionPayload(col, { title: "NILIMS", href: "/industrial-information-centre" })).toBeNull();
+    expect(validateCollectionPayload(col, { title: "LIMS", href: "/industrial-information-centre" })).toBeNull();
     expect(validateCollectionPayload(col, { title: "Client Portal", href: "" })).toBeNull();
     expect(validateCollectionPayload(col, { title: "Bad", href: "javascript:alert(1)" })).toMatch(/https/i);
     expect(slugFromTitle("New Lab Portal")).toBe("new-lab-portal");

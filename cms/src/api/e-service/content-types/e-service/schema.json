@@ -5,7 +5,7 @@
     "singularName": "e-service",
     "pluralName": "e-services",
     "displayName": "E-service link",
-    "description": "Public and staff system links shown on e-Services (CIAP, NILIMS, e-learning, and others)"
+    "description": "Public and staff system links shown on e-Services (CIAP, LIMS, e-learning, and others)"
   },
   "options": {
     "draftAndPublish": true

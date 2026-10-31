@@ -25,7 +25,7 @@ Legend: ☐ Pass ☐ Fail — note defect ID where it fails.
   dedicated sections link through to them.
 - ☐ **Technology Catalogue** — lists technologies; sector and maturity filters
   work; detail pages show benefits/applications and the transfer CTA.
-- ☐ **Laboratory** — capabilities and process shown; NILIMS gateway points to the
+- ☐ **Laboratory** — capabilities and process shown; LIMS gateway points to the
   right system.
 - ☐ **Consultancy** — service lines and process shown; CIAP gateway correct.
 - ☐ **Training** — course catalogue and upcoming training shown; TeLTP gateway

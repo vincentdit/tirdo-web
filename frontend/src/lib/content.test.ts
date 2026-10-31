@@ -353,7 +353,7 @@ describe("e-service links", () => {
       external: true,
       label: "Open",
     });
-    expect(eServiceOpen({ title: "NILIMS", href: "/industrial-information-centre" }).label).toBe("Open");
+    expect(eServiceOpen({ title: "LIMS", href: "/industrial-information-centre" }).label).toBe("Open");
   });
 
   it("falls back to Contact when the system URL is still blank", () => {

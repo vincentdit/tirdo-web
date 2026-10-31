@@ -45,7 +45,7 @@ export default async function IICPage() {
                 <ButtonLink href="/publications" variant="accent" className="mb-2 w-full justify-center">Browse publications</ButtonLink>
                 {openExternal ? (
                   <ButtonLink href={openExternal} variant="outline" className="w-full justify-center" target="_blank" rel="noreferrer">
-                    Open NILIMS
+                    Open LIMS
                   </ButtonLink>
                 ) : (
                   <ButtonLink href="/contact?service=Industrial%20Information%20System" variant="outline" className="w-full justify-center">

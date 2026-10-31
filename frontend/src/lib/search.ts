@@ -66,7 +66,7 @@ const STATIC_PAGES: { title: string; url: string; excerpt: string }[] = [
   { title: "Departments", url: "/departments", excerpt: "Research, engineering and technology development divisions." },
   { title: "Services", url: "/services", excerpt: "Industrial research, testing, consultancy and training services." },
   { title: "Technology Catalogue", url: "/technology", excerpt: "Proven TIRDO technologies available for transfer, licensing and adoption." },
-  { title: "Laboratory Services", url: "/laboratory", excerpt: "Accredited food, chemistry, materials, energy and environmental testing (NILIMS)." },
+  { title: "Laboratory Services", url: "/laboratory", excerpt: "Accredited food, chemistry, materials, energy and environmental testing (LIMS)." },
   { title: "Consultancy & Advisory", url: "/consultancy", excerpt: "Multidisciplinary technical consultancy and advisory services (CIAP)." },
   { title: "Training & Skills Development", url: "/training", excerpt: "Short courses and capacity building for industry and SMEs (TeLTP)." },
   { title: "Research & Innovation", url: "/projects", excerpt: "Ongoing projects, research products and innovation." },

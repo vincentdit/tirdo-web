@@ -2,7 +2,7 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import { Icon } from "@/components/site/icon";
 
 // A prominent "gateway" card linking the public site to one of TIRDO's
-// authenticated systems (NILIMS, CIAP, TeLTP). When the portal URL isn't
+// authenticated systems (LIMS, CIAP, TeLTP). When the portal URL isn't
 // configured it falls back to the on-site e-Services hub, so the call to
 // action is never a dead link.
 export function PortalGateway({
