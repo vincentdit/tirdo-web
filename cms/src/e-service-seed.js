@@ -26,6 +26,18 @@ module.exports = [
     active: true,
   },
   {
+    title: 'Laboratory Information System',
+    slug: 'lims',
+    acronym: 'LIMS',
+    description: 'Laboratory requests, results and sample tracking.',
+    href: '',
+    category: 'Other',
+    showOnPublic: true,
+    showInPortal: true,
+    displayOrder: 25,
+    active: true,
+  },
+  {
     title: 'Consultancy & Industrial Advisory Portal',
     slug: 'ciap',
     acronym: 'CIAP',

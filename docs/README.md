@@ -17,6 +17,8 @@ The documentation set for the TIRDO public website & digital services portal.
 - [SECURE_DEPLOYMENT_CHECKLIST.md](SECURE_DEPLOYMENT_CHECKLIST.md) — rollout.
 - [WAF.md](WAF.md) — opt-in ModSecurity + OWASP CRS web application firewall.
 - [MFA.md](MFA.md) — multi-factor auth for Keycloak, CMS and other admin consoles.
+- [IAM.md](IAM.md) — centralized Keycloak SSO administration through the CMS portal.
+- [IAM-INTEGRATION.md](IAM-INTEGRATION.md) — how to connect NIIMS, LIMS, CIAP, TELT.
 - [MONITORING.md](MONITORING.md) — health endpoints and the opt-in uptime/metrics stack.
 - [MATOMO.md](MATOMO.md) — analytics install and the first-party proxy.
 

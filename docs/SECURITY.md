@@ -3,6 +3,13 @@
 This documents the hardening applied at the edge (Nginx) and the remaining
 production security tasks from the gap analysis.
 
+## Identity administration
+
+CMS Super Admins and Users & access administrators can manage Keycloak through
+the portal **Identity & Access** module. The browser never calls the Keycloak
+Admin API; Next.js uses `KEYCLOAK_ADMIN` on the server. Client secrets are
+shown once. OTP secrets are never returned. See [IAM.md](IAM.md).
+
 ## Applied at the Nginx edge (`nginx/conf.d/default.conf`)
 
 - **Version hidden** — `server_tokens off`.

@@ -26,6 +26,7 @@ type Me = {
   canViewAudit?: boolean;
   canManageMedia?: boolean;
   canManageUsers?: boolean;
+  canManageIam?: boolean;
   canManageSite?: boolean;
   departments?: { slug: string; title: string }[];
   collections?: Collection[];
@@ -101,6 +102,11 @@ export function PortalShell({ children }: { children: React.ReactNode }) {
           {me?.canManageUsers && (
             <NavItem href="/portal/users" active={pathname.startsWith("/portal/users")} icon={<Users className="h-4 w-4" />}>
               Users & access
+            </NavItem>
+          )}
+          {(me?.canManageIam || me?.isSuperAdmin) && (
+            <NavItem href="/portal/iam" active={pathname.startsWith("/portal/iam")} icon={<KeyRound className="h-4 w-4" />}>
+              Identity & Access
             </NavItem>
           )}
           {me?.canViewAudit && (

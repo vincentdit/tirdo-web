@@ -8,7 +8,8 @@ admin surface. None of it changes the running site; apply it per console.
 ## Keycloak (staff SSO + admin console)
 
 Keycloak is the identity provider, so enabling TOTP here protects everyone who
-signs in through it.
+signs in through it. Portal administrators can also manage MFA policy from
+**Identity & Access → Multi-Factor Authentication** (see [IAM.md](IAM.md)).
 
 **Enable (scripted):**
 
