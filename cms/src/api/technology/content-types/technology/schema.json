@@ -17,6 +17,7 @@
     "title": { "type": "string", "required": true, "pluginOptions": { "i18n": { "localized": true } } },
     "slug": { "type": "uid", "targetField": "title", "required": true, "pluginOptions": { "i18n": { "localized": false } } },
     "summary": { "type": "text", "pluginOptions": { "i18n": { "localized": true } } },
+    "departmentSlug": { "type": "string", "pluginOptions": { "i18n": { "localized": false } } },
     "sector": {
       "type": "enumeration",
       "enum": ["energy", "food-biotechnology", "materials", "environment", "textile-leather", "ict"],

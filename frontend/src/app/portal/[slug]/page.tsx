@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { PortalShell } from "@/components/tirdo-auth/portal-shell";
-import { collectionBySlug } from "@/lib/portal";
+import { canApproveDg, canApproveHod, collectionBySlug, publishActionBlocked, publishActionLabel } from "@/lib/portal";
 import { formatDate } from "@/lib/utils";
 
 type Row = {
@@ -21,10 +21,18 @@ type Row = {
   href?: string;
   logo?: string;
   active?: boolean;
+  pendingPublishBy?: string;
+  hodApprovedBy?: string;
+  departmentSlug?: string;
+  removed?: boolean;
 };
 
 function statusClass(status: string) {
   if (status === "Published" || status === "Handled") return "bg-emerald-100 text-emerald-800";
+  if (status === "Pending approval" || status === "Waiting for HOD" || status === "Waiting for DG") {
+    return "bg-orange-100 text-orange-800";
+  }
+  if (status === "Removed") return "bg-red-100 text-red-800";
   if (status === "Draft" || status === "Modified") return "bg-amber-100 text-amber-800";
   if (status === "Inactive") return "bg-slate-200 text-slate-700";
   return "bg-sky-100 text-sky-800";
@@ -42,6 +50,12 @@ export default function PortalCollectionPage() {
   const [qDebounced, setQDebounced] = useState("");
   const [canPublish, setCanPublish] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
+  const [accountEmail, setAccountEmail] = useState("");
+  const [isHod, setIsHod] = useState(false);
+  const [isSectionHead, setIsSectionHead] = useState(false);
+  const [isDg, setIsDg] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [assignedDepartments, setAssignedDepartments] = useState<{ slug: string }[]>([]);
   const [canCreate, setCanCreate] = useState(true);
   const [category, setCategory] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -89,7 +103,13 @@ export default function PortalCollectionPage() {
         setTotal(Number(pagination.total) || j?.results?.length || 0);
         setPageCount(Number(pagination.pageCount) || 1);
         setCanPublish(Boolean(j?.canPublish));
+        setIsHod(Boolean(j?.isHod));
+        setIsSectionHead(Boolean(j?.isSectionHead));
+        setIsDg(Boolean(j?.isDg));
+        setIsSuperAdmin(Boolean(j?.isSuperAdmin));
+        setAssignedDepartments(Array.isArray(j?.assignedDepartments) ? j.assignedDepartments : []);
         setCanDelete(Boolean(j?.canDelete));
+        setAccountEmail(String(j?.accountEmail || ""));
         setCanCreate(j?.canCreate !== false);
       })
       .catch((e) => setError(e instanceof Error ? e.message : "Could not load this list."))
@@ -136,8 +156,23 @@ export default function PortalCollectionPage() {
     }
   }
 
+  async function runRestore(id: string) {
+    setBusyId(id);
+    setError("");
+    try {
+      const res = await fetch(`/api/portal/content/${collection.slug}/${id}/restore`, { method: "POST" });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Could not restore this entry.");
+      load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not restore this entry.");
+    } finally {
+      setBusyId("");
+    }
+  }
+
   async function runDelete(id: string, title: string) {
-    if (!window.confirm(`Delete “${title}”? This cannot be undone.`)) return;
+    if (!window.confirm(`Remove “${title}” from the website? The record stays in the database for administrators.`)) return;
     setBusyId(id);
     setError("");
     try {
@@ -357,14 +392,58 @@ export default function PortalCollectionPage() {
                         Activate
                       </button>
                     )}
-                    {collection.draftAndPublish && canPublish && row.status !== "Published" && row.status !== "Inactive" && (
+                    {collection.draftAndPublish &&
+                      (canPublish || row.status === "Waiting for HOD" || row.status === "Waiting for DG" || row.status === "Pending approval") &&
+                      row.status !== "Published" &&
+                      row.status !== "Inactive" &&
+                      row.status !== "Removed" && (
                       <button
                         type="button"
-                        disabled={busyId === row.documentId}
+                        disabled={
+                          busyId === row.documentId ||
+                          publishActionBlocked(
+                            row.status,
+                            canApproveHod({
+                              email: accountEmail,
+                              isHod,
+                              isSectionHead,
+                              departments: assignedDepartments,
+                              departmentSlug: String(row.departmentSlug || ""),
+                              requestedBy: row.pendingPublishBy,
+                            }),
+                            canApproveDg({
+                              email: accountEmail,
+                              isDg,
+                              isSuperAdmin,
+                              requestedBy: row.pendingPublishBy,
+                              hodApprovedBy: row.hodApprovedBy,
+                            }),
+                            canPublish
+                          )
+                        }
                         onClick={() => runAction(row.documentId, "publish")}
                         className="rounded-md bg-[#059669] px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-60"
                       >
-                        {busyId === row.documentId ? "Working…" : "Publish"}
+                        {busyId === row.documentId
+                          ? "Working…"
+                          : publishActionLabel(
+                              row.status,
+                              canApproveHod({
+                                email: accountEmail,
+                                isHod,
+                                isSectionHead,
+                                departments: assignedDepartments,
+                                departmentSlug: String(row.departmentSlug || ""),
+                                requestedBy: row.pendingPublishBy,
+                              }),
+                              canApproveDg({
+                                email: accountEmail,
+                                isDg,
+                                isSuperAdmin,
+                                requestedBy: row.pendingPublishBy,
+                                hodApprovedBy: row.hodApprovedBy,
+                              })
+                            )}
                       </button>
                     )}
                     {collection.draftAndPublish && canPublish && row.status === "Published" && (
@@ -377,14 +456,24 @@ export default function PortalCollectionPage() {
                         {busyId === row.documentId ? "Working…" : "Unpublish"}
                       </button>
                     )}
-                    {canDelete && (
+                    {canDelete && row.status === "Removed" && (
+                      <button
+                        type="button"
+                        disabled={busyId === row.documentId}
+                        onClick={() => runRestore(String(row.documentId))}
+                        className="rounded-md border px-3 py-1.5 text-xs font-semibold text-slate-700 disabled:opacity-60"
+                      >
+                        Restore
+                      </button>
+                    )}
+                    {canDelete && row.status !== "Removed" && (
                       <button
                         type="button"
                         disabled={busyId === row.documentId}
                         onClick={() => runDelete(String(row.documentId), row.title)}
                         className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-60"
                       >
-                        Delete
+                        Remove from site
                       </button>
                     )}
                     {!collection.draftAndPublish && row.status === "Open" && (

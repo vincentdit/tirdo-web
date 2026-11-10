@@ -3,8 +3,100 @@ import { publicFileUrl } from "@/lib/utils";
 export const PORTAL_COOKIE = "tirdo_portal_token";
 export const PORTAL_LOGIN_PATH = "/portal/login";
 export const GRANT_UID = "api::portal-grant.portal-grant";
+export const CONTENT_REVIEW_UID = "api::content-review.content-review";
 export const DEPARTMENT_UID = "api::department.department";
 export const SITE_BRAND_UID = "api::site-brand.site-brand";
+export const PR_COLLECTION_SLUGS = ["articles", "events", "pages"];
+
+export type PortalDuty = "staff" | "hod" | "section-head" | "public-relations" | "director-general";
+
+export const PORTAL_DUTIES: { id: PortalDuty; label: string; help: string }[] = [
+  { id: "staff", label: "Department officer", help: "Section or department staff prepare information and send it to the Head of Department to publish." },
+  { id: "hod", label: "Head of Department", help: "Approves and publishes information from this department's staff or section." },
+  { id: "section-head", label: "Section head", help: "May approve and publish this department's staff information in place of the Head of Department." },
+  { id: "public-relations", label: "Public relations / announcements", help: "Manages website news and notices. Not an administrator. This information is approved and published by the Director General." },
+  { id: "director-general", label: "Director General", help: "Approves and publishes information submitted by Public Relations." },
+];
+
+export function parsePortalDuty(value: unknown): PortalDuty {
+  const v = String(value || "").trim();
+  if (v === "hod" || v === "section-head" || v === "public-relations" || v === "director-general") return v;
+  return "staff";
+}
+
+export function highestDuty(duties: PortalDuty[]): PortalDuty {
+  const rank: Record<PortalDuty, number> = {
+    staff: 1,
+    "public-relations": 2,
+    "section-head": 3,
+    hod: 4,
+    "director-general": 5,
+  };
+  return duties.reduce((best, duty) => (rank[duty] > rank[best] ? duty : best), "staff" as PortalDuty);
+}
+
+export function sameAccountEmail(a?: string, b?: string) {
+  return Boolean(a && b && a.trim().toLowerCase() === b.trim().toLowerCase());
+}
+
+export function contentDepartmentSlug(entry: Record<string, unknown>, fallback?: string) {
+  return String(entry.departmentSlug || fallback || "").trim().toLowerCase();
+}
+
+export function departmentMatches(accessDepts: { slug: string }[], departmentSlug?: string) {
+  const want = String(departmentSlug || "").trim().toLowerCase();
+  if (!want) return false;
+  return accessDepts.some((row) => {
+    const slug = String(row.slug || "").trim().toLowerCase();
+    return slug === "*" || slug === want;
+  });
+}
+
+export function canApproveHod(opts: {
+  email: string;
+  isHod: boolean;
+  isSectionHead: boolean;
+  departments: { slug: string }[];
+  departmentSlug?: string;
+  requestedBy?: string;
+}) {
+  if (!opts.isHod && !opts.isSectionHead) return false;
+  if (sameAccountEmail(opts.email, opts.requestedBy)) return false;
+  return departmentMatches(opts.departments, opts.departmentSlug);
+}
+
+export function canApproveDg(opts: {
+  email: string;
+  isDg: boolean;
+  isSuperAdmin: boolean;
+  requestedBy?: string;
+  hodApprovedBy?: string;
+}) {
+  if (!opts.isDg && !opts.isSuperAdmin) return false;
+  if (sameAccountEmail(opts.email, opts.requestedBy)) return false;
+  if (sameAccountEmail(opts.email, opts.hodApprovedBy)) return false;
+  return true;
+}
+
+export function requesterIsDeptHead(opts: {
+  isHod: boolean;
+  isSectionHead: boolean;
+  departments: { slug: string }[];
+  departmentSlug?: string;
+}) {
+  return (opts.isHod || opts.isSectionHead) && departmentMatches(opts.departments, opts.departmentSlug);
+}
+
+export type PublishPath = "hod" | "dg";
+
+export function publishPathForRequester(isPr: boolean): PublishPath {
+  return isPr ? "dg" : "hod";
+}
+
+export function reviewPublishPath(review?: { approvalPath?: PublishPath; state?: string } | null): PublishPath {
+  if (review?.approvalPath === "dg" || review?.state === "approved") return "dg";
+  return "hod";
+}
 
 export type PortalFieldType = "text" | "textarea" | "number" | "boolean" | "email" | "select" | "media" | "file" | "date" | "url";
 
@@ -39,6 +131,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
+      { key: "departmentSlug", label: "Owning department", type: "select", required: true },
       { key: "excerpt", label: "Excerpt (short message on the floating notice)", type: "textarea" },
       { key: "category", label: "Category", type: "text" },
       { key: "body", label: "Body", type: "textarea" },
@@ -57,6 +150,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
+      { key: "departmentSlug", label: "Owning department", type: "select", required: true },
       { key: "path", label: "Website path", type: "text" },
       { key: "body", label: "Body", type: "textarea" },
       { key: "cover", label: "Photo", type: "media" },
@@ -73,6 +167,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
+      { key: "departmentSlug", label: "Owning department", type: "select", required: true },
       { key: "type", label: "Type", type: "text" },
       { key: "year", label: "Year", type: "number" },
       { key: "authors", label: "Authors", type: "text" },
@@ -113,6 +208,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
+      { key: "departmentSlug", label: "Owning department", type: "select", required: true },
       { key: "category", label: "Category", type: "select", options: ["Training", "Workshop", "Exhibition", "Conference", "Seminar", "Other"] },
       { key: "date", label: "Start date (notice shows from this day)", type: "date", required: true },
       { key: "endDate", label: "End date (notice hides after this day)", type: "date" },
@@ -162,7 +258,8 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
-      { key: "department", label: "Department", type: "text" },
+      { key: "departmentSlug", label: "Owning department", type: "select", required: true },
+      { key: "department", label: "Department name (optional)", type: "text" },
       { key: "summary", label: "Summary", type: "textarea" },
       { key: "body", label: "Body", type: "textarea" },
       { key: "cover", label: "Photo", type: "media" },
@@ -179,6 +276,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
+      { key: "departmentSlug", label: "Owning department", type: "select", required: true },
       { key: "sector", label: "Sector", type: "select", options: ["energy", "food-biotechnology", "materials", "environment", "textile-leather", "ict"] },
       { key: "maturity", label: "Maturity", type: "select", options: ["Concept", "Pilot", "Commercial", "Mature"] },
       { key: "summary", label: "Summary", type: "textarea" },
@@ -197,7 +295,8 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
-      { key: "department", label: "Department", type: "text" },
+      { key: "departmentSlug", label: "Owning department", type: "select", required: true },
+      { key: "department", label: "Department name (optional)", type: "text" },
       { key: "category", label: "Category", type: "select", options: ["Professional", "Technical", "Administrative", "Internship"] },
       { key: "location", label: "Location", type: "text" },
       { key: "description", label: "Description", type: "textarea" },
@@ -214,6 +313,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
+      { key: "departmentSlug", label: "Owning department", type: "select", required: true },
       { key: "reference", label: "Reference", type: "text" },
       { key: "category", label: "Category", type: "select", options: ["Goods", "Works", "Services", "Consultancy"] },
       { key: "description", label: "Description", type: "textarea" },
@@ -230,6 +330,7 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
+      { key: "departmentSlug", label: "Owning department", type: "select", required: true },
       { key: "icon", label: "Icon", type: "text" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "body", label: "Body", type: "textarea" },
@@ -526,7 +627,65 @@ export function entryTitle(row: Record<string, unknown>, field: string): string 
   return v == null || v === "" ? "Untitled" : String(v);
 }
 
-export type EntryStatus = "Published" | "Draft" | "Modified" | "Open" | "Handled" | "Inactive";
+export type EntryStatus =
+  | "Published"
+  | "Draft"
+  | "Modified"
+  | "Open"
+  | "Handled"
+  | "Inactive"
+  | "Removed"
+  | "Pending approval"
+  | "Waiting for HOD"
+  | "Waiting for DG";
+
+export type ContentReview = {
+  documentId: string;
+  collectionSlug: string;
+  entryId: string;
+  title?: string;
+  kind: "publish" | "remove";
+  state: "pending" | "approved" | "applied" | "rejected";
+  requestedBy?: string;
+  requestedById?: number;
+  reviewedBy?: string;
+  reviewedById?: number;
+  departmentSlug?: string;
+  hodApprovedBy?: string;
+  hodApprovedById?: number;
+  approvalPath?: PublishPath;
+};
+
+export function overlayEntryStatus(
+  base: EntryStatus,
+  review?: Pick<ContentReview, "kind" | "state" | "approvalPath"> | null
+): EntryStatus {
+  if (review?.kind === "remove" && (review.state === "applied" || review.state === "approved")) return "Removed";
+  if (review?.kind === "publish" && (review.state === "pending" || review.state === "approved")) {
+    return reviewPublishPath(review) === "dg" ? "Waiting for DG" : "Waiting for HOD";
+  }
+  return base;
+}
+
+export function canApprovePublish(reviewerEmail: string, requestedBy?: string): boolean {
+  const a = reviewerEmail.trim().toLowerCase();
+  const b = String(requestedBy || "").trim().toLowerCase();
+  return Boolean(a && b && a !== b);
+}
+
+export function publishActionLabel(status: string, canHod: boolean, canDg: boolean) {
+  if (status === "Waiting for HOD") return canHod ? "Approve and publish" : "Waiting for HOD";
+  if (status === "Waiting for DG" || status === "Pending approval") {
+    return canDg ? "Approve as Director General" : "Waiting for DG";
+  }
+  return "Request publish";
+}
+
+export function publishActionBlocked(status: string, canHod: boolean, canDg: boolean, canRequest: boolean) {
+  if (status === "Waiting for HOD") return !canHod;
+  if (status === "Waiting for DG" || status === "Pending approval") return !canDg;
+  return !canRequest;
+}
 
 export function entryStatus(row: Record<string, unknown>, draftAndPublish: boolean): EntryStatus {
   if (row.active === false && draftAndPublish) return "Inactive";

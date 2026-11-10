@@ -22,6 +22,7 @@ const AUDITED_TYPES = new Set([
   'api::portal-grant.portal-grant',
   'api::technology.technology',
   'api::site-brand.site-brand',
+  'api::content-review.content-review',
   'admin::user',
   'admin::role',
 ]);

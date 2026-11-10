@@ -5,7 +5,15 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { PortalShell } from "@/components/tirdo-auth/portal-shell";
 import { MediaField } from "@/components/tirdo-auth/media-field";
-import { collectionBySlug, entryStatus, type PortalField } from "@/lib/portal";
+import {
+  canApproveDg,
+  canApproveHod,
+  collectionBySlug,
+  entryStatus,
+  publishActionBlocked,
+  publishActionLabel,
+  type PortalField,
+} from "@/lib/portal";
 
 export default function PortalEntryPage() {
   const params = useParams<{ slug: string; id: string }>();
@@ -15,6 +23,15 @@ export default function PortalEntryPage() {
   const [values, setValues] = useState<Record<string, unknown>>({});
   const [canPublish, setCanPublish] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
+  const [accountEmail, setAccountEmail] = useState("");
+  const [pendingPublishBy, setPendingPublishBy] = useState("");
+  const [hodApprovedBy, setHodApprovedBy] = useState("");
+  const [isHod, setIsHod] = useState(false);
+  const [isSectionHead, setIsSectionHead] = useState(false);
+  const [isDg, setIsDg] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [assignedDepartments, setAssignedDepartments] = useState<{ slug: string; title?: string }[]>([]);
+  const [departmentOptions, setDepartmentOptions] = useState<{ slug: string; title: string }[]>([]);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -29,6 +46,17 @@ export default function PortalEntryPage() {
       .then((j) => {
         if (j?.canPublish) setCanPublish(true);
         if (j?.canDelete) setCanDelete(true);
+        setAccountEmail(String(j?.email || ""));
+        setIsHod(Boolean(j?.isHod));
+        setIsSectionHead(Boolean(j?.isSectionHead));
+        setIsDg(Boolean(j?.isDg));
+        setIsSuperAdmin(Boolean(j?.isSuperAdmin));
+        setAssignedDepartments(Array.isArray(j?.departments) ? j.departments : []);
+        setDepartmentOptions(Array.isArray(j?.departmentOptions) ? j.departmentOptions : []);
+        if (isNew) {
+          const ownDept = (j?.departments || []).find((d: { slug?: string }) => d.slug && d.slug !== "*");
+          if (ownDept?.slug) setValues((v) => ({ ...v, departmentSlug: v.departmentSlug || ownDept.slug }));
+        }
       })
       .catch(() => undefined);
     if (!col || isNew) {
@@ -64,7 +92,17 @@ export default function PortalEntryPage() {
         setValues(data);
         setCanPublish((prev) => Boolean(j?.canPublish) || prev);
         setCanDelete((prev) => Boolean(j?.canDelete) || prev);
-        if (col.draftAndPublish) setStatus(entryStatus(data, true));
+        setAccountEmail(String(j?.accountEmail || ""));
+        setPendingPublishBy(String(j?.pendingPublishBy || ""));
+        setHodApprovedBy(String(j?.hodApprovedBy || ""));
+        setIsHod(Boolean(j?.isHod));
+        setIsSectionHead(Boolean(j?.isSectionHead));
+        setIsDg(Boolean(j?.isDg));
+        setIsSuperAdmin(Boolean(j?.isSuperAdmin));
+        if (Array.isArray(j?.assignedDepartments)) setAssignedDepartments(j.assignedDepartments);
+        if (Array.isArray(j?.departments)) setDepartmentOptions(j.departments);
+        if (j?.status) setStatus(String(j.status));
+        else if (col.draftAndPublish) setStatus(entryStatus(data, true));
         else setStatus(entryStatus(data, false));
         setLoaded(true);
       })
@@ -81,6 +119,25 @@ export default function PortalEntryPage() {
 
   const collection = col;
   const published = status === "Published";
+  const removed = status === "Removed";
+  const waitingHod = status === "Waiting for HOD";
+  const waitingDg = status === "Waiting for DG" || status === "Pending approval";
+  const canHod = canApproveHod({
+    email: accountEmail,
+    isHod,
+    isSectionHead,
+    departments: assignedDepartments,
+    departmentSlug: String(values.departmentSlug || ""),
+    requestedBy: pendingPublishBy,
+  });
+  const canDg = canApproveDg({
+    email: accountEmail,
+    isDg,
+    isSuperAdmin,
+    requestedBy: pendingPublishBy,
+    hodApprovedBy,
+  });
+  const publishBlocked = publishActionBlocked(status, canHod, canDg, canPublish);
 
   async function onSubmit(e: FormEvent, action: "save" | "publish" | "unpublish") {
     e.preventDefault();
@@ -100,9 +157,18 @@ export default function PortalEntryPage() {
       if (action === "publish" && documentId) {
         const pub = await fetch(`/api/portal/content/${collection.slug}/${documentId}/publish`, { method: "POST" });
         const pubJson = await pub.json().catch(() => ({}));
-        if (!pub.ok) throw new Error(pubJson.error || "Saved, but could not publish.");
-        setStatus("Published");
-        setNotice("Saved and published.");
+        if (pubJson.pending) {
+          setStatus(pubJson.stage === "dg" ? "Waiting for DG" : "Waiting for HOD");
+          setPendingPublishBy(String(pubJson.requestedBy || accountEmail));
+          if (pubJson.hodApprovedBy) setHodApprovedBy(String(pubJson.hodApprovedBy));
+          setNotice(pubJson.message || pubJson.error || "Publish requested.");
+        } else if (!pub.ok) {
+          throw new Error(pubJson.error || "Saved, but could not publish.");
+        } else {
+          setStatus("Published");
+          setPendingPublishBy("");
+          setNotice("Approved and published.");
+        }
       } else if (action === "unpublish" && documentId) {
         const un = await fetch(`/api/portal/content/${collection.slug}/${documentId}/unpublish`, { method: "POST" });
         const unJson = await un.json().catch(() => ({}));
@@ -145,7 +211,13 @@ export default function PortalEntryPage() {
         {status && (
           <span
             className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-              published || status === "Handled" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
+              published || status === "Handled"
+                ? "bg-emerald-100 text-emerald-800"
+                : waitingHod || waitingDg
+                  ? "bg-orange-100 text-orange-800"
+                  : removed
+                    ? "bg-red-100 text-red-800"
+                    : "bg-amber-100 text-amber-800"
             }`}
           >
             {status}
@@ -193,12 +265,24 @@ export default function PortalEntryPage() {
                   className="mt-1 w-full rounded-md border px-3 py-2"
                   value={String(values[field.key] ?? field.options?.[0] ?? "")}
                   onChange={(e) => setValues((v) => ({ ...v, [field.key]: e.target.value }))}
+                  required={field.required}
                 >
-                  {(field.options || []).map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
+                  {field.key === "departmentSlug" ? (
+                    <>
+                      <option value="">Select department</option>
+                      {departmentOptions.map((opt) => (
+                        <option key={opt.slug} value={opt.slug}>
+                          {opt.title}
+                        </option>
+                      ))}
+                    </>
+                  ) : (
+                    (field.options || []).map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))
+                  )}
                 </select>
               ) : (
                 <input
@@ -221,14 +305,14 @@ export default function PortalEntryPage() {
             <button type="submit" disabled={saving} className="rounded-md bg-[#0A192F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
               {saving ? "Saving…" : published ? "Save changes" : "Save draft"}
             </button>
-            {col.draftAndPublish && canPublish && !published && (
+            {col.draftAndPublish && (canPublish || waitingHod || waitingDg) && !published && !removed && (
               <button
                 type="button"
-                disabled={saving}
+                disabled={saving || publishBlocked}
                 onClick={(e) => onSubmit(e as unknown as FormEvent, "publish")}
                 className="rounded-md bg-[#059669] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
               >
-                {saving ? "Publishing…" : "Publish"}
+                {saving ? "Working…" : publishActionLabel(status, canHod, canDg)}
               </button>
             )}
             {col.draftAndPublish && canPublish && published && (
@@ -241,27 +325,53 @@ export default function PortalEntryPage() {
                 Unpublish
               </button>
             )}
-            {!isNew && canDelete && (
+            {!isNew && canDelete && removed && (
               <button
                 type="button"
                 disabled={saving}
                 onClick={async () => {
-                  if (!window.confirm("Delete this entry? This cannot be undone.")) return;
+                  setSaving(true);
+                  setError("");
+                  try {
+                    const res = await fetch(`/api/portal/content/${collection.slug}/${params.id}/restore`, { method: "POST" });
+                    const json = await res.json().catch(() => ({}));
+                    if (!res.ok) throw new Error(json.error || "Could not restore this entry.");
+                    setStatus("Draft");
+                    setNotice("Restored in the database. It is a draft until another account approves publish.");
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : "Could not restore this entry.");
+                  } finally {
+                    setSaving(false);
+                  }
+                }}
+                className="rounded-md border px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-60"
+              >
+                Restore
+              </button>
+            )}
+            {!isNew && canDelete && !removed && (
+              <button
+                type="button"
+                disabled={saving}
+                onClick={async () => {
+                  if (!window.confirm("Remove this entry from the website? The record stays in the database for administrators.")) return;
                   setSaving(true);
                   setError("");
                   try {
                     const res = await fetch(`/api/portal/content/${collection.slug}/${params.id}`, { method: "DELETE" });
                     const json = await res.json().catch(() => ({}));
-                    if (!res.ok) throw new Error(json.error || "Could not delete this entry.");
-                    router.replace(`/portal/${collection.slug}`);
+                    if (!res.ok) throw new Error(json.error || "Could not remove this entry.");
+                    setStatus("Removed");
+                    setNotice("Removed from the website. Administrators can still see it here.");
                   } catch (err) {
-                    setError(err instanceof Error ? err.message : "Could not delete this entry.");
+                    setError(err instanceof Error ? err.message : "Could not remove this entry.");
+                  } finally {
                     setSaving(false);
                   }
                 }}
                 className="rounded-md border border-red-200 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:opacity-60"
               >
-                Delete
+                Remove from site
               </button>
             )}
           </div>

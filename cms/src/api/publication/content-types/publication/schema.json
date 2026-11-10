@@ -30,6 +30,14 @@
         }
       }
     },
+    "departmentSlug": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "type": {
       "type": "string",
       "default": "Report",

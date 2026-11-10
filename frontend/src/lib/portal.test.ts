@@ -10,6 +10,12 @@ import {
   mediaId,
   pickAllowedFields,
   entryStatus,
+  overlayEntryStatus,
+  canApprovePublish,
+  canApproveHod,
+  canApproveDg,
+  requesterIsDeptHead,
+  publishPathForRequester,
   parseCollectionList,
   allowedPageSlugsFromGrants,
   canAccessPageSlug,
@@ -135,6 +141,70 @@ describe("portal helpers", () => {
     expect(entryStatus({ status: "modified" }, true)).toBe("Modified");
     expect(entryStatus({ handled: true }, false)).toBe("Handled");
     expect(entryStatus({ active: false, publishedAt: "2026-01-01" }, true)).toBe("Inactive");
+  });
+
+  it("keeps removed website entries and requires a second account to publish", () => {
+    expect(overlayEntryStatus("Draft", { kind: "remove", state: "applied" })).toBe("Removed");
+    expect(overlayEntryStatus("Draft", { kind: "publish", state: "pending", approvalPath: "hod" })).toBe("Waiting for HOD");
+    expect(overlayEntryStatus("Draft", { kind: "publish", state: "pending", approvalPath: "dg" })).toBe("Waiting for DG");
+    expect(canApprovePublish("editor@tirdo.or.tz", "editor@tirdo.or.tz")).toBe(false);
+    expect(canApprovePublish("admin@tirdo.or.tz", "editor@tirdo.or.tz")).toBe(true);
+  });
+
+  it("sends section staff to HOD to publish, and PR to the Director General", () => {
+    const ict = [{ slug: "ict" }];
+    expect(
+      canApproveHod({
+        email: "hod.ict@tirdo.or.tz",
+        isHod: true,
+        isSectionHead: false,
+        departments: ict,
+        departmentSlug: "ict",
+        requestedBy: "officer.ict@tirdo.or.tz",
+      })
+    ).toBe(true);
+    expect(
+      canApproveHod({
+        email: "hod.energy@tirdo.or.tz",
+        isHod: true,
+        isSectionHead: false,
+        departments: [{ slug: "energy" }],
+        departmentSlug: "ict",
+        requestedBy: "officer.ict@tirdo.or.tz",
+      })
+    ).toBe(false);
+    expect(
+      canApproveHod({
+        email: "officer.ict@tirdo.or.tz",
+        isHod: true,
+        isSectionHead: false,
+        departments: ict,
+        departmentSlug: "ict",
+        requestedBy: "officer.ict@tirdo.or.tz",
+      })
+    ).toBe(false);
+    expect(
+      requesterIsDeptHead({ isHod: true, isSectionHead: false, departments: ict, departmentSlug: "ict" })
+    ).toBe(true);
+    expect(
+      canApproveDg({
+        email: "dg@tirdo.or.tz",
+        isDg: true,
+        isSuperAdmin: false,
+        requestedBy: "pr@tirdo.or.tz",
+      })
+    ).toBe(true);
+    expect(publishPathForRequester(false)).toBe("hod");
+    expect(publishPathForRequester(true)).toBe("dg");
+    expect(
+      canApproveDg({
+        email: "hod.ict@tirdo.or.tz",
+        isDg: false,
+        isSuperAdmin: true,
+        requestedBy: "officer.ict@tirdo.or.tz",
+        hodApprovedBy: "hod.ict@tirdo.or.tz",
+      })
+    ).toBe(false);
   });
 
   it("maps CMS user-create validation into a clear message", () => {

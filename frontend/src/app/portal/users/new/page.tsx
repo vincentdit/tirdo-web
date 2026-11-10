@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PortalShell } from "@/components/tirdo-auth/portal-shell";
 import { UsersHeading } from "@/components/tirdo-auth/users-tabs";
-import { portalPasswordIssue } from "@/lib/portal";
+import { PORTAL_DUTIES, parsePortalDuty, portalPasswordIssue, type PortalDuty } from "@/lib/portal";
 import { emailKey, fetchPortalUsers, type PortalRole, type PortalUser } from "@/lib/portal-users";
 
 export default function PortalCreateUserPage() {
@@ -20,6 +20,7 @@ export default function PortalCreateUserPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newRoleId, setNewRoleId] = useState("");
+  const [duty, setDuty] = useState<PortalDuty>("staff");
 
   useEffect(() => {
     fetchPortalUsers()
@@ -57,11 +58,12 @@ export default function PortalCreateUserPage() {
           password: newPassword,
           passwordConfirmation: confirmPassword,
           roleId: newRoleId ? Number(newRoleId) : undefined,
+          duty,
         }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Could not create this user.");
-      router.push(`/portal/users/access?email=${encodeURIComponent(newEmail.trim().toLowerCase())}`);
+      router.push(`/portal/users/access?email=${encodeURIComponent(newEmail.trim().toLowerCase())}&duty=${encodeURIComponent(duty)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save this user.");
     } finally {
@@ -71,7 +73,7 @@ export default function PortalCreateUserPage() {
 
   return (
     <PortalShell>
-      <UsersHeading description="Create each person once, choose a role, then assign which content they may manage on Edit access." />
+      <UsersHeading description="Create a department officer, Head of Department, section head, public relations account (not an administrator), or Director General. Then assign department and content on Edit access." />
       {error && <p className="mt-3 text-sm text-red-700">{error}</p>}
       {notice && <p className="mt-3 text-sm text-emerald-800">{notice}</p>}
       <form className="mt-6 max-w-xl rounded-lg border bg-white p-5" onSubmit={saveUser}>
@@ -109,13 +111,21 @@ export default function PortalCreateUserPage() {
             required
           />
           <select className="rounded-md border px-3 py-2 text-sm sm:col-span-2" value={newRoleId} onChange={(e) => setNewRoleId(e.target.value)} required>
-            <option value="">Choose a role</option>
+            <option value="">Choose a CMS role (not Super Admin for PR accounts)</option>
             {roles.map((r) => (
               <option key={r.id} value={r.id}>
                 {r.name}
               </option>
             ))}
           </select>
+          <select className="rounded-md border px-3 py-2 text-sm sm:col-span-2" value={duty} onChange={(e) => setDuty(parsePortalDuty(e.target.value))}>
+            {PORTAL_DUTIES.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-slate-600 sm:col-span-2">{PORTAL_DUTIES.find((item) => item.id === duty)?.help}</p>
         </div>
         <button type="submit" disabled={saving} className="mt-4 rounded-md bg-[#0A192F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
           {saving ? "Saving…" : "Create user"}

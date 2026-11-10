@@ -1,0 +1,63 @@
+{
+  "kind": "collectionType",
+  "collectionName": "content_reviews",
+  "info": {
+    "singularName": "content-review",
+    "pluralName": "content-reviews",
+    "displayName": "Content Review",
+    "description": "Publish approvals and partial removals for portal content"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "collectionSlug": {
+      "type": "string",
+      "required": true
+    },
+    "entryId": {
+      "type": "string",
+      "required": true
+    },
+    "title": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "enumeration",
+      "enum": ["publish", "remove"],
+      "required": true
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": ["pending", "approved", "applied", "rejected"],
+      "required": true,
+      "default": "pending"
+    },
+    "requestedBy": {
+      "type": "email"
+    },
+    "requestedById": {
+      "type": "integer"
+    },
+    "reviewedBy": {
+      "type": "email"
+    },
+    "reviewedById": {
+      "type": "integer"
+    },
+    "departmentSlug": {
+      "type": "string"
+    },
+    "approvalPath": {
+      "type": "enumeration",
+      "enum": ["hod", "dg"],
+      "default": "hod"
+    },
+    "hodApprovedBy": {
+      "type": "email"
+    },
+    "hodApprovedById": {
+      "type": "integer"
+    }
+  }
+}

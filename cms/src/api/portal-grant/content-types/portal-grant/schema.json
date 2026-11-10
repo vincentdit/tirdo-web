@@ -43,6 +43,11 @@
       "type": "boolean",
       "default": false
     },
+    "duty": {
+      "type": "enumeration",
+      "enum": ["staff", "hod", "section-head", "public-relations", "director-general"],
+      "default": "staff"
+    },
     "active": {
       "type": "boolean",
       "default": true

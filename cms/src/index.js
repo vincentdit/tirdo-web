@@ -26,6 +26,7 @@ module.exports = {
   async bootstrap({ strapi }) {
     // 1) Open up the public REST API for read access + contact submissions.
     await setPublicPermissions(strapi);
+    await grantContentReviewAdminAccess(strapi);
 
     // 2) Ensure the Kiswahili locale exists (English is the default).
     await ensureLocale(strapi, 'sw', 'Kiswahili (sw)');
@@ -129,6 +130,39 @@ async function ensureLocale(strapi, code, name) {
     }
   } catch (e) {
     strapi.log.warn(`[i18n] could not ensure locale ${code}: ${e.message}`);
+  }
+}
+
+async function grantContentReviewAdminAccess(strapi) {
+  const subject = 'api::content-review.content-review';
+  const actions = [
+    'plugin::content-manager.explorer.create',
+    'plugin::content-manager.explorer.read',
+    'plugin::content-manager.explorer.update',
+    'plugin::content-manager.explorer.delete',
+  ];
+  try {
+    const roles = await strapi.db.query('admin::role').findMany();
+    for (const role of roles || []) {
+      for (const action of actions) {
+        const existing = await strapi.db.query('admin::permission').findOne({
+          where: { action, subject, role: role.id },
+        });
+        if (existing) continue;
+        await strapi.db.query('admin::permission').create({
+          data: {
+            action,
+            subject,
+            properties: {},
+            conditions: [],
+            role: role.id,
+          },
+        });
+      }
+    }
+    strapi.log.info('[bootstrap] content-review admin access ensured');
+  } catch (e) {
+    strapi.log.warn('[bootstrap] content-review admin access skipped: ' + e.message);
   }
 }
 

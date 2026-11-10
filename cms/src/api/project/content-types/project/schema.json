@@ -54,6 +54,14 @@
         }
       }
     },
+    "departmentSlug": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "status": {
       "type": "enumeration",
       "enum": [

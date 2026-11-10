@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { collectionBySlug, pickAllowedFields, prepareEServicePayload, validateCollectionPayload } from "@/lib/portal";
-import { canUseCollection, canUsePage, forbidden, loadAccess } from "../../../_access";
+import { collectionBySlug, entryStatus, overlayEntryStatus, pickAllowedFields, prepareEServicePayload, validateCollectionPayload } from "@/lib/portal";
+import { canUseCollection, canUsePage, forbidden, loadAccess, loadPortalDepartments } from "../../../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../../../_cms";
+import { activeReviewFor, createContentReview, listContentReviews, updateContentReview } from "../../../_reviews";
 
 export async function GET(_request: NextRequest, { params }: { params: { slug: string; id: string } }) {
   const token = portalToken();
@@ -25,10 +26,24 @@ export async function GET(_request: NextRequest, { params }: { params: { slug: s
   if (col.slug === "pages" && !canUsePage(access, String((data as { slug?: string }).slug || ""))) {
     return forbidden("You are not assigned to this page.");
   }
+  const [reviews, departments] = await Promise.all([listContentReviews(token, col.slug), loadPortalDepartments(token)]);
+  const review = activeReviewFor(reviews, params.id);
   return NextResponse.json({
     collection: { slug: col.slug, label: col.label, fields: col.fields, draftAndPublish: col.draftAndPublish },
     canPublish: access.canPublish,
     canDelete: access.canDelete,
+    isHod: access.isHod,
+    isSectionHead: access.isSectionHead,
+    isDg: access.isDg,
+    isSuperAdmin: access.isSuperAdmin,
+    duty: access.duty,
+    departments,
+    assignedDepartments: access.departments,
+    accountEmail: access.email,
+    status: overlayEntryStatus(entryStatus((data as Record<string, unknown>) || {}, col.draftAndPublish), review),
+    pendingPublishBy: review?.kind === "publish" && (review.state === "pending" || review.state === "approved") ? review.requestedBy : undefined,
+    hodApprovedBy: review?.kind === "publish" ? review.hodApprovedBy : undefined,
+    removed: review?.kind === "remove" && review.state === "applied",
     data,
   });
 }
@@ -92,13 +107,43 @@ export async function DELETE(_request: NextRequest, { params }: { params: { slug
     if (!canUsePage(access, slug)) return forbidden("You are not assigned to this page.");
   }
 
-  const res = await cmsAdmin(
+  const current = await cmsAdmin(
     `/content-manager/collection-types/${encodeURIComponent(col.uid)}/${encodeURIComponent(params.id)}`,
-    token,
-    { method: "DELETE" }
+    token
   );
-  if (!res.ok) {
-    return NextResponse.json({ error: "Could not delete this entry." }, { status: res.status });
+  const currentJson = (await current.json().catch(() => ({}))) as Record<string, unknown>;
+  const currentData = (currentJson.data || currentJson) as Record<string, unknown>;
+  const title = String(currentData.title || currentData.name || currentData.subject || params.id);
+
+  if (col.draftAndPublish && (currentData.publishedAt || String(currentData.status || "").toLowerCase() === "published")) {
+    const un = await cmsAdmin(
+      `/content-manager/collection-types/${encodeURIComponent(col.uid)}/${encodeURIComponent(params.id)}/actions/unpublish`,
+      token,
+      { method: "POST" }
+    );
+    if (!un.ok) {
+      return NextResponse.json({ error: "Could not remove this entry from the website." }, { status: un.status });
+    }
   }
-  return NextResponse.json({ ok: true });
+
+  const reviews = await listContentReviews(token, col.slug);
+  const existing = reviews.find((row) => row.entryId === params.id && row.kind === "remove" && row.state === "applied");
+  if (!existing) {
+    const created = await createContentReview(token, {
+      collectionSlug: col.slug,
+      entryId: params.id,
+      title,
+      kind: "remove",
+      state: "applied",
+      requestedBy: access.email,
+      requestedById: access.id,
+    });
+    if (!created) {
+      return NextResponse.json({ error: "Removed from the website, but could not keep the database record marked." }, { status: 502 });
+    }
+  }
+  const pending = reviews.find((row) => row.entryId === params.id && row.kind === "publish" && row.state === "pending");
+  if (pending) await updateContentReview(token, pending.documentId, { state: "rejected", reviewedBy: access.email });
+
+  return NextResponse.json({ ok: true, partial: true });
 }
