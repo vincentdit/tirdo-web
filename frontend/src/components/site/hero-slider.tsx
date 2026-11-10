@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Pause, Play } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { heroSlides } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
@@ -10,12 +10,12 @@ export function HeroSlider({ heroImage }: { heroImage?: string }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const reduceMotion = useRef(false);
-  const slides = heroImage
-    ? [{ ...heroSlides[0], image: heroImage }, ...heroSlides.slice(1)]
-    : heroSlides.map((slide) => ({ ...slide, image: "" }));
+  const slides = heroSlides.map((slide, idx) => ({
+    ...slide,
+    image: idx === 0 && heroImage ? heroImage : slide.image,
+  }));
   const n = slides.length;
 
-  // Respect the user's reduced-motion preference: no auto-advance.
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     reduceMotion.current = mq.matches;
@@ -32,10 +32,11 @@ export function HeroSlider({ heroImage }: { heroImage?: string }) {
   }, [n, paused]);
 
   const slide = slides[i];
+  const go = (dir: number) => setI((v) => (v + dir + n) % n);
 
   return (
     <section
-      className="relative h-[70dvh] min-h-[280px] w-full overflow-hidden bg-brand-blue text-white md:h-[78dvh]"
+      className="relative h-[calc(100dvh-12.5rem)] min-h-[26rem] w-full overflow-hidden bg-brand-navy text-white sm:min-h-[32rem] md:h-[calc(100dvh-14.5rem)] md:min-h-[36rem] lg:min-h-[42rem]"
       aria-roledescription="carousel"
       aria-label="TIRDO highlights"
     >
@@ -49,29 +50,48 @@ export function HeroSlider({ heroImage }: { heroImage?: string }) {
             alt=""
             aria-hidden="true"
             className={cn(
-              "absolute inset-0 h-full w-full object-cover object-[center_42%] transition-opacity duration-700 motion-reduce:transition-none",
+              "absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700 motion-reduce:transition-none",
               idx === i ? "opacity-100" : "opacity-0"
             )}
           />
         ) : null
       )}
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,42,59,0.87)_0%,rgba(7,54,73,0.6)_40%,transparent_70%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,42,59,0.18)_0%,rgba(5,42,59,0.12)_45%,rgba(5,42,59,0.82)_100%)]" />
 
-      <div className="container-tirdo relative flex h-full flex-col justify-center">
-        <div key={i} className="max-w-[520px] animate-fade-in motion-reduce:animate-none" aria-live="polite">
-          <p className="eyebrow mb-3 text-white/90">TIRDO AT A GLANCE</p>
-          <h2 className="font-display text-[2.25rem] leading-[1.1] md:text-[3.15rem]">{slide.title}</h2>
-          <p className="mb-7 mt-4 text-base md:text-[1.08rem]">{slide.subtitle}</p>
+      <button
+        type="button"
+        onClick={() => go(-1)}
+        aria-label="Previous"
+        className="absolute left-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-black/35 text-white backdrop-blur-sm hover:bg-black/50 sm:left-5 sm:h-12 sm:w-12"
+      >
+        <ChevronLeft className="h-7 w-7" />
+      </button>
+      <button
+        type="button"
+        onClick={() => go(1)}
+        aria-label="Next"
+        className="absolute right-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-black/35 text-white backdrop-blur-sm hover:bg-black/50 sm:right-5 sm:h-12 sm:w-12"
+      >
+        <ChevronRight className="h-7 w-7" />
+      </button>
+
+      <div className="container-tirdo relative flex h-full flex-col justify-end pb-16 sm:pb-20">
+        <div key={i} className="max-w-4xl animate-fade-in motion-reduce:animate-none" aria-live="polite">
+          <p className="eyebrow mb-2 text-white/90">TIRDO AT A GLANCE</p>
+          <h2 className="font-display text-[2rem] leading-[1.12] drop-shadow-sm sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4rem]">
+            {slide.title}
+          </h2>
+          <p className="mb-6 mt-3 max-w-3xl text-base leading-relaxed text-white/95 sm:text-lg md:text-xl">{slide.subtitle}</p>
           <Link
             href={slide.href}
-            className="inline-flex items-center gap-5 bg-white px-5 py-3.5 text-[0.78rem] font-bold uppercase tracking-wide text-brand-blue hover:bg-brand-pale"
+            className="inline-flex items-center gap-4 bg-white px-6 py-3.5 text-[0.8rem] font-bold uppercase tracking-wide text-brand-blue hover:bg-brand-pale"
           >
             {slide.cta} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>
 
-      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3">
+      <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-3">
         <div className="flex gap-2">
           {slides.map((s, idx) => (
             <button
