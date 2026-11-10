@@ -30,7 +30,7 @@ import {
 import { oidcCallbackUrl, safeReturnTo } from "@/lib/oidc";
 import { publicFileUrl } from "@/lib/utils";
 import { resolveKeycloakPublicUrl } from "@/lib/public-url";
-import { applyUniqueVisit, emptyVisits } from "@/lib/visit-store";
+import { applyUniqueVisit, emptyVisits, preferRecordedCount } from "@/lib/visit-store";
 
 describe("portal helpers", () => {
   it("accepts TIRDO administrator emails only", () => {
@@ -189,6 +189,12 @@ describe("portal helpers", () => {
     const nextDay = applyUniqueVisit(first, new Date("2026-10-24T09:00:00Z"));
     expect(nextDay.today).toBe(1);
     expect(nextDay.total).toBe(2);
+  });
+
+  it("keeps previous visitor totals when a rebuild reports zero", () => {
+    expect(preferRecordedCount(0, 1284)).toBe(1284);
+    expect(preferRecordedCount(null, 1284)).toBe(1284);
+    expect(preferRecordedCount(2400, 1284)).toBe(2400);
   });
 
   it("validates partner records", () => {

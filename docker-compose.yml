@@ -156,7 +156,7 @@ services:
       MATOMO_API_URL: http://nginx:8081
       MATOMO_API_TOKEN: ${MATOMO_API_TOKEN}
       MATOMO_SITE_ID: "1"
-      VISITOR_DATA_PATH: /tmp/tirdo-visits.json
+      VISITOR_DATA_PATH: /data/tirdo-visits.json
       PUBLIC_URL: ${PUBLIC_URL}
       # Blank KEYCLOAK_PUBLIC_URL => Sign in uses ${PUBLIC_URL}/auth (nginx). No Dockerfile change.
       KEYCLOAK_PUBLIC_URL: ${KEYCLOAK_PUBLIC_URL:-}
@@ -174,6 +174,8 @@ services:
       timeout: 5s
       retries: 3
       start_period: 40s
+    volumes:
+      - visitor_data:/data
     networks: [tirdo-net]
 
   # ----------------------------------------------------------------------
@@ -373,3 +375,4 @@ volumes:
   minio_data:
   opensearch_data:
   matomo_data:
+  visitor_data:

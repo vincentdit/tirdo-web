@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getVisitStats } from "@/lib/matomo-api";
-import { calendarDay } from "@/lib/visit-store";
+import { calendarDay, preferRecordedCount } from "@/lib/visit-store";
 import { currentVisits, recordUniqueVisit } from "@/lib/visit-file";
 
 export const dynamic = "force-dynamic";
@@ -13,9 +13,9 @@ export async function GET() {
   const local = seen ? currentVisits() : recordUniqueVisit();
   const matomo = await getVisitStats();
   const stats = {
-    today: matomo.today ?? local.today,
-    month: matomo.month ?? local.month,
-    total: matomo.total ?? local.total,
+    today: preferRecordedCount(matomo.today, local.today),
+    month: preferRecordedCount(matomo.month, local.month),
+    total: preferRecordedCount(matomo.total, local.total),
   };
   const res = NextResponse.json(stats, {
     headers: { "Cache-Control": "no-store" },

@@ -37,6 +37,13 @@ export function applyUniqueVisit(data: VisitCounts, now: Date = new Date()): Vis
   };
 }
 
+/** Prefer a live Matomo figure, but keep the last saved count when Matomo is empty after a rebuild. */
+export function preferRecordedCount(primary: number | null | undefined, fallback: number): number {
+  const live = typeof primary === "number" && Number.isFinite(primary) ? primary : 0;
+  const saved = typeof fallback === "number" && Number.isFinite(fallback) ? fallback : 0;
+  return Math.max(live, saved);
+}
+
 export function readVisitsForDisplay(data: VisitCounts, now: Date = new Date()): VisitCounts {
   const day = calendarDay(now);
   const monthKey = calendarMonth(now);
