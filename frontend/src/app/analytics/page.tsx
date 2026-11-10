@@ -2,6 +2,8 @@ import { PageBanner } from "@/components/site/page-banner";
 import { ChartCard, KpiCard, StatTile, TrendArea, BarList, Donut } from "@/components/analytics/charts";
 import { getDashboard } from "@/lib/matomo-api";
 import { getFeedbackSummary } from "@/lib/feedback";
+import { currentVisits } from "@/lib/visit-file";
+import { preferRecordedCount } from "@/lib/visit-store";
 
 export const metadata = { title: "Analytics" };
 // Render at request time so the runtime Matomo token is used (not build time).
@@ -11,6 +13,10 @@ const fmt = (n: number | null | undefined) => (typeof n === "number" ? n.toLocal
 
 export default async function AnalyticsPage() {
   const d = await getDashboard();
+  const local = currentVisits();
+  const today = preferRecordedCount(d.today, local.today);
+  const month = preferRecordedCount(d.month, local.month);
+  const total = preferRecordedCount(d.total, local.total);
   const s = d.summary;
   const fb = await getFeedbackSummary();
   const fbTypes = fb ? Object.entries(fb.byType).map(([label, value]) => ({ label, value })) : [];
@@ -24,25 +30,24 @@ export default async function AnalyticsPage() {
       />
       <section className="py-14">
         <div className="container-tirdo space-y-8">
+          <div>
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand-teal">Visit statistics</h2>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <StatTile label="Today" value={fmt(today)} hint="Visits so far today" />
+              <StatTile label="This month" value={fmt(month)} hint="Visits this calendar month" />
+              <StatTile label="Total visits" value={fmt(total)} hint="All time" />
+            </div>
+          </div>
+
           {!d.configured ? (
             <div className="rounded-xl border bg-secondary/40 p-8 text-center">
-              <h2 className="text-lg font-bold text-primary">Analytics dashboard</h2>
+              <h2 className="text-lg font-bold text-primary">Detailed reports</h2>
               <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-                Live visitor analytics will appear here once TIRDO Analytics is connected.
-                The counter and reports below refresh automatically.
+                Visitor totals above are kept when the site is rebuilt. Charts appear here once TIRDO Analytics is connected.
               </p>
             </div>
           ) : (
             <>
-              {/* Headline visit statistics */}
-              <div>
-                <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand-teal">Visit statistics</h2>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <StatTile label="Today" value={fmt(d.today)} hint="Visits so far today" />
-                  <StatTile label="This month" value={fmt(d.month)} hint="Visits this calendar month" />
-                  <StatTile label="Total visits" value={fmt(d.total)} hint="All time" />
-                </div>
-              </div>
 
               {/* Secondary KPIs (last 30 days) */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
