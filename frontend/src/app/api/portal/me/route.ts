@@ -31,6 +31,7 @@ export async function GET() {
     canPublish: access.canPublish,
     canManageMedia: access.canManageMedia,
     canManageUsers: access.canManageUsers,
+    canManageIam: access.isSuperAdmin || access.canManageUsers,
     canDelete: access.canDelete,
     canManageSite: access.canManageSite,
     canViewAudit: access.canViewAudit,

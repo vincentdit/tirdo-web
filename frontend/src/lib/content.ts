@@ -477,6 +477,18 @@ export const eservices: EServiceItem[] = [
     active: true,
   },
   {
+    slug: "lims",
+    title: "Laboratory Information System",
+    acronym: "LIMS",
+    description: "Laboratory requests, results and sample tracking.",
+    href: "",
+    category: "Other",
+    showOnPublic: true,
+    showInPortal: true,
+    displayOrder: 25,
+    active: true,
+  },
+  {
     slug: "ciap",
     title: "Consultancy & Industrial Advisory Portal",
     acronym: "CIAP",

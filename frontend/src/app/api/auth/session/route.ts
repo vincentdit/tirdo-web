@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { oidcRolesFromPayload } from "@/lib/e-service-access";
 import { parseJwtPayload } from "@/lib/oidc";
 
 export const dynamic = "force-dynamic";
@@ -10,14 +11,12 @@ export function GET() {
   if (!payload) {
     return NextResponse.json({ authenticated: false, roles: [] });
   }
-  const realmAccess = payload.realm_access as { roles?: string[] } | undefined;
-  const roles = Array.isArray(realmAccess?.roles) ? realmAccess!.roles.filter(Boolean) : [];
   return NextResponse.json({
     authenticated: true,
-    token,
+    sub: payload.sub || "",
     username: payload.preferred_username,
     name: payload.name,
     email: payload.email,
-    roles,
+    roles: oidcRolesFromPayload(payload),
   });
 }

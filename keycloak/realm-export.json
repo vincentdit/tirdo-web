@@ -22,7 +22,11 @@
       { "name": "tirdo-admin", "description": "Full administrative access" },
       { "name": "content-editor", "description": "Manage news, publications, projects" },
       { "name": "staff", "description": "Internal TIRDO staff" },
-      { "name": "public", "description": "Registered public / e-Services user" }
+      { "name": "public", "description": "Registered public / e-Services user" },
+      { "name": "niims", "description": "Access NIIMS" },
+      { "name": "lims", "description": "Access LIMS" },
+      { "name": "ciap", "description": "Access CIAP" },
+      { "name": "telt", "description": "Access TELT" }
     ]
   },
   "clients": [

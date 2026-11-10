@@ -163,6 +163,9 @@ services:
       KEYCLOAK_INTERNAL_URL: http://keycloak:8080/auth
       KEYCLOAK_REALM: ${KEYCLOAK_REALM}
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      KEYCLOAK_IAM_CLIENT_ID: ${KEYCLOAK_IAM_CLIENT_ID:-admin-cli}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     depends_on:
       cms:
         condition: service_healthy

@@ -30,7 +30,7 @@ export default async function EServicesPage() {
         <div className="container-tirdo">
           <SectionHeading className="mb-4" eyebrow="Systems" title="Available services" />
           <p className="mb-5 max-w-2xl text-sm text-muted-foreground">
-            Open a connected system, or request access if it is not live yet.
+            Sign in above to open the systems you are authorised for. Public visitors can request access if a system is not live yet.
           </p>
           <div className="space-y-4">
             {groups.map((group) => (
@@ -70,7 +70,7 @@ export default async function EServicesPage() {
             ))}
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
-            System addresses are set in Content management → E-service links. Sign in once with TIRDO single sign-on.
+            System addresses are set in Content management → E-service links. Access is granted by Keycloak roles. Sign in once; other authorised systems reuse that SSO session.
           </p>
         </div>
       </section>

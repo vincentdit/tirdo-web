@@ -6,7 +6,6 @@ export type AuthSession = {
   name?: string;
   email?: string;
   roles: string[];
-  token?: string;
 };
 
 let cachedSession: AuthSession | null = null;
@@ -21,7 +20,6 @@ export async function initKeycloak(): Promise<boolean> {
       name: json.name,
       email: json.email,
       roles: Array.isArray(json.roles) ? json.roles : [],
-      token: json.token,
     };
     return cachedSession.authenticated;
   } catch {

@@ -10,7 +10,6 @@ export type AuthState = {
   name?: string;
   email?: string;
   roles: string[];
-  token?: string;
   login: () => void;
   register: () => void;
   logout: () => void;
@@ -47,7 +46,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           name: session.name,
           email: session.email,
           roles,
-          token: session.token,
           login: startLogin,
           register: startRegister,
           logout: startLogout,
