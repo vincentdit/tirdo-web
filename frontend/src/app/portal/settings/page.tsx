@@ -67,7 +67,9 @@ export default function PortalSettingsPage() {
           <h2 className="font-semibold text-[#0A192F]">Rights on this portal</h2>
           <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-700">
             <li>Site-wide editing: {me?.isFullAccess ? "Admin / Super Admin" : "Assigned collections only"}</li>
-            <li>Publish: {me?.canPublish ? "Allowed" : "Not assigned"}</li>
+            <li>Duty: {(me as { duty?: string })?.duty || "staff"}</li>
+            <li>Publish path: section staff → Head of Department publishes. Public relations → Director General publishes.</li>
+            <li>May send for publish: {me?.canPublish ? "Allowed" : "Not assigned"}</li>
             <li>Logo, photos and gallery: {me?.canManageSite ? "Allowed" : "Not assigned"}</li>
             <li>User administration: {me?.canManageUsers ? "Allowed" : "Not assigned"}</li>
           </ul>

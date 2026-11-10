@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loadAccess } from "../_access";
+import { loadAccess, loadPortalDepartments } from "../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../_cms";
 
 export async function GET() {
@@ -12,6 +12,7 @@ export async function GET() {
   if (!access) {
     return NextResponse.json({ error: "Session expired. Sign in again." }, { status: 401 });
   }
+  const departments = await loadPortalDepartments(token);
 
   return NextResponse.json({
     authenticated: true,
@@ -22,6 +23,11 @@ export async function GET() {
     roles: access.roles,
     isSuperAdmin: access.isSuperAdmin,
     isFullAccess: access.isFullAccess,
+    duty: access.duty,
+    isHod: access.isHod,
+    isSectionHead: access.isSectionHead,
+    isPr: access.isPr,
+    isDg: access.isDg,
     canPublish: access.canPublish,
     canManageMedia: access.canManageMedia,
     canManageUsers: access.canManageUsers,
@@ -30,6 +36,7 @@ export async function GET() {
     canViewAudit: access.canViewAudit,
     canExportAudit: access.canExportAudit,
     departments: access.departments,
+    departmentOptions: departments,
     collections: access.collections.map((c) => ({
       slug: c.slug,
       label: c.label,

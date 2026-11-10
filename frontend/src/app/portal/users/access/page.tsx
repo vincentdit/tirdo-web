@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { PortalShell } from "@/components/tirdo-auth/portal-shell";
 import { StaffSearchSelect } from "@/components/tirdo-auth/staff-search-select";
 import { UsersHeading } from "@/components/tirdo-auth/users-tabs";
+import { PORTAL_DUTIES, parsePortalDuty, type PortalDuty } from "@/lib/portal";
 import {
   emailKey,
   fetchPortalUsers,
@@ -25,6 +26,7 @@ const COLLECTION_GROUPS: { id: string; label: string }[] = [
 function EditAccessForm() {
   const search = useSearchParams();
   const emailParam = search.get("email") || "";
+  const dutyParam = search.get("duty") || "";
   const [users, setUsers] = useState<PortalUser[]>([]);
   const [grants, setGrants] = useState<PortalGrant[]>([]);
   const [departments, setDepartments] = useState<PortalDept[]>([]);
@@ -41,6 +43,7 @@ function EditAccessForm() {
   const [canManageMedia, setCanManageMedia] = useState(false);
   const [canManageUsers, setCanManageUsers] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
+  const [duty, setDuty] = useState<PortalDuty>("staff");
   const [notes, setNotes] = useState("");
   const [grantDocumentId, setGrantDocumentId] = useState("");
 
@@ -64,6 +67,7 @@ function EditAccessForm() {
     setCanManageMedia(Boolean(grant?.canManageMedia));
     setCanManageUsers(Boolean(grant?.canManageUsers));
     setCanDelete(Boolean(grant?.canDelete));
+    setDuty(parsePortalDuty(grant?.duty));
     setNotes(String(grant?.notes || ""));
   }
 
@@ -82,10 +86,13 @@ function EditAccessForm() {
   useEffect(() => {
     if (!emailParam || users.length === 0) return;
     const match = users.find((u) => emailKey(u.email) === emailKey(emailParam));
-    if (match) fillAccess(match.email);
+    if (match) {
+      fillAccess(match.email);
+      if (dutyParam) setDuty(parsePortalDuty(dutyParam));
+    }
     // fillAccess is recreated; grantsByEmail updates after grants load.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [emailParam, users, grantsByEmail]);
+  }, [emailParam, dutyParam, users, grantsByEmail]);
 
   const selectedDept = departments.find((d) => d.slug === departmentSlug);
 
@@ -110,6 +117,7 @@ function EditAccessForm() {
           canManageMedia,
           canManageUsers,
           canDelete,
+          duty,
           notes,
           active: true,
         }),
@@ -150,6 +158,14 @@ function EditAccessForm() {
               </option>
             ))}
           </select>
+          <select className="w-full rounded-md border px-3 py-2 text-sm" value={duty} onChange={(e) => setDuty(parsePortalDuty(e.target.value))}>
+            {PORTAL_DUTIES.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-slate-600">{PORTAL_DUTIES.find((item) => item.id === duty)?.help}</p>
           <div className="space-y-4">
             {COLLECTION_GROUPS.map((group) => {
               const items = collections.filter((c) => (c.group || "content") === group.id);
@@ -193,15 +209,19 @@ function EditAccessForm() {
               </div>
             </div>
           )}
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={canPublish} onChange={(e) => setCanPublish(e.target.checked)} /> Can publish
-          </label>
+          {duty === "staff" && (
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={canPublish} onChange={(e) => setCanPublish(e.target.checked)} /> May send information for publish
+            </label>
+          )}
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={canManageMedia} onChange={(e) => setCanManageMedia(e.target.checked)} /> Can manage gallery, logo and site photos
           </label>
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={canManageUsers} onChange={(e) => setCanManageUsers(e.target.checked)} /> Can manage users (including partner access)
-          </label>
+          {duty !== "public-relations" && duty !== "director-general" && (
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={canManageUsers} onChange={(e) => setCanManageUsers(e.target.checked)} /> Can manage users (including partner access)
+            </label>
+          )}
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={canDelete} onChange={(e) => setCanDelete(e.target.checked)} /> Can delete assigned records
           </label>
@@ -218,7 +238,7 @@ function EditAccessForm() {
 export default function PortalEditAccessPage() {
   return (
     <PortalShell>
-      <UsersHeading description="Choose which content this person may see and manage. Publications-only staff only get Publications; news staff only get News Articles." />
+      <UsersHeading description="Assign department, duty (officer, HOD, section head, public relations, or Director General) and which website content they may manage." />
       <Suspense fallback={<p className="mt-6 text-sm text-slate-500">Loading…</p>}>
         <EditAccessForm />
       </Suspense>

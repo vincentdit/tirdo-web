@@ -1,15 +1,20 @@
 import { NextResponse } from "next/server";
 import {
+  DEPARTMENT_UID,
   PORTAL_COLLECTIONS,
+  PR_COLLECTION_SLUGS,
   allowedPageSlugsFromGrants,
   canAccessPageSlug,
   grantedCollectionSlugs,
   canExportAudit,
   canViewAudit,
+  highestDuty,
   isAdminRole,
   isSuperAdminRole,
   parseCollectionList,
+  parsePortalDuty,
   type PortalCollection,
+  type PortalDuty,
 } from "@/lib/portal";
 import { cmsAdmin } from "./_cms";
 
@@ -21,6 +26,11 @@ export type PortalAccess = {
   roles: string[];
   isSuperAdmin: boolean;
   isFullAccess: boolean;
+  duty: PortalDuty;
+  isHod: boolean;
+  isSectionHead: boolean;
+  isPr: boolean;
+  isDg: boolean;
   canPublish: boolean;
   canManageMedia: boolean;
   canManageUsers: boolean;
@@ -67,14 +77,24 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
   const rows = Array.isArray(grantJson.results) ? grantJson.results : [];
   const mine = rows.filter((row) => {
     const email = String(row.staffEmail || "").trim().toLowerCase();
-    return email === me.email.trim().toLowerCase();
+    return email === me.email.trim().toLowerCase() && row.active !== false;
   });
+  const duty = highestDuty(mine.map((row) => parsePortalDuty(row.duty)));
+  const isHod = mine.some((row) => parsePortalDuty(row.duty) === "hod");
+  const isSectionHead = mine.some((row) => parsePortalDuty(row.duty) === "section-head");
+  const isPr = mine.some((row) => parsePortalDuty(row.duty) === "public-relations");
+  const isDg = duty === "director-general";
 
   if (isFullAccess) {
     return {
       ...me,
       isSuperAdmin,
       isFullAccess: true,
+      duty: isDg ? "director-general" : duty,
+      isHod,
+      isSectionHead,
+      isPr,
+      isDg,
       canPublish: true,
       canManageMedia: true,
       canManageUsers: isSuperAdmin || isAdminRole(me.roles),
@@ -97,7 +117,6 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
   let canDelete = false;
 
   for (const row of mine) {
-    if (row.active === false) continue;
     for (const slug of parseCollectionList(row.collections)) allowed.add(slug);
     canPublish = canPublish || Boolean(row.canPublish);
     canManageMedia = canManageMedia || Boolean(row.canManageMedia);
@@ -110,13 +129,24 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
     }
   }
 
+  if (isPr && allowed.size === 0) PR_COLLECTION_SLUGS.forEach((slug) => allowed.add(slug));
+  if ((isHod || isSectionHead || isDg) && allowed.size === 0) {
+    PORTAL_COLLECTIONS.filter((c) => c.draftAndPublish).forEach((c) => allowed.add(c.slug));
+  }
+  if (isDg) departments.push({ slug: "*", title: "All departments" });
+
   return {
     ...me,
     isSuperAdmin: false,
     isFullAccess: false,
-    canPublish,
+    duty,
+    isHod,
+    isSectionHead,
+    isPr,
+    isDg,
+    canPublish: canPublish || isHod || isSectionHead || isPr || isDg,
     canManageMedia,
-    canManageUsers: isAdminRole(me.roles) || canManageUsers,
+    canManageUsers: isPr ? false : isAdminRole(me.roles) || canManageUsers,
     canDelete,
     canManageSite: canManageMedia,
     canViewAudit: canViewAudit(me.roles),
@@ -126,6 +156,21 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
     pageSlugs: allowed.has("pages") ? allowedPageSlugsFromGrants(mine) : [],
     grantReady,
   };
+}
+
+export async function loadPortalDepartments(token: string) {
+  const res = await cmsAdmin(
+    `/content-manager/collection-types/${encodeURIComponent(DEPARTMENT_UID)}?page=1&pageSize=100&sort=title:asc`,
+    token
+  );
+  const json = (await res.json().catch(() => ({}))) as { results?: Record<string, unknown>[]; data?: Record<string, unknown>[] };
+  const rows = Array.isArray(json.results) ? json.results : Array.isArray(json.data) ? json.data : [];
+  return rows
+    .map((row) => ({
+      slug: String(row.slug || ""),
+      title: String(row.title || row.slug || ""),
+    }))
+    .filter((row) => row.slug);
 }
 
 export function canUsePage(access: PortalAccess, slug?: string) {

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cmsListQuery, collectionBySlug, entryStatus, entryTitle, mediaPreviewUrl, pickAllowedFields, prepareEServicePayload, sanitizeSearch, validateCollectionPayload } from "@/lib/portal";
-import { canUseCollection, canUsePage, forbidden, loadAccess } from "../../_access";
+import { cmsListQuery, collectionBySlug, entryStatus, entryTitle, mediaPreviewUrl, overlayEntryStatus, pickAllowedFields, prepareEServicePayload, sanitizeSearch, validateCollectionPayload } from "@/lib/portal";
+import { canUseCollection, canUsePage, forbidden, loadAccess, loadPortalDepartments } from "../../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../../_cms";
+import { activeReviewFor, listContentReviews } from "../../_reviews";
 
 export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   const token = portalToken();
@@ -71,11 +72,20 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
 
   const rows = Array.isArray(json.results) ? json.results : Array.isArray(json.data) ? json.data : [];
   const pagination = json.pagination || json.meta?.pagination || { page, pageSize, total: rows.length };
+  const [reviews, departments] = await Promise.all([listContentReviews(token, col.slug), loadPortalDepartments(token)]);
 
   return NextResponse.json({
     collection: { slug: col.slug, label: col.label, description: col.description, fields: col.fields, draftAndPublish: col.draftAndPublish },
     canPublish: access.canPublish,
     canDelete: access.canDelete,
+    isHod: access.isHod,
+    isSectionHead: access.isSectionHead,
+    isDg: access.isDg,
+    isSuperAdmin: access.isSuperAdmin,
+    duty: access.duty,
+    departments,
+    assignedDepartments: access.departments,
+    accountEmail: access.email,
     pageSlugs: access.pageSlugs,
     canCreate: col.slug !== "pages" || access.pageSlugs == null,
     query: q,
@@ -85,24 +95,32 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
       pageCount: Number(pagination.pageCount) || Math.max(1, Math.ceil((Number(pagination.total) || rows.length) / pageSize)),
       total: Number(pagination.total) || rows.length,
     },
-    results: rows.map((row: Record<string, unknown>) => ({
-      documentId: row.documentId || row.id,
-      title: entryTitle(row, col.titleField),
-      slug: row.slug,
-      path: row.path,
-      status: entryStatus(row, col.draftAndPublish),
-      cmsStatus: row.status,
-      updatedAt: row.updatedAt || row.publishedAt || row.createdAt,
-      createdAt: row.createdAt,
-      email: row.email,
-      name: row.name,
-      category: row.category,
-      href: row.href,
-      active: row.active,
-      logo: mediaPreviewUrl(row.logo),
-      handled: row.handled,
-      publishedAt: row.publishedAt,
-    })),
+    results: rows.map((row: Record<string, unknown>) => {
+      const documentId = String(row.documentId || row.id || "");
+      const review = activeReviewFor(reviews, documentId);
+      return {
+        documentId,
+        title: entryTitle(row, col.titleField),
+        slug: row.slug,
+        path: row.path,
+        status: overlayEntryStatus(entryStatus(row, col.draftAndPublish), review),
+        cmsStatus: row.status,
+        updatedAt: row.updatedAt || row.publishedAt || row.createdAt,
+        createdAt: row.createdAt,
+        email: row.email,
+        name: row.name,
+        category: row.category,
+        href: row.href,
+        active: row.active,
+        logo: mediaPreviewUrl(row.logo),
+        handled: row.handled,
+        publishedAt: row.publishedAt,
+        departmentSlug: row.departmentSlug,
+        pendingPublishBy: review?.kind === "publish" && (review.state === "pending" || review.state === "approved") ? review.requestedBy : undefined,
+        hodApprovedBy: review?.kind === "publish" ? review.hodApprovedBy : undefined,
+        removed: review?.kind === "remove" && review.state === "applied",
+      };
+    }),
   });
 }
 

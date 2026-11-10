@@ -7,8 +7,10 @@ import {
   cmsAdminErrorMessage,
   isSuperAdminRole,
   parseCollectionList,
+  parsePortalDuty,
   pickDefaultPortalRoleId,
   portalPasswordIssue,
+  PR_COLLECTION_SLUGS,
 } from "@/lib/portal";
 import { forbidden, loadAccess, type PortalAccess } from "../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../_cms";
@@ -77,6 +79,7 @@ function mapGrant(g: Record<string, unknown>) {
     canManageMedia: Boolean(g.canManageMedia),
     canManageUsers: Boolean(g.canManageUsers),
     canDelete: Boolean(g.canDelete),
+    duty: parsePortalDuty(g.duty),
     active: g.active !== false,
     notes: g.notes,
   };
@@ -210,6 +213,13 @@ export async function POST(request: NextRequest) {
     if (chosen && isSuperAdminRole([chosen.name]) && !access.isSuperAdmin) {
       return forbidden("Only a Super Admin can create a Super Admin.");
     }
+    const createdDuty = parsePortalDuty(body.duty);
+    if (chosen && isSuperAdminRole([chosen.name]) && (createdDuty === "public-relations" || createdDuty === "director-general")) {
+      return NextResponse.json(
+        { error: "Public relations and Director General accounts must not be Super Admin. Choose Author or Editor, then assign the duty on Edit access." },
+        { status: 400 }
+      );
+    }
     const createdRes = await cmsAdmin("/admin/users", token, {
       method: "POST",
       body: JSON.stringify({
@@ -299,16 +309,22 @@ export async function POST(request: NextRequest) {
 
   const staffEmail = emailKey(body.staffEmail);
   if (!staffEmail) return NextResponse.json({ error: "Staff email is required." }, { status: 400 });
+  const duty = parsePortalDuty(body.duty);
+  if ((duty === "hod" || duty === "section-head") && !String(body.departmentSlug || "").trim()) {
+    return NextResponse.json({ error: "Choose the department for this Head of Department or section head." }, { status: 400 });
+  }
+  const collections = Array.isArray(body.collections) ? body.collections.map(String) : [];
   const payload = {
     staffEmail,
     departmentSlug: String(body.departmentSlug || ""),
     departmentTitle: String(body.departmentTitle || ""),
-    collections: Array.isArray(body.collections) ? body.collections : [],
+    collections: duty === "public-relations" && collections.length === 0 ? PR_COLLECTION_SLUGS : collections,
     pageSlugs: Array.isArray(body.pageSlugs) ? body.pageSlugs : [],
-    canPublish: Boolean(body.canPublish),
+    canPublish: duty === "staff" ? Boolean(body.canPublish) : true,
     canManageMedia: Boolean(body.canManageMedia),
-    canManageUsers: Boolean(body.canManageUsers),
+    canManageUsers: duty === "public-relations" || duty === "director-general" ? false : Boolean(body.canManageUsers),
     canDelete: Boolean(body.canDelete),
+    duty,
     active: body.active !== false,
     notes: String(body.notes || ""),
   };

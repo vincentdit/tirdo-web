@@ -22,6 +22,7 @@ export type PortalGrant = {
   canManageMedia: boolean;
   canManageUsers: boolean;
   canDelete: boolean;
+  duty?: string;
   active: boolean;
   notes?: string;
 };

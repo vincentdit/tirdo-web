@@ -38,6 +38,14 @@
         }
       }
     },
+    "departmentSlug": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "category": {
       "type": "enumeration",
       "enum": [
