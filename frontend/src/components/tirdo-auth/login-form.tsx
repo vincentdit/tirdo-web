@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { isAdminEmail } from "@/lib/portal";
+import { friendlyAuthError, isAdminEmail } from "@/lib/portal";
 import { isSafePortalNext } from "@/lib/security-http";
 
 export function TirdoLoginForm() {
@@ -46,7 +46,7 @@ export function TirdoLoginForm() {
         return;
       }
       if (!res.ok) {
-        setError(json.error || "Sign in failed. Try again.");
+        setError(friendlyAuthError(res.status, json.error));
         return;
       }
       router.replace(next);
