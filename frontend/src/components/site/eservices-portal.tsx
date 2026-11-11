@@ -34,7 +34,7 @@ export function EServicesPortal() {
     fetch("/api/e-services/workspace")
       .then(async (r) => {
         const j = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(j.error || "Could not load your systems.");
+        if (!r.ok) throw new Error("Could not load your systems. Try again shortly.");
         return j as Workspace;
       })
       .then(setWorkspace)

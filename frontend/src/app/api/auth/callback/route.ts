@@ -34,7 +34,11 @@ export async function GET(request: NextRequest) {
   jar.set("tirdo_oidc_s", "", { ...siteCookieOptions(0), maxAge: 0 });
   jar.set("tirdo_oidc_r", "", { ...siteCookieOptions(0), maxAge: 0 });
 
-  const fail = () => NextResponse.redirect(`${site}/?login_error=1`);
+  const fail = () => {
+    const dest = new URL(returnTo);
+    dest.searchParams.set("login_error", "1");
+    return NextResponse.redirect(dest);
+  };
   if (!code || !verifier || !expectedState || state !== expectedState) return fail();
 
   try {

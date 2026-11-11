@@ -21,7 +21,7 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
   const result = launchTarget(item, roles);
   if ("error" in result && result.error) {
     const dest = new URL("/e-services", request.url);
-    dest.searchParams.set("denied", params.slug);
+    dest.searchParams.set("denied", params.slug.replace(/[^a-z0-9-]/gi, "").slice(0, 40));
     dest.searchParams.set("reason", String(result.status));
     return NextResponse.redirect(dest);
   }
