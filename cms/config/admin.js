@@ -17,4 +17,6 @@ module.exports = ({ env }) => ({
     nps: env.bool("FLAG_NPS", false),
     promoteEE: env.bool("FLAG_PROMOTE_EE", false),
   },
+  // Staff use /portal. Do not serve the default Strapi admin UI unless explicitly enabled.
+  serveAdminPanel: env.bool("SERVE_ADMIN_PANEL", false),
 });

@@ -35,5 +35,9 @@ export default {
       },
     },
   },
-  bootstrap() {},
+  bootstrap() {
+    if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+      window.location.replace(`${window.location.protocol}//${window.location.hostname}/portal`);
+    }
+  },
 };

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { PORTAL_COOKIE, PORTAL_LOGIN_PATH } from "@/lib/portal";
+import { PORTAL_COOKIE, PORTAL_HOME_PATH, PORTAL_LOGIN_PATH, tirdoPortalFromLegacyCmsPath } from "@/lib/portal";
 import { isSameOriginRequest } from "@/lib/security-http";
 
 const PUBLIC_PORTAL = [PORTAL_LOGIN_PATH, "/portal/forgot-password"];
@@ -18,6 +18,15 @@ function portalApiGuard(request: NextRequest) {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const legacy = tirdoPortalFromLegacyCmsPath(pathname);
+  if (legacy) {
+    const url = request.nextUrl.clone();
+    const signedIn = Boolean(request.cookies.get(PORTAL_COOKIE)?.value);
+    url.pathname = signedIn ? PORTAL_HOME_PATH : PORTAL_LOGIN_PATH;
+    url.search = "";
+    if (!signedIn) url.searchParams.set("next", PORTAL_HOME_PATH);
+    return NextResponse.redirect(url);
+  }
   if (pathname.startsWith("/api/portal")) return portalApiGuard(request);
   if (!pathname.startsWith("/portal")) return NextResponse.next();
   if (PUBLIC_PORTAL.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
@@ -33,5 +42,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/portal/:path*", "/api/portal/:path*"],
+  matcher: ["/portal/:path*", "/api/portal/:path*", "/admin", "/admin/:path*", "/cms", "/cms/:path*", "/content-manager/:path*", "/content-type-builder/:path*"],
 };

@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "TIRDO Content management",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost/portal",
+      "webRoot": "${workspaceFolder}/frontend"
+    },
+    {
+      "name": "TIRDO e-Services",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost/e-services",
+      "webRoot": "${workspaceFolder}/frontend"
+    },
+    {
+      "name": "TIRDO public site",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost/",
+      "webRoot": "${workspaceFolder}/frontend"
+    }
+  ]
+}
