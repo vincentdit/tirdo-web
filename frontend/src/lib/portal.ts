@@ -2,6 +2,25 @@ import { publicFileUrl } from "@/lib/utils";
 
 export const PORTAL_COOKIE = "tirdo_portal_token";
 export const PORTAL_LOGIN_PATH = "/portal/login";
+export const PORTAL_HOME_PATH = "/portal";
+
+/** Browser URLs that belong to Strapi's default admin UI, not TIRDO. */
+export function isStrapiAdminUiPath(pathname: string) {
+  const path = String(pathname || "").split("?")[0];
+  return (
+    path === "/admin" ||
+    path.startsWith("/admin/") ||
+    path === "/cms" ||
+    path.startsWith("/cms/") ||
+    path.startsWith("/content-manager") ||
+    path.startsWith("/content-type-builder") ||
+    path.startsWith("/users-permissions")
+  );
+}
+
+export function tirdoPortalFromLegacyCmsPath(pathname: string) {
+  return isStrapiAdminUiPath(pathname) ? PORTAL_HOME_PATH : null;
+}
 export const GRANT_UID = "api::portal-grant.portal-grant";
 export const CONTENT_REVIEW_UID = "api::content-review.content-review";
 export const DEPARTMENT_UID = "api::department.department";

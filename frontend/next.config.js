@@ -20,6 +20,7 @@ const nextConfig = {
   async redirects() {
     return [
       { source: "/admin", destination: "/portal", permanent: false },
+      { source: "/admin/auth/:path*", destination: "/portal", permanent: false },
       { source: "/admin/:path*", destination: "/portal", permanent: false },
       { source: "/cms", destination: "/portal", permanent: false },
       { source: "/cms/:path*", destination: "/portal", permanent: false },

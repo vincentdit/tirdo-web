@@ -11,9 +11,18 @@ try {
 }
 const { auditMiddleware, registerAuditRoutes, repairMismatchedV2 } = require('./audit');
 const { frontendSyncMiddleware } = require('./sync-site');
+const { portalRedirectLocation } = require('./tirdo-portal-redirect');
 
 module.exports = {
   register({ strapi }) {
+    strapi.server.use(async (ctx, next) => {
+      const location = portalRedirectLocation(ctx.method, ctx.path, ctx.get('accept'));
+      if (location) {
+        ctx.redirect(location);
+        return;
+      }
+      await next();
+    });
     // Record every create/update/delete/publish on audited content types to
     // the tamper-evident audit log.
     strapi.documents.use(auditMiddleware(strapi));

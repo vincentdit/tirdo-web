@@ -79,6 +79,8 @@ services:
       ENCRYPTION_KEY: ${STRAPI_ENCRYPTION_KEY}
       # Blank = admin API uses the same host:port as the browser (LAN :3001).
       STRAPI_PUBLIC_URL: ${STRAPI_PUBLIC_URL:-}
+      PORTAL_PUBLIC_URL: ${PUBLIC_URL}
+      SERVE_ADMIN_PANEL: ${SERVE_ADMIN_PANEL:-false}
       STRAPI_PROXY: "true"
       STRAPI_CORS_ORIGINS: ${STRAPI_CORS_ORIGINS:-${PUBLIC_URL}}
       # MinIO / S3 storage provider

@@ -4,6 +4,7 @@ module.exports = ({ env }) => {
   const origin = env("STRAPI_CORS_ORIGINS", "http://localhost");
 
   return [
+    "global::tirdo-portal-redirect",
     "strapi::logger",
     "strapi::errors",
     {

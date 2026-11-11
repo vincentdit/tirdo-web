@@ -5,13 +5,13 @@
   "description": "TIRDO content management (Strapi 5)",
   "scripts": {
     "build": "strapi build",
-    "develop": "strapi develop",
+    "develop": "strapi develop --no-open",
     "start": "strapi start",
     "strapi": "strapi",
     "seed": "node ./scripts/seed.js",
     "reseed": "node ./scripts/reseed.js",
     "reindex": "node ./scripts/reindex.js",
-    "test": "node --test src/audit.test.js"
+    "test": "node --test src/audit.test.js src/tirdo-portal-redirect.test.js"
   },
   "dependencies": {
     "@opensearch-project/opensearch": "^2.11.0",

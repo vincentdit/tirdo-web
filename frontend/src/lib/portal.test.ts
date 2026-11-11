@@ -7,6 +7,7 @@ import {
   isAdminRole,
   isFullPortalRole,
   pageEditTarget,
+  tirdoPortalFromLegacyCmsPath,
   mediaId,
   pickAllowedFields,
   entryStatus,
@@ -88,6 +89,13 @@ describe("portal helpers", () => {
     expect(pageEditTarget("/publications/tirdo-profile").collection).toBe("publications");
     expect(pageEditTarget("/e-services").href).toBe("/portal/e-services");
     expect(pageEditTarget("/e-services").collection).toBe("e-services");
+  });
+
+  it("sends Strapi admin and /cms bookmarks to the TIRDO portal", () => {
+    expect(tirdoPortalFromLegacyCmsPath("/admin")).toBe("/portal");
+    expect(tirdoPortalFromLegacyCmsPath("/admin/content-manager")).toBe("/portal");
+    expect(tirdoPortalFromLegacyCmsPath("/cms/admin")).toBe("/portal");
+    expect(tirdoPortalFromLegacyCmsPath("/portal/articles")).toBeNull();
   });
 
   it("lets Super Admin set e-service system URLs", () => {
