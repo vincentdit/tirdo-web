@@ -7,6 +7,7 @@ import {
   safeReturnTo,
   siteCookieOptions,
 } from "@/lib/oidc";
+import { writeOidcBrowserCookies } from "@/lib/oidc-session-cookie";
 import { ingestAuditEvent } from "@/lib/audit-ingest";
 import { publicSiteUrl } from "@/lib/public-url";
 
@@ -74,8 +75,11 @@ export async function GET(request: NextRequest) {
       return fail();
     }
     const maxAge = Math.max(60, Number(json.expires_in) || 3600);
-    jar.set("tirdo_oidc_at", json.access_token, siteCookieOptions(maxAge));
-    if (json.id_token) jar.set("tirdo_oidc_it", json.id_token, siteCookieOptions(maxAge));
+    writeOidcBrowserCookies(jar, {
+      accessToken: json.access_token,
+      idToken: json.id_token,
+      maxAge,
+    });
     const claims = idTokenClaims(json.id_token);
     await ingestAuditEvent({
       action: "login",

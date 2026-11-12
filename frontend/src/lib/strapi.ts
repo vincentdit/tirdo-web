@@ -254,8 +254,26 @@ function paragraphs(value: unknown): string[] | undefined {
   return undefined;
 }
 
+function mapDepartmentUnits(raw: Raw, fb?: fallback.Department): fallback.DeptSection[] | undefined {
+  if (Array.isArray(raw.units) && raw.units.length) {
+    return raw.units.map((unit: Raw) => ({
+      name: String(unit.title || unit.name || ""),
+      slug: String(unit.slug || ""),
+      items: String(unit.items || "")
+        .split(/\n+/)
+        .map((s: string) => s.trim())
+        .filter(Boolean),
+      head: String(unit.headName || "") || undefined,
+      photo: mediaUrl(unit.headPhoto),
+    })).filter((unit: fallback.DeptSection) => unit.name);
+  }
+  return fb?.sections;
+}
+
 export async function getDepartments(locale = activeLocale()): Promise<Department[]> {
-  const data = await strapiFetch<Raw[]>(`departments?${L}&pagination[limit]=100`);
+  const data = await strapiFetch<Raw[]>(
+    `departments?${L}&pagination[limit]=100&populate[headPhoto]=true&populate[units][populate][headPhoto]=true`
+  );
   if (!data || data.length === 0) return fallback.departments;
   return data.map((raw) => {
     const d = mergeLocale(raw, locale);
@@ -265,9 +283,11 @@ export async function getDepartments(locale = activeLocale()): Promise<Departmen
       title: d.title,
       group: d.group || fb?.group || "",
       blurb: d.blurb || fb?.blurb || "",
-      head: fb?.head,
+      head: String(d.headName || fb?.head || "") || undefined,
+      headTitle: String(d.headTitle || fb?.headTitle || "") || undefined,
+      photo: mediaUrl(d.headPhoto) || fb?.photo,
       body: paragraphs(d.body) ?? fb?.body ?? [],
-      sections: fb?.sections,
+      sections: mapDepartmentUnits(d, fb),
     };
   });
 }

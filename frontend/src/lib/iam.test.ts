@@ -9,6 +9,7 @@ import {
   validateRedirectUris,
   integrationStatus,
   iamAdminAllowed,
+  emailAsUsername,
 } from "@/lib/iam";
 
 describe("institutional IAM helpers", () => {
@@ -54,6 +55,10 @@ describe("institutional IAM helpers", () => {
       "expired"
     );
     expect(validateAccessTokenClaims({ iss: issuer, aud: "tirdo-web", exp: 9e12 }, { issuer, audience: "tirdo-web" })).toBeNull();
+  });
+
+  it("uses email as the Keycloak username", () => {
+    expect(emailAsUsername("  Mabele@tirdo.go.tz ")).toBe("mabele@tirdo.go.tz");
   });
 
   it("restricts IAM administration to authorised portal administrators", () => {

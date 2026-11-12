@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { PortalShell } from "@/components/tirdo-auth/portal-shell";
 import { MediaField } from "@/components/tirdo-auth/media-field";
+import { DepartmentUnitsField } from "@/components/tirdo-auth/department-units-field";
 import {
   canApproveDg,
   canApproveHod,
@@ -28,6 +29,7 @@ export default function PortalEntryPage() {
   const [hodApprovedBy, setHodApprovedBy] = useState("");
   const [isHod, setIsHod] = useState(false);
   const [isSectionHead, setIsSectionHead] = useState(false);
+  const [sectionSlugs, setSectionSlugs] = useState<string[]>([]);
   const [isDg, setIsDg] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [assignedDepartments, setAssignedDepartments] = useState<{ slug: string; title?: string }[]>([]);
@@ -49,6 +51,7 @@ export default function PortalEntryPage() {
         setAccountEmail(String(j?.email || ""));
         setIsHod(Boolean(j?.isHod));
         setIsSectionHead(Boolean(j?.isSectionHead));
+        setSectionSlugs(Array.isArray(j?.sectionSlugs) ? j.sectionSlugs.map(String) : []);
         setIsDg(Boolean(j?.isDg));
         setIsSuperAdmin(Boolean(j?.isSuperAdmin));
         setAssignedDepartments(Array.isArray(j?.departments) ? j.departments : []);
@@ -74,6 +77,9 @@ export default function PortalEntryPage() {
           href: "",
         });
       }
+      if (col?.slug === "departments") {
+        setValues({ headTitle: "Director", units: [] });
+      }
       return;
     }
     fetch(`/api/portal/content/${col.slug}/${params.id}`)
@@ -97,6 +103,7 @@ export default function PortalEntryPage() {
         setHodApprovedBy(String(j?.hodApprovedBy || ""));
         setIsHod(Boolean(j?.isHod));
         setIsSectionHead(Boolean(j?.isSectionHead));
+        if (Array.isArray(j?.sectionSlugs)) setSectionSlugs(j.sectionSlugs.map(String));
         setIsDg(Boolean(j?.isDg));
         setIsSuperAdmin(Boolean(j?.isSuperAdmin));
         if (Array.isArray(j?.assignedDepartments)) setAssignedDepartments(j.assignedDepartments);
@@ -128,6 +135,7 @@ export default function PortalEntryPage() {
     isSectionHead,
     departments: assignedDepartments,
     departmentSlug: String(values.departmentSlug || ""),
+    sectionSlugs,
     requestedBy: pendingPublishBy,
   });
   const canDg = canApproveDg({
@@ -230,13 +238,20 @@ export default function PortalEntryPage() {
       {loaded && (
         <form className="mt-6 max-w-3xl space-y-4 rounded-lg border bg-white p-5" onSubmit={(e) => onSubmit(e, "save")}>
           {fields.map((field) => (
-            field.type === "media" || field.type === "file" ? (
+            field.type === "units" ? (
+              <DepartmentUnitsField
+                key={field.key}
+                value={values[field.key]}
+                onChange={(next) => setValues((v) => ({ ...v, [field.key]: next }))}
+              />
+            ) : field.type === "media" || field.type === "file" ? (
               <MediaField
                 key={field.key}
                 label={field.label}
                 value={values[field.key]}
                 accept={field.type === "file" ? "application/pdf,image/*" : "image/jpeg,image/png,image/webp,image/gif,image/svg+xml"}
                 maxBytes={field.type === "file" ? 5 * 1024 * 1024 : 2 * 1024 * 1024}
+                portrait={field.key === "headPhoto"}
                 onChange={(next) => setValues((v) => ({ ...v, [field.key]: next }))}
               />
             ) : (

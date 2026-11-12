@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { Lock, LogIn, ShieldCheck, ArrowRight, LogOut } from "lucide-react";
 import { useAuth } from "@/components/site/auth-provider";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { loginHref } from "@/lib/keycloak";
+import { cn } from "@/lib/utils";
 
 type WorkspaceService = {
   slug: string;
@@ -51,14 +53,14 @@ export function EServicesPortal() {
         <span className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-primary/10 text-primary">
           <Lock className="h-7 w-7" />
         </span>
-        <h3 className="text-lg font-bold text-primary">Sign in with TIRDO SSO</h3>
+        <h3 className="text-lg font-bold text-primary">Sign in to continue</h3>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-          Use your Keycloak account once. You will then see only the systems your role allows — NIIMS, LIMS, CIAP, TELT, e-Office and Content management — and open them without signing in again.
+          Use your TIRDO account. After you sign in you will see the systems available to you and can open them without signing in again.
         </p>
         <div className="mt-6 flex justify-center gap-3">
-          <Button variant="accent" onClick={auth.login}>
+          <a href={loginHref("/e-services")} className={cn(buttonVariants({ variant: "accent" }))}>
             <LogIn className="h-4 w-4" /> Sign in
-          </Button>
+          </a>
         </div>
       </div>
     );
@@ -72,13 +74,13 @@ export function EServicesPortal() {
         ? item.description
         : `${item.description} System URL is not configured yet — ask an IAM administrator.`,
       href: item.connected ? item.launchPath : "",
-      badge: item.connected ? "SSO" : "Not connected",
+      badge: item.connected ? "Open" : "Unavailable",
     })),
     ...(workspace?.staffPortal
-      ? [{ key: "staff", title: "Staff directory", desc: "Internal people and organisation pages on TIRDO Web.", href: "/staff", badge: "TIRDO Web" }]
+      ? [{ key: "staff", title: "Staff directory", desc: "Internal people and organisation pages on TIRDO Web.", href: "/staff", badge: "Open" }]
       : []),
     ...(workspace?.contentManagement
-      ? [{ key: "cms", title: "Content management", desc: "Manage news, publications, e-service links and projects.", href: "/portal", badge: "Editor" }]
+      ? [{ key: "cms", title: "Content management", desc: "News, publications, e-service links and projects.", href: "/api/portal/from-sso", badge: "Open" }]
       : []),
   ];
 
@@ -96,7 +98,7 @@ export function EServicesPortal() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-            <ShieldCheck className="h-3.5 w-3.5" /> Signed in via Keycloak
+            <ShieldCheck className="h-3.5 w-3.5" /> Signed in
           </span>
           <Button variant="outline" size="sm" onClick={auth.logout}>
             <LogOut className="h-3.5 w-3.5" /> Sign out
@@ -108,7 +110,7 @@ export function EServicesPortal() {
       {!workspace && !error && <p className="mt-4 text-sm text-muted-foreground">Loading the systems you can access…</p>}
       {workspace && tiles.length === 0 && (
         <p className="mt-4 text-sm text-muted-foreground">
-          No institutional systems are assigned to this account yet. An IAM administrator can grant NIIMS, LIMS, CIAP or TELT access in Identity &amp; Access.
+          No systems are available for this account yet. A TIRDO administrator can enable them.
         </p>
       )}
       <div className="mt-5 grid gap-3 sm:grid-cols-2">

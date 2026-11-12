@@ -53,6 +53,7 @@ export default function PortalCollectionPage() {
   const [accountEmail, setAccountEmail] = useState("");
   const [isHod, setIsHod] = useState(false);
   const [isSectionHead, setIsSectionHead] = useState(false);
+  const [sectionSlugs, setSectionSlugs] = useState<string[]>([]);
   const [isDg, setIsDg] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [assignedDepartments, setAssignedDepartments] = useState<{ slug: string }[]>([]);
@@ -105,6 +106,7 @@ export default function PortalCollectionPage() {
         setCanPublish(Boolean(j?.canPublish));
         setIsHod(Boolean(j?.isHod));
         setIsSectionHead(Boolean(j?.isSectionHead));
+        setSectionSlugs(Array.isArray(j?.sectionSlugs) ? j.sectionSlugs.map(String) : []);
         setIsDg(Boolean(j?.isDg));
         setIsSuperAdmin(Boolean(j?.isSuperAdmin));
         setAssignedDepartments(Array.isArray(j?.assignedDepartments) ? j.assignedDepartments : []);
@@ -410,6 +412,7 @@ export default function PortalCollectionPage() {
                               departments: assignedDepartments,
                               departmentSlug: String(row.departmentSlug || ""),
                               requestedBy: row.pendingPublishBy,
+                              sectionSlugs,
                             }),
                             canApproveDg({
                               email: accountEmail,
@@ -435,6 +438,7 @@ export default function PortalCollectionPage() {
                                 departments: assignedDepartments,
                                 departmentSlug: String(row.departmentSlug || ""),
                                 requestedBy: row.pendingPublishBy,
+                                sectionSlugs,
                               }),
                               canApproveDg({
                                 email: accountEmail,

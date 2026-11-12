@@ -7,14 +7,14 @@ TIRDO Web **already runs Keycloak 26.0** (`tirdo-keycloak`) with PostgreSQL (`ti
 | Surface | How users sign in today |
 |---|---|
 | Public website Sign in | OIDC authorization code + PKCE, BFF cookies (`tirdo_oidc_at` / `tirdo_oidc_it`), routes `/api/auth/login`, `/callback`, `/logout`, `/session` |
-| CMS / Content portal | Strapi admin JWT (`/portal/login`) — **not** Keycloak |
+| CMS / Content portal | Keycloak session from e-Services (click Content management) or email/password at `/portal/login` |
 | NIIMS, LIMS, CIAP, TELT | **Not in this repository.** They appear as e-service catalogue rows (`nilims`, `ciap`, `teltp`, …). Login is not implemented here. |
 
 Existing Keycloak clients: **`tirdo-web`** (public, PKCE S256) and **`tirdo-cms`** (confidential, service account). Realm roles: `tirdo-admin`, `content-editor`, `staff`, `public`. `CONFIGURE_TOTP` is a default required action in the realm export. MFA operations also exist as `scripts/keycloak-mfa.sh` and `docs/MFA.md`.
 
 There is **no Spring Boot / NestJS IAM service** (ADR 0002). Administration is implemented as **Next.js route handlers** that call the Keycloak Admin REST API with `KEYCLOAK_ADMIN` via `admin-cli`. The browser never talks to the Admin API.
 
-This work **reuses** the `tirdo` realm and `tirdo-web` client. It does not create a second realm, reset passwords, or replace Keycloak.
+This work **reuses** the `tirdo` realm and `tirdo-web` client. It does not create a second realm, reset passwords, or replace Keycloak. The realm allows **login with email**. New IAM users are created with **email as username**. Existing demo accounts may still have a short username (`mabele`) and can sign in with either that username or their email.
 
 ## What TIRDO Web now provides
 
@@ -34,7 +34,9 @@ Keycloak remains authoritative for credentials and SSO sessions. TIRDO Web store
 
 Creating a client is **not** a completed integration. See `docs/IAM-INTEGRATION.md`.
 
-After Keycloak sign-in on **e-Services**, staff see only systems their realm roles allow. Opening a tile goes through `/api/e-services/launch/{slug}` (policy check, then redirect). If that application uses the `tirdo` realm, Keycloak reuses the SSO session and does not ask for the password again. Set each live URL in Content management → E-service links.
+After Keycloak sign-in on **e-Services**, staff see only systems their realm roles allow. Opening a tile goes through `/api/e-services/launch/{slug}` (policy check, then redirect). **Content management** uses `/api/portal/from-sso` so the same Keycloak session opens the TIRDO portal without a second password prompt. If that application uses the `tirdo` realm, Keycloak reuses the SSO session and does not ask for the password again. Set each live URL in Content management → E-service links.
+
+**Sign out** from TIRDO Web, Content Manager, or LIMS runs Keycloak RP-initiated logout (`id_token_hint`). Keycloak then posts back-channel logout to TIRDO Web and LIMS so local sessions end together.
 
 ## MFA
 

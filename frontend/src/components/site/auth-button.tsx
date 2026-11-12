@@ -1,14 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { LogIn, LogOut, User, ChevronDown } from "lucide-react";
 import { useAuth } from "@/components/site/auth-provider";
+import { canOpenContentManagement, CONTENT_MANAGEMENT_LAUNCH } from "@/lib/e-service-access";
+import { loginHref } from "@/lib/keycloak";
 import { cn } from "@/lib/utils";
 
-// Sign-in / account control. `onDark` styles it for the teal utility bar.
 export function AuthButton({ className, onDark }: { className?: string; onDark?: boolean }) {
   const auth = useAuth();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (event: MouseEvent) => {
+      if (!root.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
 
   if (!auth.ready) {
     return <div className={cn("h-5 w-16 animate-pulse rounded bg-white/20", className)} />;
@@ -16,8 +29,8 @@ export function AuthButton({ className, onDark }: { className?: string; onDark?:
 
   if (!auth.authenticated) {
     return (
-      <button
-        onClick={auth.login}
+      <a
+        href={loginHref(pathname || "/")}
         className={cn(
           "inline-flex items-center gap-1.5 text-xs font-semibold",
           onDark ? "text-white hover:text-brand-gold" : "rounded-md bg-accent px-3 py-2 text-sm text-accent-foreground hover:brightness-95",
@@ -25,16 +38,20 @@ export function AuthButton({ className, onDark }: { className?: string; onDark?:
         )}
       >
         <LogIn className="h-3.5 w-3.5" /> Sign in
-      </button>
+      </a>
     );
   }
 
   const label = auth.name || auth.username || "Account";
+  const showStaff = auth.hasRole("staff") || auth.hasRole("content-editor") || auth.hasRole("tirdo-admin");
+  const showCms = canOpenContentManagement(auth.roles);
   return (
-    <div className={cn("relative", className)} onMouseLeave={() => setOpen(false)}>
+    <div className={cn("relative", className)} ref={root}>
       <button
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="menu"
         onClick={() => setOpen((v) => !v)}
-        onMouseEnter={() => setOpen(true)}
         className={cn(
           "inline-flex items-center gap-1.5 text-xs font-semibold",
           onDark ? "text-white hover:text-brand-gold" : "rounded-md border px-3 py-2 text-sm text-primary hover:bg-secondary"
@@ -47,33 +64,34 @@ export function AuthButton({ className, onDark }: { className?: string; onDark?:
         <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-180")} />
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-[60] w-56 rounded-lg border bg-popover p-2 text-left shadow-xl">
+        <div
+          role="menu"
+          className="absolute right-0 top-full z-[80] mt-1 w-56 rounded-lg border bg-popover p-2 text-left shadow-xl"
+        >
           <div className="border-b px-3 py-2">
             <div className="flex items-center gap-2 text-sm font-semibold text-primary">
               <User className="h-4 w-4" /> {label}
             </div>
             {auth.email && <div className="mt-0.5 truncate text-xs text-muted-foreground">{auth.email}</div>}
-            {auth.roles.length > 0 && (
-              <div className="mt-1 flex flex-wrap gap-1">
-                {auth.roles
-                  .filter((r) => !r.startsWith("default-") && !["offline_access", "uma_authorization"].includes(r))
-                  .map((r) => (
-                    <span key={r} className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-secondary-foreground">
-                      {r}
-                    </span>
-                  ))}
-              </div>
-            )}
           </div>
-          <a href="/e-services" className="mt-1 block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
+          <a href="/account" className="mt-1 block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
+            My profile
+          </a>
+          <a href="/e-services" className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
             My e-Services
           </a>
-          {(auth.hasRole("staff") || auth.hasRole("content-editor") || auth.hasRole("tirdo-admin")) && (
+          {showStaff && (
             <a href="/staff" className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
-              Staff Portal
+              Staff portal
+            </a>
+          )}
+          {showCms && (
+            <a href={CONTENT_MANAGEMENT_LAUNCH} className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
+              Content management
             </a>
           )}
           <button
+            type="button"
             onClick={auth.logout}
             className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-destructive hover:bg-secondary"
           >

@@ -5,9 +5,12 @@ import {
   oidcAuthorizeUrl,
   oidcCallbackUrl,
   oidcClientId,
+  parseJwtPayload,
   safeReturnTo,
   siteCookieOptions,
 } from "@/lib/oidc";
+import { OIDC_ACCESS_COOKIE, readOidcBrowserSession } from "@/lib/oidc-session-cookie";
+import { oidcPayloadActive } from "@/lib/oidc-session-revoke";
 import { publicSiteUrl } from "@/lib/public-url";
 
 function b64url(buf: Buffer) {
@@ -17,10 +20,18 @@ function b64url(buf: Buffer) {
 export async function GET(request: NextRequest) {
   const site = publicSiteUrl();
   const returnTo = safeReturnTo(request.nextUrl.searchParams.get("returnTo"), site);
+  const jar = cookies();
+  const session = readOidcBrowserSession(jar);
+  const access = jar.get(OIDC_ACCESS_COOKIE)?.value || "";
+  const accessOk = Boolean(access && oidcPayloadActive(parseJwtPayload(access)));
+  const needsFreshAccess = returnTo.includes("/api/portal/from-sso");
+  if (session && (!needsFreshAccess || accessOk)) {
+    return NextResponse.redirect(returnTo);
+  }
+
   const verifier = b64url(randomBytes(32));
   const challenge = b64url(createHash("sha256").update(verifier).digest());
   const state = b64url(randomBytes(16));
-  const jar = cookies();
   jar.set("tirdo_oidc_v", verifier, siteCookieOptions(600));
   jar.set("tirdo_oidc_s", state, siteCookieOptions(600));
   jar.set("tirdo_oidc_r", returnTo, siteCookieOptions(600));

@@ -30,9 +30,9 @@ export const PR_COLLECTION_SLUGS = ["articles", "events", "pages"];
 export type PortalDuty = "staff" | "hod" | "section-head" | "public-relations" | "director-general";
 
 export const PORTAL_DUTIES: { id: PortalDuty; label: string; help: string }[] = [
-  { id: "staff", label: "Department officer", help: "Section or department staff prepare information and send it to the Head of Department to publish." },
-  { id: "hod", label: "Head of Department", help: "Approves and publishes information from this department's staff or section." },
-  { id: "section-head", label: "Section head", help: "May approve and publish this department's staff information in place of the Head of Department." },
+  { id: "staff", label: "Department officer", help: "Section or department staff prepare information and send it to the Head of Department or the head of their division to publish." },
+  { id: "hod", label: "Head of Department", help: "Approves and publishes information for this department and all of its divisions or sections." },
+  { id: "section-head", label: "Head of division or section", help: "Approves and publishes information only for the assigned division or section, for example ICT inside ICT & Technology Development." },
   { id: "public-relations", label: "Public relations / announcements", help: "Manages website news and notices. Not an administrator. This information is approved and published by the Director General." },
   { id: "director-general", label: "Director General", help: "Approves and publishes information submitted by Public Relations." },
 ];
@@ -78,10 +78,18 @@ export function canApproveHod(opts: {
   departments: { slug: string }[];
   departmentSlug?: string;
   requestedBy?: string;
+  sectionSlugs?: string[];
 }) {
-  if (!opts.isHod && !opts.isSectionHead) return false;
   if (sameAccountEmail(opts.email, opts.requestedBy)) return false;
-  return departmentMatches(opts.departments, opts.departmentSlug);
+  if (opts.isHod && departmentMatches(opts.departments, opts.departmentSlug)) return true;
+  if (opts.isSectionHead) {
+    const want = String(opts.departmentSlug || "").trim().toLowerCase();
+    if (!want) return false;
+    const sections = (opts.sectionSlugs || []).map((s) => String(s || "").trim().toLowerCase()).filter(Boolean);
+    if (sections.length) return sections.includes(want) || sections.includes("*");
+    return departmentMatches(opts.departments, opts.departmentSlug);
+  }
+  return false;
 }
 
 export function canApproveDg(opts: {
@@ -102,8 +110,16 @@ export function requesterIsDeptHead(opts: {
   isSectionHead: boolean;
   departments: { slug: string }[];
   departmentSlug?: string;
+  sectionSlugs?: string[];
 }) {
-  return (opts.isHod || opts.isSectionHead) && departmentMatches(opts.departments, opts.departmentSlug);
+  if (opts.isHod && departmentMatches(opts.departments, opts.departmentSlug)) return true;
+  if (opts.isSectionHead) {
+    const want = String(opts.departmentSlug || "").trim().toLowerCase();
+    const sections = (opts.sectionSlugs || []).map((s) => String(s || "").trim().toLowerCase()).filter(Boolean);
+    if (want && sections.length) return sections.includes(want) || sections.includes("*");
+    return departmentMatches(opts.departments, opts.departmentSlug);
+  }
+  return false;
 }
 
 export type PublishPath = "hod" | "dg";
@@ -117,7 +133,51 @@ export function reviewPublishPath(review?: { approvalPath?: PublishPath; state?:
   return "hod";
 }
 
-export type PortalFieldType = "text" | "textarea" | "number" | "boolean" | "email" | "select" | "media" | "file" | "date" | "url";
+export type PortalFieldType = "text" | "textarea" | "number" | "boolean" | "email" | "select" | "media" | "file" | "date" | "url" | "units";
+
+export type DepartmentUnit = {
+  id?: number;
+  title: string;
+  slug: string;
+  kind: "division" | "section";
+  items?: string;
+  headName?: string;
+  headEmail?: string;
+  headTitle?: string;
+  headPhoto?: unknown;
+};
+
+export function unitSlug(value: string) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+export function sanitizeDepartmentUnits(value: unknown): DepartmentUnit[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((row) => {
+      const item = (row && typeof row === "object" ? row : {}) as Record<string, unknown>;
+      const title = String(item.title || "").trim();
+      const slug = unitSlug(String(item.slug || title));
+      const kind: DepartmentUnit["kind"] = String(item.kind || "division") === "section" ? "section" : "division";
+      return {
+        ...(typeof item.id === "number" ? { id: item.id } : {}),
+        title,
+        slug,
+        kind,
+        items: String(item.items || "").trim(),
+        headName: String(item.headName || "").trim(),
+        headEmail: String(item.headEmail || "").trim().toLowerCase(),
+        headTitle: String(item.headTitle || "").trim() || (kind === "section" ? "Head of section" : "Head of division"),
+        headPhoto: mediaId(item.headPhoto),
+      };
+    })
+    .filter((row) => row.title);
+}
 
 export type PortalField = {
   key: string;
@@ -362,13 +422,18 @@ export const PORTAL_COLLECTIONS: PortalCollection[] = [
     titleField: "title",
     draftAndPublish: true,
     group: "directory",
-    description: "Organisation departments used for staff work assignment.",
+    description: "Organisation departments. Add the Director or Head and each division or section with its own head and passport photo.",
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "slug", label: "URL slug", type: "text" },
-      { key: "group", label: "Group", type: "text" },
+      { key: "group", label: "Department group", type: "text" },
       { key: "blurb", label: "Short description", type: "textarea" },
       { key: "body", label: "Body", type: "textarea" },
+      { key: "headName", label: "Head of department name", type: "text" },
+      { key: "headEmail", label: "Head of department email", type: "email" },
+      { key: "headTitle", label: "Head of department title", type: "text" },
+      { key: "headPhoto", label: "Head of department passport photo", type: "media" },
+      { key: "units", label: "Divisions and sections", type: "units" },
     ],
   },
   {
@@ -485,6 +550,12 @@ export function friendlyAuthError(status: number, message?: string): string {
 
 export function isAdminEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+export function isPortalLoginId(value: string): boolean {
+  const v = value.trim();
+  if (isAdminEmail(v)) return true;
+  return /^[a-zA-Z0-9._-]{2,40}$/.test(v);
 }
 
 export function isSuperAdminRole(roles: string[]): boolean {
@@ -633,8 +704,10 @@ export function pickAllowedFields(col: PortalCollection, body: Record<string, un
     else if (field.type === "number") {
       const n = Number(value);
       out[field.key] = Number.isFinite(n) ? n : null;
-    } else if (field.type === "media" || field.type === "file") {
+    } else     if (field.type === "media" || field.type === "file") {
       out[field.key] = mediaId(value);
+    } else if (field.type === "units") {
+      out[field.key] = sanitizeDepartmentUnits(value);
     } else if (value === "" || value == null) out[field.key] = field.type === "textarea" || field.type === "text" ? value : null;
     else out[field.key] = value;
   }

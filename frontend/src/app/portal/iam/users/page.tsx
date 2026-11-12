@@ -19,7 +19,6 @@ export default function IamUsersPage() {
   const [q, setQ] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -53,12 +52,11 @@ export default function IamUsersPage() {
     const res = await fetch("/api/portal/iam/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, firstName, lastName, requireMfa }),
+      body: JSON.stringify({ email, firstName, lastName, requireMfa }),
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) return setError(json.error || "Could not create user.");
     setNotice("User created in Keycloak. No application access is granted until roles are assigned.");
-    setUsername("");
     setEmail("");
     load();
   }
@@ -85,8 +83,7 @@ export default function IamUsersPage() {
       <p className="mb-3 text-xs text-slate-500">{total} users in the realm.</p>
       {credNote && <p className="mb-3 text-xs text-slate-600">{credNote}</p>}
       <form className="mb-6 grid gap-2 rounded-lg border bg-white p-4 sm:grid-cols-2" onSubmit={create}>
-        <input className="rounded-md border px-3 py-2 text-sm" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        <input className="rounded-md border px-3 py-2 text-sm" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input className="rounded-md border px-3 py-2 text-sm sm:col-span-2" type="email" placeholder="Email (this is the username)" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input className="rounded-md border px-3 py-2 text-sm" placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
         <input className="rounded-md border px-3 py-2 text-sm" placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
         <label className="flex items-center gap-2 text-sm sm:col-span-2">

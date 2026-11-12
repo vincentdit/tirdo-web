@@ -32,8 +32,13 @@ export function getKeycloakSession(): AuthSession {
   return cachedSession || { authenticated: false, roles: [] };
 }
 
+export function loginHref(returnTo?: string) {
+  const dest = returnTo || `${window.location.pathname}${window.location.search}` || "/";
+  return `/api/auth/login?returnTo=${encodeURIComponent(dest)}`;
+}
+
 export function startLogin() {
-  window.location.assign(`/api/auth/login?returnTo=${encodeURIComponent(window.location.href)}`);
+  window.location.href = loginHref();
 }
 
 export function startRegister() {

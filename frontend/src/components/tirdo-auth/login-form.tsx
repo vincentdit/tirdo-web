@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { friendlyAuthError, isAdminEmail } from "@/lib/portal";
+import { friendlyAuthError, isPortalLoginId } from "@/lib/portal";
 import { isSafePortalNext } from "@/lib/security-http";
 
 export function TirdoLoginForm() {
@@ -17,7 +17,7 @@ export function TirdoLoginForm() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(() => portalSsoError(search.get("login_error")));
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -25,8 +25,8 @@ export function TirdoLoginForm() {
     e.preventDefault();
     setError("");
     setNotice("");
-    if (!isAdminEmail(email)) {
-      setError("Use the email address of your TIRDO administrator account.");
+    if (!isPortalLoginId(email)) {
+      setError("Enter your TIRDO username or email address.");
       return;
     }
     if (!password) {
@@ -77,17 +77,17 @@ export function TirdoLoginForm() {
 
       <div>
         <label htmlFor="portal-email" className="mb-1 block text-sm font-semibold text-[#0A192F]">
-          Email address
+          Email or username
         </label>
         <input
           id="portal-email"
           name="email"
-          type="email"
+          type="text"
           autoComplete="username"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="name@tirdo.or.tz"
+          placeholder="mabele@tirdo.go.tz"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? "portal-login-error" : undefined}
           className="h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-[#0A192F] outline-none ring-offset-2 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-[#D97706]"
@@ -145,4 +145,14 @@ export function TirdoLoginForm() {
       </Button>
     </form>
   );
+}
+
+function portalSsoError(code: string | null) {
+  if (code === "cms_disabled") {
+    return "Your TIRDO account is signed in, but it is not enabled for Content management. Ask a Super Admin to grant access.";
+  }
+  if (code === "cms_unreachable") {
+    return "Could not reach TIRDO Content Manager. Check your connection and try again.";
+  }
+  return "";
 }

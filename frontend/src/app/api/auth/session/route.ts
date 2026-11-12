@@ -1,22 +1,20 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { oidcRolesFromPayload } from "@/lib/e-service-access";
-import { parseJwtPayload } from "@/lib/oidc";
+import { clientFacingRoles, readOidcBrowserSession } from "@/lib/oidc-session-cookie";
 
 export const dynamic = "force-dynamic";
 
 export function GET() {
-  const token = cookies().get("tirdo_oidc_at")?.value || "";
-  const payload = token ? parseJwtPayload(token) : null;
-  if (!payload) {
+  const session = readOidcBrowserSession(cookies());
+  if (!session) {
     return NextResponse.json({ authenticated: false, roles: [] });
   }
   return NextResponse.json({
     authenticated: true,
-    sub: payload.sub || "",
-    username: payload.preferred_username,
-    name: payload.name,
-    email: payload.email,
-    roles: oidcRolesFromPayload(payload),
+    sub: session.sub,
+    username: session.username,
+    name: session.name,
+    email: session.email,
+    roles: clientFacingRoles(session.roles),
   });
 }

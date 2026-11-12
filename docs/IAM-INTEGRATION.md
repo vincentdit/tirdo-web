@@ -7,7 +7,7 @@ Each application must use:
 - Authorization Code + PKCE (public) or confidential client + secret (server apps)
 - Redirect URIs that are exact HTTPS URLs in production
 - RP-initiated logout with `id_token_hint` and `post_logout_redirect_uri`
-- Optional back-channel logout URL (TIRDO Web listens at `/api/auth/backchannel-logout` for its own cookies; other apps must invalidate **their** local sessions)
+- Back-channel logout URL (TIRDO Web: `http://frontend:3000/api/auth/backchannel-logout`; LIMS: host `/api/auth/oidc/back-channel-logout`)
 
 Issuer / discovery (example, replace with the live `PUBLIC_URL`):
 
@@ -30,7 +30,7 @@ Prefer a BFF (HttpOnly cookies) as TIRDO Web does. If the app must be a public S
 
 ## Logout
 
-Keycloak SSO logout does **not** automatically clear another application's local session unless that application implements RP-initiated logout and/or back-channel logout.
+Sign-out from any TIRDO Keycloak app must call the realm `end_session_endpoint` with `id_token_hint`. TIRDO Web and LIMS also listen for back-channel logout so remaining browser tabs are treated as signed out.
 
 ## MFA
 

@@ -12,6 +12,7 @@ try {
 const { auditMiddleware, registerAuditRoutes, repairMismatchedV2 } = require('./audit');
 const { frontendSyncMiddleware } = require('./sync-site');
 const { portalRedirectLocation } = require('./tirdo-portal-redirect');
+const { ensureKeycloakCmsSuperAdmin, registerCmsOidcSessionRoute } = require('./keycloak-cms-admin');
 
 module.exports = {
   register({ strapi }) {
@@ -29,6 +30,7 @@ module.exports = {
     // Refresh the public website cache after CMS content changes.
     strapi.documents.use(frontendSyncMiddleware(strapi));
     registerPortalGrantRoute(strapi);
+    registerCmsOidcSessionRoute(strapi);
     registerAuditRoutes(strapi);
   },
 
@@ -36,6 +38,11 @@ module.exports = {
     // 1) Open up the public REST API for read access + contact submissions.
     await setPublicPermissions(strapi);
     await grantContentReviewAdminAccess(strapi);
+    try {
+      await ensureKeycloakCmsSuperAdmin(strapi);
+    } catch (e) {
+      strapi.log.warn('[cms-sso] Keycloak Super Admin sync skipped: ' + e.message);
+    }
 
     // 2) Ensure the Kiswahili locale exists (English is the default).
     await ensureLocale(strapi, 'sw', 'Kiswahili (sw)');

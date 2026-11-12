@@ -109,6 +109,11 @@ export function iamAdminAllowed(isSuperAdmin: boolean, canManageUsers: boolean) 
   return Boolean(isSuperAdmin || canManageUsers);
 }
 
+/** Production identity: Keycloak username is the institutional email. */
+export function emailAsUsername(email: string): string {
+  return String(email || "").trim().toLowerCase();
+}
+
 export function iamNav() {
   return [
     { href: "/portal/iam", label: "SSO Dashboard" },

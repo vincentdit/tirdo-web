@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parseJwtPayload } from "@/lib/oidc";
 import { ingestAuditEvent } from "@/lib/audit-ingest";
+import { revokeOidcSession } from "@/lib/oidc-session-revoke";
 
 export async function POST(request: NextRequest) {
   const contentType = request.headers.get("content-type") || "";
@@ -16,6 +17,7 @@ export async function POST(request: NextRequest) {
   if (!claims || claims.events == null) {
     return NextResponse.json({ error: "Invalid logout token." }, { status: 400 });
   }
+  revokeOidcSession(claims);
   await ingestAuditEvent({
     action: "logout",
     eventType: "authentication",

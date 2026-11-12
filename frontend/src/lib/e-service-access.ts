@@ -46,6 +46,9 @@ export function canOpenContentManagement(roles: string[]) {
   return hasIamAdminRole(roles) || roles.includes("content-editor");
 }
 
+/** Open Content Manager using the existing Keycloak website session. */
+export const CONTENT_MANAGEMENT_LAUNCH = "/api/portal/from-sso";
+
 export type WorkspaceService = {
   slug: string;
   title: string;

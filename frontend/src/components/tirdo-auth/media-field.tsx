@@ -9,6 +9,7 @@ export function MediaField({
   onChange,
   accept = "image/*",
   clearable = false,
+  portrait = false,
   maxBytes = 5 * 1024 * 1024,
 }: {
   label: string;
@@ -16,6 +17,7 @@ export function MediaField({
   onChange: (next: { id: number; url?: string } | null) => void;
   accept?: string;
   clearable?: boolean;
+  portrait?: boolean;
   maxBytes?: number;
 }) {
   const [busy, setBusy] = useState(false);
@@ -52,9 +54,25 @@ export function MediaField({
       <div className="mt-2 flex flex-wrap items-center gap-3">
         {preview ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={preview} alt="" className="h-20 w-36 rounded-lg border border-slate-200 bg-[#f4f7f8] object-contain p-2" />
+          <img
+            src={preview}
+            alt=""
+            className={
+              portrait
+                ? "h-16 w-16 rounded-full border border-slate-200 object-cover"
+                : "h-20 w-36 rounded-lg border border-slate-200 bg-[#f4f7f8] object-contain p-2"
+            }
+          />
         ) : (
-          <div className="grid h-20 w-36 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-[10px] text-slate-400">No file</div>
+          <div
+            className={
+              portrait
+                ? "grid h-16 w-16 place-items-center rounded-full border border-dashed border-slate-300 bg-slate-50 text-[10px] text-slate-400"
+                : "grid h-20 w-36 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-[10px] text-slate-400"
+            }
+          >
+            {portrait ? "Photo" : "No file"}
+          </div>
         )}
         <label className="cursor-pointer rounded-md border px-3 py-2 text-sm font-medium text-[#0A192F] hover:bg-slate-50">
           {busy ? "Uploading…" : id ? "Replace file" : "Upload file"}

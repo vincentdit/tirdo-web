@@ -48,6 +48,12 @@
       "enum": ["staff", "hod", "section-head", "public-relations", "director-general"],
       "default": "staff"
     },
+    "sectionSlug": {
+      "type": "string"
+    },
+    "sectionTitle": {
+      "type": "string"
+    },
     "active": {
       "type": "boolean",
       "default": true

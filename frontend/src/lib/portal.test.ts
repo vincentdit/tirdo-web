@@ -3,6 +3,7 @@ import {
   collectionBySlug,
   friendlyAuthError,
   isAdminEmail,
+  isPortalLoginId,
   isSuperAdminRole,
   isAdminRole,
   isFullPortalRole,
@@ -17,6 +18,7 @@ import {
   canApproveDg,
   requesterIsDeptHead,
   publishPathForRequester,
+  sanitizeDepartmentUnits,
   parseCollectionList,
   allowedPageSlugsFromGrants,
   canAccessPageSlug,
@@ -43,6 +45,12 @@ describe("portal helpers", () => {
   it("accepts TIRDO administrator emails only", () => {
     expect(isAdminEmail("cms@tirdo.or.tz")).toBe(true);
     expect(isAdminEmail("not-an-email")).toBe(false);
+  });
+
+  it("accepts Keycloak usernames or emails for Content Manager login", () => {
+    expect(isPortalLoginId("mabele")).toBe(true);
+    expect(isPortalLoginId("mabele@tirdo.go.tz")).toBe(true);
+    expect(isPortalLoginId("x")).toBe(false);
   });
 
   it("does not leak backend error text for bad credentials", () => {
@@ -204,6 +212,33 @@ describe("portal helpers", () => {
     ).toBe(true);
     expect(publishPathForRequester(false)).toBe("hod");
     expect(publishPathForRequester(true)).toBe("dg");
+    expect(
+      canApproveHod({
+        email: "ict.head@tirdo.or.tz",
+        isHod: false,
+        isSectionHead: true,
+        departments: [{ slug: "ict-technology" }],
+        departmentSlug: "ict",
+        requestedBy: "officer.ict@tirdo.or.tz",
+        sectionSlugs: ["ict"],
+      })
+    ).toBe(true);
+    expect(
+      canApproveHod({
+        email: "electronics.head@tirdo.or.tz",
+        isHod: false,
+        isSectionHead: true,
+        departments: [{ slug: "ict-technology" }],
+        departmentSlug: "ict",
+        requestedBy: "officer.ict@tirdo.or.tz",
+        sectionSlugs: ["instrumentation"],
+      })
+    ).toBe(false);
+    expect(
+      sanitizeDepartmentUnits([
+        { title: "Information & Communication Technologies", slug: "ICT", kind: "division", headEmail: "E@TIRDO.OR.TZ" },
+      ])[0]
+    ).toMatchObject({ slug: "ict", headEmail: "e@tirdo.or.tz", kind: "division" });
     expect(
       canApproveDg({
         email: "hod.ict@tirdo.or.tz",

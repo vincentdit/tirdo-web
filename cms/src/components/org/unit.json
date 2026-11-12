@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_org_units",
+  "info": {
+    "displayName": "Division or section",
+    "icon": "sitemap",
+    "description": "A division or section inside a department, with its own head."
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "enumeration",
+      "enum": ["division", "section"],
+      "default": "division"
+    },
+    "items": {
+      "type": "text"
+    },
+    "headName": {
+      "type": "string"
+    },
+    "headEmail": {
+      "type": "email"
+    },
+    "headTitle": {
+      "type": "string"
+    },
+    "headPhoto": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    }
+  }
+}

@@ -27,7 +27,7 @@ export default function PortalLoginPage() {
               TIRDO Web Management &amp; Client Portal
             </h1>
             <p className="mt-2 text-sm text-slate-600">
-              Sign in with your TIRDO administrator account to manage and publish website content.
+              Sign in with your TIRDO email and password. Existing demo accounts may still use a short username.
             </p>
           </div>
           <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-slate-100" />}>

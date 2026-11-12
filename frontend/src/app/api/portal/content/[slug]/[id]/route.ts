@@ -34,6 +34,7 @@ export async function GET(_request: NextRequest, { params }: { params: { slug: s
     canDelete: access.canDelete,
     isHod: access.isHod,
     isSectionHead: access.isSectionHead,
+    sectionSlugs: access.sectionSlugs,
     isDg: access.isDg,
     isSuperAdmin: access.isSuperAdmin,
     duty: access.duty,

@@ -25,6 +25,39 @@ export function oidcTokenUrl(env: NodeJS.Dict<string> = process.env) {
   return `${keycloakInternalUrl(env)}/realms/${oidcRealm(env)}/protocol/openid-connect/token`;
 }
 
+/** Resource-owner password check against the tirdo realm (Content Manager login). */
+export async function verifyKeycloakPassword(
+  username: string,
+  password: string,
+  env: NodeJS.Dict<string> = process.env
+): Promise<{ ok: true; email: string; username: string } | { ok: false }> {
+  const id = username.trim();
+  if (!id || !password) return { ok: false };
+  try {
+    const res = await fetch(oidcTokenUrl(env), {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "password",
+        client_id: oidcClientId(env),
+        username: id,
+        password,
+        scope: "openid",
+      }),
+      cache: "no-store",
+      signal: AbortSignal.timeout(15000),
+    });
+    const json = (await res.json().catch(() => ({}))) as { access_token?: string };
+    if (!res.ok || !json.access_token) return { ok: false };
+    const claims = parseJwtPayload(json.access_token) || {};
+    const email = String(claims.email || "").trim().toLowerCase();
+    const preferred = String(claims.preferred_username || id).trim();
+    return { ok: true, email: email || (id.includes("@") ? id.toLowerCase() : ""), username: preferred };
+  } catch {
+    return { ok: false };
+  }
+}
+
 export function oidcLogoutUrl(env: NodeJS.Dict<string> = process.env) {
   return `${resolveKeycloakPublicUrl(env)}/realms/${oidcRealm(env)}/protocol/openid-connect/logout`;
 }

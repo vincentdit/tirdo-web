@@ -6,6 +6,7 @@ import {
   publicClientView,
   suggestedClientId,
   validateRedirectUris,
+  emailAsUsername,
 } from "@/lib/iam";
 import { iamRateLimit, kcAdmin, kcJson, keycloakHealth } from "@/lib/iam-keycloak";
 import { oidcCallbackUrl, oidcClientId, oidcRealm } from "@/lib/oidc";
@@ -339,9 +340,9 @@ export async function POST(request: NextRequest, { params }: { params: { path: s
       return NextResponse.json({ secretOnce: sec.value || null, warning: "Copy this client secret now. It will not be shown again." });
     }
     if (resource === "users" && !id) {
-      const username = String(body.username || "").trim();
-      const email = String(body.email || "").trim();
-      if (!username || !email) return NextResponse.json({ error: "Username and email are required." }, { status: 400 });
+      const email = String(body.email || "").trim().toLowerCase();
+      const username = emailAsUsername(email) || String(body.username || "").trim().toLowerCase();
+      if (!email || !email.includes("@")) return NextResponse.json({ error: "A valid email is required. Email is the username." }, { status: 400 });
       const created = await kcAdmin("/users", {
         method: "POST",
         body: JSON.stringify({
