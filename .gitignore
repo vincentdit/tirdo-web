@@ -25,3 +25,5 @@ nginx/certs/*.pem
 nginx/acme/*
 !nginx/certs/.gitkeep
 !nginx/acme/.gitkeep
+
+frontend/tsconfig.tsbuildinfo
