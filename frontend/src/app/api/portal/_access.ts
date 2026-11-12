@@ -39,6 +39,7 @@ export type PortalAccess = {
   canViewAudit: boolean;
   canExportAudit: boolean;
   departments: { slug: string; title: string }[];
+  sectionSlugs: string[];
   collections: PortalCollection[];
   pageSlugs: string[] | null;
   grantReady: boolean;
@@ -103,6 +104,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
       canViewAudit: canViewAudit(me.roles),
       canExportAudit: canExportAudit(me.roles),
       departments: [{ slug: "*", title: "All departments" }],
+      sectionSlugs: ["*"],
       collections: PORTAL_COLLECTIONS,
       pageSlugs: null,
       grantReady,
@@ -111,10 +113,12 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
 
   const allowed = new Set<string>();
   const departments: { slug: string; title: string }[] = [];
+  const sectionSlugs: string[] = [];
   let canPublish = false;
   let canManageMedia = false;
   let canManageUsers = false;
   let canDelete = false;
+  const catalog = await loadPortalDepartments(token);
 
   for (const row of mine) {
     for (const slug of parseCollectionList(row.collections)) allowed.add(slug);
@@ -127,13 +131,29 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
     if (title && !departments.some((d) => d.slug === slug && d.title === title)) {
       departments.push({ slug, title });
     }
+    const duty = parsePortalDuty(row.duty);
+    if (duty === "hod" && slug) {
+      const parent = catalog.find((d) => d.slug === slug);
+      for (const unit of parent?.units || []) {
+        if (unit.slug && !departments.some((d) => d.slug === unit.slug)) {
+          departments.push({ slug: unit.slug, title: unit.title || unit.slug });
+        }
+      }
+    }
+    if (duty === "section-head") {
+      const section = String(row.sectionSlug || slug || "").trim();
+      if (section && !sectionSlugs.includes(section)) sectionSlugs.push(section);
+    }
   }
 
   if (isPr && allowed.size === 0) PR_COLLECTION_SLUGS.forEach((slug) => allowed.add(slug));
   if ((isHod || isSectionHead || isDg) && allowed.size === 0) {
     PORTAL_COLLECTIONS.filter((c) => c.draftAndPublish).forEach((c) => allowed.add(c.slug));
   }
-  if (isDg) departments.push({ slug: "*", title: "All departments" });
+  if (isDg) {
+    departments.push({ slug: "*", title: "All departments" });
+    sectionSlugs.push("*");
+  }
 
   return {
     ...me,
@@ -152,6 +172,7 @@ export async function loadAccess(token: string): Promise<PortalAccess | null> {
     canViewAudit: canViewAudit(me.roles),
     canExportAudit: canExportAudit(me.roles),
     departments,
+    sectionSlugs,
     collections: PORTAL_COLLECTIONS.filter((c) => grantedCollectionSlugs(me.roles, [...allowed]).includes(c.slug)),
     pageSlugs: allowed.has("pages") ? allowedPageSlugsFromGrants(mine) : [],
     grantReady,
@@ -169,6 +190,19 @@ export async function loadPortalDepartments(token: string) {
     .map((row) => ({
       slug: String(row.slug || ""),
       title: String(row.title || row.slug || ""),
+      units: Array.isArray(row.units)
+        ? (row.units as Record<string, unknown>[])
+            .map((unit) => {
+              const title = String(unit.title || unit.slug || "");
+              const slug = String(unit.slug || "")
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "") || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+              return { slug, title };
+            })
+            .filter((unit) => unit.slug || unit.title)
+        : [],
     }))
     .filter((row) => row.slug);
 }

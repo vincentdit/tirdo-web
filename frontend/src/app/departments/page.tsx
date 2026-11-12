@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowRight, User } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { PassportIcon } from "@/components/site/passport-icon";
 import { PageBanner } from "@/components/site/page-banner";
 import { UnitsGrid } from "@/components/site/units-grid";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,7 +24,13 @@ export default async function DepartmentsPage() {
         <div className="container-tirdo space-y-12">
           {groups.map((g) => {
             const items = departments.filter((d) => d.group === g);
-            const dept = items.length === 1 && items[0].sections ? items[0] : null;
+            const dept =
+              items.find(
+                (d) =>
+                  Array.isArray(d.sections) &&
+                  d.sections.length > 0 &&
+                  items.filter((x) => x.slug !== d.slug).every((child) => d.sections!.some((s) => s.slug === child.slug))
+              ) || (items.length === 1 && items[0].sections ? items[0] : null);
 
             return (
               <div key={g}>
@@ -38,8 +45,9 @@ export default async function DepartmentsPage() {
                       <div>
                         <p className="text-sm text-foreground/80">{dept.blurb}</p>
                         {dept.head && (
-                          <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-teal">
-                            <User className="h-4 w-4" /> Director: {dept.head}
+                          <p className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-brand-teal">
+                            <PassportIcon name={dept.head} src={dept.photo} size="sm" />
+                            {dept.headTitle || "Director"}: {dept.head}
                           </p>
                         )}
                         <div>
@@ -52,7 +60,13 @@ export default async function DepartmentsPage() {
                         <div className="mb-2 text-xs font-bold uppercase tracking-wide text-brand-teal">Divisions &amp; Sections</div>
                         <ul className="space-y-1.5">
                           {dept.sections!.map((s) => (
-                            <li key={s.name} className="rounded bg-brand-pale px-3 py-1.5 text-sm text-brand-ink">{s.name}</li>
+                            <li key={s.name} className="flex items-center gap-2 rounded bg-brand-pale px-3 py-1.5 text-sm text-brand-ink">
+                              <PassportIcon name={s.head || s.name} src={s.photo} size="sm" />
+                              <span>
+                                {s.name}
+                                {s.head ? <span className="block text-xs font-normal text-muted-foreground">{s.head}</span> : null}
+                              </span>
+                            </li>
                           ))}
                         </ul>
                       </div>

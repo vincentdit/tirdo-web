@@ -96,6 +96,7 @@ export async function POST(_request: NextRequest, { params }: { params: { slug: 
         departments: access.departments,
         departmentSlug: pending.departmentSlug || departmentSlug,
         requestedBy: pending.requestedBy,
+        sectionSlugs: access.sectionSlugs,
       })
     ) {
       return NextResponse.json(

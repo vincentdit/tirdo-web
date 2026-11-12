@@ -12,7 +12,7 @@ import {
   portalPasswordIssue,
   PR_COLLECTION_SLUGS,
 } from "@/lib/portal";
-import { forbidden, loadAccess, type PortalAccess } from "../_access";
+import { forbidden, loadAccess, loadPortalDepartments, type PortalAccess } from "../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../_cms";
 
 function asList(json: unknown): Record<string, unknown>[] {
@@ -80,6 +80,8 @@ function mapGrant(g: Record<string, unknown>) {
     canManageUsers: Boolean(g.canManageUsers),
     canDelete: Boolean(g.canDelete),
     duty: parsePortalDuty(g.duty),
+    sectionSlug: g.sectionSlug,
+    sectionTitle: g.sectionTitle,
     active: g.active !== false,
     notes: g.notes,
   };
@@ -165,6 +167,14 @@ export async function GET() {
       documentId: d.documentId || d.id,
       title: d.title,
       slug: d.slug,
+      units: Array.isArray(d.units)
+        ? (d.units as Record<string, unknown>[])
+            .map((unit) => ({
+              slug: String(unit.slug || ""),
+              title: String(unit.title || unit.slug || ""),
+            }))
+            .filter((unit) => unit.slug || unit.title)
+        : [],
     })),
     collections: PORTAL_COLLECTIONS.map((c) => ({ slug: c.slug, label: c.label, group: c.group })),
     sitePages: SITE_PAGES,
@@ -314,10 +324,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Choose the department for this Head of Department or section head." }, { status: 400 });
   }
   const collections = Array.isArray(body.collections) ? body.collections.map(String) : [];
+  const catalog = await loadPortalDepartments(token);
+  const parentDept = catalog.find((d) => d.slug === String(body.departmentSlug || ""));
+  const hasUnits = (parentDept?.units || []).length > 0;
+  const sectionSlug =
+    duty === "section-head"
+      ? String(body.sectionSlug || (hasUnits ? "" : body.departmentSlug) || "").trim()
+      : "";
+  if (duty === "section-head" && hasUnits && !sectionSlug) {
+    return NextResponse.json({ error: "Choose the division or section this person heads." }, { status: 400 });
+  }
   const payload = {
     staffEmail,
     departmentSlug: String(body.departmentSlug || ""),
     departmentTitle: String(body.departmentTitle || ""),
+    sectionSlug,
+    sectionTitle:
+      duty === "section-head"
+        ? String(body.sectionTitle || parentDept?.units?.find((u) => u.slug === sectionSlug)?.title || sectionSlug)
+        : "",
     collections: duty === "public-relations" && collections.length === 0 ? PR_COLLECTION_SLUGS : collections,
     pageSlugs: Array.isArray(body.pageSlugs) ? body.pageSlugs : [],
     canPublish: duty === "staff" ? Boolean(body.canPublish) : true,

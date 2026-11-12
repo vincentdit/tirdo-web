@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { User, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
+import { PassportIcon } from "@/components/site/passport-icon";
 import { PageBanner } from "@/components/site/page-banner";
 import { ProjectCard } from "@/components/site/cards";
 import { ButtonLink } from "@/components/ui/button";
@@ -43,11 +44,11 @@ export default async function DepartmentPage({ params }: { params: { slug: strin
             <div className="rounded-xl border bg-secondary/40 p-6">
               {dept.head && (
                 <div className="mb-4 flex items-center gap-3 border-b pb-4">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                    <User className="h-6 w-6" />
-                  </span>
+                  <PassportIcon name={dept.head} src={dept.photo} />
                   <div>
-                    <div className="text-xs uppercase tracking-wide text-muted-foreground">{dept.sections ? "Director" : "Head of Division"}</div>
+                    <div className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {dept.headTitle || (dept.sections?.length ? "Director" : "Head of division")}
+                    </div>
                     <div className="font-semibold text-primary">{dept.head}</div>
                   </div>
                 </div>
@@ -69,7 +70,15 @@ export default async function DepartmentPage({ params }: { params: { slug: strin
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {dept.sections.map((s) => (
                 <div key={s.name} className="rounded-lg border bg-card p-5">
-                  <h3 className="mb-2 font-semibold text-brand-teal">{s.name}</h3>
+                  <div className="mb-2 flex items-start gap-3">
+                    <PassportIcon name={s.head || s.name} src={s.photo} size="sm" />
+                    <div>
+                      <h3 className="font-semibold text-brand-teal">{s.name}</h3>
+                      {s.head ? (
+                        <p className="text-xs text-muted-foreground">{s.head}</p>
+                      ) : null}
+                    </div>
+                  </div>
                   {s.items && s.items.length > 0 && (
                     <ul className="space-y-1.5 text-sm text-muted-foreground">
                       {s.items.map((it) => (

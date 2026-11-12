@@ -44,6 +44,7 @@ function EditAccessForm() {
   const [canManageUsers, setCanManageUsers] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
   const [duty, setDuty] = useState<PortalDuty>("staff");
+  const [sectionSlug, setSectionSlug] = useState("");
   const [notes, setNotes] = useState("");
   const [grantDocumentId, setGrantDocumentId] = useState("");
 
@@ -68,6 +69,7 @@ function EditAccessForm() {
     setCanManageUsers(Boolean(grant?.canManageUsers));
     setCanDelete(Boolean(grant?.canDelete));
     setDuty(parsePortalDuty(grant?.duty));
+    setSectionSlug(String(grant?.sectionSlug || ""));
     setNotes(String(grant?.notes || ""));
   }
 
@@ -118,6 +120,8 @@ function EditAccessForm() {
           canManageUsers,
           canDelete,
           duty,
+          sectionSlug,
+          sectionTitle: selectedDept?.units?.find((u) => u.slug === sectionSlug)?.title || sectionSlug,
           notes,
           active: true,
         }),
@@ -150,7 +154,7 @@ function EditAccessForm() {
         </p>
         <div className="mt-3 space-y-3">
           <StaffSearchSelect users={users} value={staffEmail} onChange={fillAccess} />
-          <select className="w-full rounded-md border px-3 py-2 text-sm" value={departmentSlug} onChange={(e) => setDepartmentSlug(e.target.value)}>
+          <select className="w-full rounded-md border px-3 py-2 text-sm" value={departmentSlug} onChange={(e) => { setDepartmentSlug(e.target.value); setSectionSlug(""); }}>
             <option value="">Select department</option>
             {departments.map((d) => (
               <option key={d.slug || d.title} value={d.slug || ""}>
@@ -166,6 +170,16 @@ function EditAccessForm() {
             ))}
           </select>
           <p className="text-xs text-slate-600">{PORTAL_DUTIES.find((item) => item.id === duty)?.help}</p>
+          {duty === "section-head" && (selectedDept?.units?.length || 0) > 0 && (
+            <select className="w-full rounded-md border px-3 py-2 text-sm" value={sectionSlug} onChange={(e) => setSectionSlug(e.target.value)} required>
+              <option value="">Select division or section</option>
+              {selectedDept?.units?.map((unit) => (
+                <option key={unit.slug || unit.title} value={unit.slug || unit.title}>
+                  {unit.title}
+                </option>
+              ))}
+            </select>
+          )}
           <div className="space-y-4">
             {COLLECTION_GROUPS.map((group) => {
               const items = collections.filter((c) => (c.group || "content") === group.id);
@@ -238,7 +252,7 @@ function EditAccessForm() {
 export default function PortalEditAccessPage() {
   return (
     <PortalShell>
-      <UsersHeading description="Assign department, duty (officer, HOD, section head, public relations, or Director General) and which website content they may manage." />
+      <UsersHeading description="Assign department, duty (officer, Head of Department, head of a division or section, public relations, or Director General) and which website content they may manage." />
       <Suspense fallback={<p className="mt-6 text-sm text-slate-500">Loading…</p>}>
         <EditAccessForm />
       </Suspense>

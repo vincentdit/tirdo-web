@@ -26,6 +26,7 @@ export async function GET() {
     duty: access.duty,
     isHod: access.isHod,
     isSectionHead: access.isSectionHead,
+    sectionSlugs: access.sectionSlugs,
     isPr: access.isPr,
     isDg: access.isDg,
     canPublish: access.canPublish,

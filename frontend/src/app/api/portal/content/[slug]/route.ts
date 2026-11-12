@@ -80,6 +80,7 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
     canDelete: access.canDelete,
     isHod: access.isHod,
     isSectionHead: access.isSectionHead,
+    sectionSlugs: access.sectionSlugs,
     isDg: access.isDg,
     isSuperAdmin: access.isSuperAdmin,
     duty: access.duty,

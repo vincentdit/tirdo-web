@@ -172,13 +172,15 @@ export const services: ServiceItem[] = [
   },
 ];
 
-export type DeptSection = { name: string; items?: string[] };
+export type DeptSection = { name: string; slug?: string; items?: string[]; head?: string; photo?: string };
 export type Department = {
   slug: string;
   title: string;
   group: string;
   blurb: string;
   head?: string;
+  headTitle?: string;
+  photo?: string;
   body: string[];
   sections?: DeptSection[];
 };
@@ -250,11 +252,29 @@ export const departments: Department[] = [
     ],
   },
   {
+    slug: "ict-technology",
+    title: "ICT & Technology Development",
+    group: "ICT & Technology Development",
+    blurb: "ICT, electronics, instrumentation and technology transfer for Tanzanian industry.",
+    head: "Eng. Vincent J. Maro",
+    headTitle: "Director",
+    body: [
+      "The ICT & Technology Development Department applies information systems, electronics and technology transfer so TIRDO research and industry services stay current, secure and usable.",
+      "It is organised into divisions, each with its own head who updates and approves that division's information.",
+    ],
+    sections: [
+      { name: "Information & Communication Technologies Division", slug: "ict", head: "Ms. Elizabeth Mtegwa" },
+      { name: "Electronics & Instrumentation Technologies Division", slug: "instrumentation", head: "Ms. Ester Lazaro" },
+      { name: "Technology Transfer & Pilot Plants Division", slug: "technology-transfer" },
+    ],
+  },
+  {
     slug: "ict",
     title: "Information & Communication Technologies Division",
     group: "ICT & Technology Development",
     blurb: "Software systems, cybersecurity, networks and industrial ICT solutions.",
     head: "Ms. Elizabeth Mtegwa",
+    headTitle: "Head of division",
     body: [
       "The Information & Communication Technologies Division applies ICT within the organisation and provides technical advisory support to industry. Its research spans cybersecurity and forensics, sensor and mobile application development, and e-waste management.",
       "On the consultancy side it supports SME ICT operations, industrial research and innovation databases, advanced computing in education, and ideation portals.",

@@ -52,6 +52,41 @@
           "localized": true
         }
       }
+    },
+    "headName": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "headEmail": {
+      "type": "email",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "headTitle": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
+    "headPhoto": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "units": {
+      "type": "component",
+      "repeatable": true,
+      "component": "org.unit"
     }
   },
   "pluginOptions": {

@@ -9,13 +9,15 @@ export type PortalUser = {
 };
 
 export type PortalRole = { id: number; name: string };
-export type PortalDept = { slug?: string; title?: string };
+export type PortalDept = { slug?: string; title?: string; units?: { slug: string; title: string }[] };
 export type PortalSitePage = { slug: string; title: string; path: string };
 export type PortalGrant = {
   documentId: string;
   staffEmail: string;
   departmentSlug?: string;
   departmentTitle?: string;
+  sectionSlug?: string;
+  sectionTitle?: string;
   collections: string[];
   pageSlugs: string[];
   canPublish: boolean;
