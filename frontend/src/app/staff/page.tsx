@@ -30,9 +30,9 @@ function StaffDashboard() {
   const tiles = [
     { icon: FileText, title: "Service Requests", desc: "Review and action incoming client requests.", href: "#", show: true },
     { icon: Inbox, title: "Contact Messages", desc: "Messages submitted via the website.", href: `${cmsUrl}/contact-messages`, external: false, show: isEditor },
-    { icon: FolderKanban, title: "Content Management", desc: "Manage news, publications, projects and pages.", href: cmsUrl, external: false, show: isEditor, badge: "Editor" },
+    { icon: FolderKanban, title: "Content Management", desc: "Manage news, publications, projects and pages.", href: cmsUrl, external: false, show: isEditor },
     { icon: BarChart3, title: "Web Analytics", desc: "TIRDO Analytics traffic and engagement reports.", href: matomoUrl, external: true, show: true },
-    { icon: Settings, title: "Users & access", desc: "Create CMS users and manage access in the management portal.", href: `${cmsUrl}/users`, external: false, show: isAdmin, badge: "Admin" },
+    { icon: Settings, title: "Users & access", desc: "Create CMS users and manage access in the management portal.", href: `${cmsUrl}/users`, external: false, show: isAdmin },
   ].filter((t) => t.show);
 
   return (
@@ -40,13 +40,6 @@ function StaffDashboard() {
       <div className="mb-6 rounded-xl border bg-secondary/40 p-5">
         <div className="text-sm text-muted-foreground">Signed in as</div>
         <div className="font-semibold text-primary">{auth.name || auth.username} · <span className="font-normal text-muted-foreground">{auth.email}</span></div>
-        <div className="mt-2 flex flex-wrap gap-1">
-          {auth.roles
-            .filter((r) => !r.startsWith("default-") && !["offline_access", "uma_authorization"].includes(r))
-            .map((r) => (
-              <span key={r} className="rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">{r}</span>
-            ))}
-        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -63,7 +56,6 @@ function StaffDashboard() {
             </span>
             <div className="flex items-center gap-2 font-semibold text-primary">
               {t.title}
-              {t.badge && <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-bold text-accent-foreground">{t.badge}</span>}
               {t.external && <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />}
             </div>
             <p className="mt-1 text-sm text-muted-foreground">{t.desc}</p>

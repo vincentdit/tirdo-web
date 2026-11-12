@@ -39,7 +39,7 @@ export function RequireAuth({
       <Gate
         icon={<ShieldAlert className="h-7 w-7 text-destructive" />}
         title="Access denied"
-        subtitle={`You are signed in as ${auth.name || auth.username}, but ${areaLabel} requires the “${role}” role. Contact the TIRDO administrator if you need access.`}
+        subtitle={`You are signed in as ${auth.name || auth.username}. ${areaLabel} is not available for this account. Contact a TIRDO administrator if you need access.`}
       >
         <Button variant="outline" onClick={auth.logout}>
           <LogOut className="h-4 w-4" /> Sign out

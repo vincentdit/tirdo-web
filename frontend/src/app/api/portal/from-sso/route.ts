@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
   const next = portalNext(request.nextUrl.searchParams.get("next"));
   const token = cookies().get("tirdo_oidc_at")?.value || "";
   const payload = token ? parseJwtPayload(token) : null;
-  if (!oidcPayloadActive(payload)) {
+  if (!token || !oidcPayloadActive(payload)) {
     const login = sitePath("/api/auth/login");
     login.searchParams.set("returnTo", `/api/portal/from-sso?next=${encodeURIComponent(next)}`);
     return NextResponse.redirect(login);

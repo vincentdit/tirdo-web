@@ -1,16 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { LogIn, LogOut, User, ChevronDown } from "lucide-react";
 import { useAuth } from "@/components/site/auth-provider";
 import { canOpenContentManagement, CONTENT_MANAGEMENT_LAUNCH } from "@/lib/e-service-access";
+import { loginHref } from "@/lib/keycloak";
 import { cn } from "@/lib/utils";
 
-// Sign-in / account control. `onDark` styles it for the teal utility bar.
 export function AuthButton({ className, onDark }: { className?: string; onDark?: boolean }) {
   const auth = useAuth();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (event: MouseEvent) => {
+      if (!root.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
 
   if (!auth.ready) {
     return <div className={cn("h-5 w-16 animate-pulse rounded bg-white/20", className)} />;
@@ -18,8 +29,8 @@ export function AuthButton({ className, onDark }: { className?: string; onDark?:
 
   if (!auth.authenticated) {
     return (
-      <button
-        onClick={auth.login}
+      <a
+        href={loginHref(pathname || "/")}
         className={cn(
           "inline-flex items-center gap-1.5 text-xs font-semibold",
           onDark ? "text-white hover:text-brand-gold" : "rounded-md bg-accent px-3 py-2 text-sm text-accent-foreground hover:brightness-95",
@@ -27,7 +38,7 @@ export function AuthButton({ className, onDark }: { className?: string; onDark?:
         )}
       >
         <LogIn className="h-3.5 w-3.5" /> Sign in
-      </button>
+      </a>
     );
   }
 
@@ -35,52 +46,44 @@ export function AuthButton({ className, onDark }: { className?: string; onDark?:
   const showStaff = auth.hasRole("staff") || auth.hasRole("content-editor") || auth.hasRole("tirdo-admin");
   const showCms = canOpenContentManagement(auth.roles);
   return (
-    <div className={cn("relative", className)} onMouseLeave={() => setOpen(false)}>
-      <div className="flex items-center">
-        <Link
-          href="/account"
-          className={cn(
-            "inline-flex items-center gap-1.5 text-xs font-semibold",
-            onDark ? "text-white hover:text-brand-gold" : "rounded-l-md border px-3 py-2 text-sm text-primary hover:bg-secondary"
-          )}
-        >
-          <span className="grid h-5 w-5 place-items-center rounded-full bg-white/20 text-[10px]">
-            {label.slice(0, 1).toUpperCase()}
-          </span>
-          <span className="max-w-[8rem] truncate">{label}</span>
-        </Link>
-        <button
-          type="button"
-          aria-expanded={open}
-          aria-label="Account menu"
-          onClick={() => setOpen((v) => !v)}
-          onMouseEnter={() => setOpen(true)}
-          className={cn(
-            "inline-flex items-center text-xs font-semibold",
-            onDark ? "text-white hover:text-brand-gold" : "rounded-r-md border border-l-0 px-1.5 py-2 text-sm text-primary hover:bg-secondary"
-          )}
-        >
-          <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-180")} />
-        </button>
-      </div>
+    <div className={cn("relative", className)} ref={root}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          "inline-flex items-center gap-1.5 text-xs font-semibold",
+          onDark ? "text-white hover:text-brand-gold" : "rounded-md border px-3 py-2 text-sm text-primary hover:bg-secondary"
+        )}
+      >
+        <span className="grid h-5 w-5 place-items-center rounded-full bg-white/20 text-[10px]">
+          {label.slice(0, 1).toUpperCase()}
+        </span>
+        <span className="max-w-[8rem] truncate">{label}</span>
+        <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", open && "rotate-180")} />
+      </button>
       {open && (
-        <div className="absolute right-0 top-full z-[60] w-56 rounded-lg border bg-popover p-2 text-left shadow-xl">
+        <div
+          role="menu"
+          className="absolute right-0 top-full z-[80] mt-1 w-56 rounded-lg border bg-popover p-2 text-left shadow-xl"
+        >
           <div className="border-b px-3 py-2">
             <div className="flex items-center gap-2 text-sm font-semibold text-primary">
               <User className="h-4 w-4" /> {label}
             </div>
             {auth.email && <div className="mt-0.5 truncate text-xs text-muted-foreground">{auth.email}</div>}
           </div>
-          <Link href="/account" className="mt-1 block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
+          <a href="/account" className="mt-1 block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
             My profile
-          </Link>
-          <Link href="/e-services" className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
+          </a>
+          <a href="/e-services" className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
             My e-Services
-          </Link>
+          </a>
           {showStaff && (
-            <Link href="/staff" className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
-              Staff Portal
-            </Link>
+            <a href="/staff" className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
+              Staff portal
+            </a>
           )}
           {showCms && (
             <a href={CONTENT_MANAGEMENT_LAUNCH} className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">

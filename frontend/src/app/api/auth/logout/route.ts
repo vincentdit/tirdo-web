@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { ingestAuditEvent } from "@/lib/audit-ingest";
 import { oidcClientId, oidcLogoutUrl, parseJwtPayload, siteCookieOptions } from "@/lib/oidc";
+import { clearOidcBrowserCookies, decodeCompactSession, OIDC_SESS_COOKIE } from "@/lib/oidc-session-cookie";
 import { revokeOidcSession } from "@/lib/oidc-session-revoke";
 import { cmsBase, PORTAL_COOKIE } from "@/lib/portal";
 import { publicSiteUrl } from "@/lib/public-url";
@@ -12,9 +13,13 @@ export async function GET() {
   const idToken = jar.get("tirdo_oidc_it")?.value || "";
   const access = jar.get("tirdo_oidc_at")?.value || "";
   const portal = jar.get(PORTAL_COOKIE)?.value || "";
-  revokeOidcSession(access ? parseJwtPayload(access) : parseJwtPayload(idToken));
-  jar.set("tirdo_oidc_at", "", { ...siteCookieOptions(0), maxAge: 0 });
-  jar.set("tirdo_oidc_it", "", { ...siteCookieOptions(0), maxAge: 0 });
+  revokeOidcSession(
+    access
+      ? parseJwtPayload(access)
+      : parseJwtPayload(idToken) ||
+          (decodeCompactSession(jar.get(OIDC_SESS_COOKIE)?.value) as Record<string, unknown> | null)
+  );
+  clearOidcBrowserCookies(jar);
   jar.set(PORTAL_COOKIE, "", { ...siteCookieOptions(0), maxAge: 0 });
   if (portal) {
     await fetch(`${cmsBase()}/admin/logout`, {

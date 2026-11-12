@@ -25,7 +25,6 @@ export default function AccountPage() {
 
 function AccountCard() {
   const auth = useAuth();
-  const roles = auth.roles.filter((r) => !r.startsWith("default-") && !["offline_access", "uma_authorization"].includes(r));
   const staff = auth.hasRole("staff") || auth.hasRole("tirdo-admin");
   const cms = canOpenContentManagement(auth.roles);
 
@@ -43,19 +42,6 @@ function AccountCard() {
           <ShieldCheck className="h-3.5 w-3.5" /> Signed in
         </span>
       </div>
-
-      {roles.length > 0 && (
-        <div className="mt-4">
-          <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Access</div>
-          <div className="mt-2 flex flex-wrap gap-1">
-            {roles.map((role) => (
-              <span key={role} className="rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                {role}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
 
       <div className="mt-6 grid gap-2 sm:grid-cols-2">
         <Link href="/e-services" className="rounded-lg border px-4 py-3 text-sm font-semibold text-primary hover:bg-secondary/40">

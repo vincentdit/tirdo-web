@@ -70,7 +70,7 @@ export default async function EServicesPage() {
             ))}
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
-            System addresses are set in Content management → E-service links. Access is granted by Keycloak roles. Sign in once; other authorised systems reuse that SSO session.
+            Sign in once. Other authorised systems reuse that session.
           </p>
         </div>
       </section>
