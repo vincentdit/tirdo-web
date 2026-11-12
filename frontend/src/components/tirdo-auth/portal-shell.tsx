@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   ChevronDown,
@@ -41,7 +41,6 @@ const GROUPS: { id: string; label: string }[] = [
 
 export function PortalShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [me, setMe] = useState<Me | null>(null);
   const year = new Date().getFullYear();
 
@@ -53,9 +52,8 @@ export function PortalShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   async function logout() {
-    await fetch("/api/portal/logout", { method: "POST" });
-    router.replace("/portal/login");
-    router.refresh();
+    await fetch("/api/portal/logout", { method: "POST" }).catch(() => undefined);
+    window.location.assign("/api/auth/logout");
   }
 
   const name = [me?.firstname, me?.lastname].filter(Boolean).join(" ") || me?.email || "TIRDO staff";

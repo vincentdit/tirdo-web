@@ -78,7 +78,7 @@ export function EServicesPortal() {
       ? [{ key: "staff", title: "Staff directory", desc: "Internal people and organisation pages on TIRDO Web.", href: "/staff", badge: "TIRDO Web" }]
       : []),
     ...(workspace?.contentManagement
-      ? [{ key: "cms", title: "Content management", desc: "Manage news, publications, e-service links and projects.", href: "/portal", badge: "Editor" }]
+      ? [{ key: "cms", title: "Content management", desc: "Manage news, publications, e-service links and projects.", href: "/api/portal/from-sso", badge: "Editor" }]
       : []),
   ];
 

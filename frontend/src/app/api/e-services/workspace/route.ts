@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { canOpenContentManagement, oidcRolesFromPayload, workspaceServices } from "@/lib/e-service-access";
 import { parseJwtPayload } from "@/lib/oidc";
+import { oidcPayloadActive } from "@/lib/oidc-session-revoke";
 import { getEServices } from "@/lib/strapi";
 
 export const dynamic = "force-dynamic";
@@ -9,17 +10,18 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const token = cookies().get("tirdo_oidc_at")?.value || "";
   const payload = token ? parseJwtPayload(token) : null;
-  if (!payload) {
+  if (!oidcPayloadActive(payload)) {
     return NextResponse.json({ authenticated: false, services: [] }, { status: 401 });
   }
-  const roles = oidcRolesFromPayload(payload);
+  const claims = payload as Record<string, unknown>;
+  const roles = oidcRolesFromPayload(claims);
   const items = await getEServices();
   return NextResponse.json({
     authenticated: true,
-    sub: payload.sub || "",
-    username: payload.preferred_username,
-    name: payload.name,
-    email: payload.email,
+    sub: claims.sub || "",
+    username: claims.preferred_username,
+    name: claims.name,
+    email: claims.email,
     roles,
     services: workspaceServices(items, roles),
     contentManagement: canOpenContentManagement(roles),

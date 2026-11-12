@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   canAccessEService,
   canOpenContentManagement,
+  CONTENT_MANAGEMENT_LAUNCH,
   launchTarget,
   oidcRolesFromPayload,
   workspaceServices,
@@ -31,6 +32,7 @@ describe("e-service Keycloak access policy", () => {
     expect(canAccessEService("eoffice", ["staff"])).toBe(true);
     expect(canOpenContentManagement(["staff"])).toBe(false);
     expect(canOpenContentManagement(["content-editor"])).toBe(true);
+    expect(CONTENT_MANAGEMENT_LAUNCH).toBe("/api/portal/from-sso");
     expect(canAccessEService("lims", ["tirdo-admin"])).toBe(true);
   });
 

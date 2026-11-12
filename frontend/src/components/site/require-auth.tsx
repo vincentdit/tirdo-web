@@ -24,7 +24,7 @@ export function RequireAuth({
     if (auth.ready && !auth.authenticated) {
       auth.login();
     }
-  }, [auth.ready, auth.authenticated, auth]);
+  }, [auth.ready, auth.authenticated, auth.login]);
 
   if (!auth.ready) {
     return <Gate icon={<Loader2 className="h-7 w-7 animate-spin" />} title="Loading…" />;

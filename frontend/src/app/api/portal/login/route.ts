@@ -1,29 +1,54 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ingestAuditEvent } from "@/lib/audit-ingest";
 import { clientIp } from "@/lib/audit";
-import { cmsBase, friendlyAuthError, isAdminEmail, PORTAL_COOKIE } from "@/lib/portal";
+import { cmsBase, friendlyAuthError, isAdminEmail, isPortalLoginId, PORTAL_COOKIE } from "@/lib/portal";
+import { verifyKeycloakPassword } from "@/lib/oidc";
 import { cookieOptions } from "../_cms";
 
 export async function POST(request: NextRequest) {
-  let body: { identifier?: string; email?: string; password?: string; rememberMe?: boolean };
+  let body: { identifier?: string; email?: string; username?: string; password?: string; rememberMe?: boolean };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Enter your TIRDO email and password to sign in." }, { status: 400 });
   }
 
-  const email = String(body.email || body.identifier || "").trim();
+  const identifier = String(body.email || body.identifier || body.username || "").trim();
   const password = String(body.password || "");
   const rememberMe = Boolean(body.rememberMe);
 
-  if (!isAdminEmail(email)) {
+  if (!isPortalLoginId(identifier)) {
     return NextResponse.json(
-      { error: "Use the email address of your TIRDO administrator account." },
+      { error: "Enter your TIRDO username or email address." },
       { status: 400 }
     );
   }
   if (!password) {
     return NextResponse.json({ error: "Enter your password." }, { status: 400 });
+  }
+
+  const sso = await verifyKeycloakPassword(identifier, password);
+  if (!sso.ok) {
+    await ingestAuditEvent({
+      action: "login_failed",
+      eventType: "authentication",
+      outcome: "failure",
+      actor: identifier,
+      actorType: "user",
+      identityProvider: "keycloak",
+      sourceService: "portal",
+      reason: "invalid_credentials",
+      changeSummary: "CMS portal Keycloak sign-in failed",
+      metadata: { ip: clientIp(request.headers) },
+    });
+    return NextResponse.json({ error: friendlyAuthError(401, "invalid credentials") }, { status: 401 });
+  }
+  const email = sso.email || (isAdminEmail(identifier) ? identifier.toLowerCase() : "");
+  if (!email) {
+    return NextResponse.json(
+      { error: "This TIRDO account has no email, so Content Manager cannot sign you in. Ask ICT support to add an email in Keycloak." },
+      { status: 403 }
+    );
   }
 
   let cmsRes: Response;
@@ -57,20 +82,22 @@ export async function POST(request: NextRequest) {
   }
 
   if (!cmsRes.ok || !token) {
-    const msg = json?.error?.message || json?.message;
     await ingestAuditEvent({
       action: "login_failed",
       eventType: "authentication",
       outcome: "failure",
       actor: email,
       actorType: "user",
-      identityProvider: "strapi",
+      identityProvider: "keycloak",
       sourceService: "portal",
-      reason: "invalid_credentials",
-      changeSummary: "CMS portal sign-in failed",
+      reason: "cms_account_missing",
+      changeSummary: "Keycloak sign-in succeeded but Content Manager account is not enabled",
       metadata: { ip: clientIp(request.headers) },
     });
-    return NextResponse.json({ error: friendlyAuthError(cmsRes.status, msg) }, { status: cmsRes.status === 400 ? 401 : cmsRes.status });
+    return NextResponse.json(
+      { error: "Your TIRDO account is signed in, but it is not enabled for Content management. Ask a Super Admin to grant access." },
+      { status: 403 }
+    );
   }
 
   if (user && user.isActive === false) {
@@ -84,9 +111,9 @@ export async function POST(request: NextRequest) {
     actor: String(user?.email || email),
     actorId: user?.id != null ? String(user.id) : "",
     actorType: "user",
-    identityProvider: "strapi",
+    identityProvider: "keycloak",
     sourceService: "portal",
-    changeSummary: "CMS portal sign-in succeeded",
+    changeSummary: "CMS portal Keycloak sign-in succeeded",
     metadata: { ip: clientIp(request.headers) },
   });
   const res = NextResponse.json({

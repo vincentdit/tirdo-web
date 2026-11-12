@@ -107,6 +107,11 @@ services:
       EMAIL_FROM: ${EMAIL_FROM}
       EMAIL_REPLY_TO: ${EMAIL_REPLY_TO}
       CONTACT_RECIPIENT: ${CONTACT_RECIPIENT}
+      CMS_KEYCLOAK_SUPERADMIN_USERNAME: ${CMS_KEYCLOAK_SUPERADMIN_USERNAME:-mabele}
+      CMS_KEYCLOAK_SUPERADMIN_EMAIL: ${CMS_KEYCLOAK_SUPERADMIN_EMAIL:-mabele@tirdo.go.tz}
+      CMS_KEYCLOAK_SUPERADMIN_PASSWORD: ${CMS_KEYCLOAK_SUPERADMIN_PASSWORD:-${LIMS_DEMO_PASSWORD:-Admin@1234}}
+      KEYCLOAK_INTERNAL_URL: http://keycloak:8080/auth
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
     # CMS is internal only. Staff use http://<host>/portal; Next talks to cms:1337 on tirdo-net.
     volumes:
       - strapi_uploads:/opt/app/public/uploads
@@ -207,6 +212,8 @@ services:
       - "${BIND_ADMIN:-127.0.0.1}:${HOST_KEYCLOAK_PORT:-8080}:8080"
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       postgres:
         condition: service_healthy
@@ -226,6 +233,7 @@ services:
       KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
       PUBLIC_URL: ${PUBLIC_URL}
       KEYCLOAK_URL: http://keycloak:8080/auth
+      LIMS_BACKCHANNEL_LOGOUT_URL: ${LIMS_BACKCHANNEL_LOGOUT_URL:-http://host.docker.internal:3000/api/auth/oidc/back-channel-logout}
     volumes:
       - ./scripts/keycloak-set-client.sh:/opt/tirdo/keycloak-set-client.sh:ro
     depends_on:

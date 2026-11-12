@@ -487,6 +487,12 @@ export function isAdminEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
+export function isPortalLoginId(value: string): boolean {
+  const v = value.trim();
+  if (isAdminEmail(v)) return true;
+  return /^[a-zA-Z0-9._-]{2,40}$/.test(v);
+}
+
 export function isSuperAdminRole(roles: string[]): boolean {
   return roles.some((r) => r.toLowerCase() === "super admin");
 }

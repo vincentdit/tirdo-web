@@ -7,6 +7,9 @@
   "sslRequired": "none",
   "registrationAllowed": false,
   "resetPasswordAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "registrationEmailAsUsername": true,
   "requiredActions": [
     {
       "alias": "CONFIGURE_TOTP",

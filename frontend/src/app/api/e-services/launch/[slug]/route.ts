@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ingestAuditEvent } from "@/lib/audit-ingest";
 import { launchTarget, oidcRolesFromPayload } from "@/lib/e-service-access";
 import { parseJwtPayload } from "@/lib/oidc";
+import { oidcPayloadActive } from "@/lib/oidc-session-revoke";
 import { getEServices } from "@/lib/strapi";
 
 export const dynamic = "force-dynamic";
@@ -10,12 +11,13 @@ export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   const token = cookies().get("tirdo_oidc_at")?.value || "";
   const payload = token ? parseJwtPayload(token) : null;
-  if (!payload) {
+  if (!oidcPayloadActive(payload)) {
     const login = new URL("/api/auth/login", request.url);
     login.searchParams.set("returnTo", "/e-services");
     return NextResponse.redirect(login);
   }
-  const roles = oidcRolesFromPayload(payload);
+  const claims = payload as Record<string, unknown>;
+  const roles = oidcRolesFromPayload(claims);
   const items = await getEServices();
   const item = items.find((row) => row.slug === params.slug);
   const result = launchTarget(item, roles);
@@ -31,8 +33,8 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
     outcome: "success",
     identityProvider: "keycloak",
     sourceService: "frontend",
-    actor: String(payload.preferred_username || payload.email || ""),
-    actorId: String(payload.sub || ""),
+    actor: String(claims.preferred_username || claims.email || ""),
+    actorId: String(claims.sub || ""),
     actorType: "user",
     targetType: "e-service",
     targetId: params.slug,

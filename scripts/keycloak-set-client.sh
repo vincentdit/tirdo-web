@@ -56,10 +56,38 @@ cat > /tmp/tirdo-web-client.json <<EOF
   "directAccessGrantsEnabled": true,
   "attributes": {
     "post.logout.redirect.uris": "+",
-    "pkce.code.challenge.method": "S256"
+    "pkce.code.challenge.method": "S256",
+    "backchannel.logout.url": "http://frontend:3000/api/auth/backchannel-logout",
+    "backchannel.logout.session.required": "true",
+    "frontchannel.logout.off": "false"
   }
 }
 EOF
 
+"$KCADM" update "realms/$REALM" \
+  -s loginWithEmailAllowed=true \
+  -s registrationEmailAsUsername=true \
+  -s duplicateEmailsAllowed=false
+echo "[keycloak-config] realm $REALM allows email sign-in; new users should use email as username"
+
 "$KCADM" update "clients/$CID" -r "$REALM" -f /tmp/tirdo-web-client.json
 echo "[keycloak-config] $CLIENT_ID accepts Sign in from ${SITE}/api/auth/callback"
+echo "[keycloak-config] $CLIENT_ID back-channel logout http://frontend:3000/api/auth/backchannel-logout"
+
+LIMS_CID="$("$KCADM" get clients -r "$REALM" -q clientId=lims --fields id --format csv --noquotes 2>/dev/null | tail -n 1 | tr -d '\r')"
+LIMS_BACKCHANNEL="${LIMS_BACKCHANNEL_LOGOUT_URL:-http://host.docker.internal:3000/api/auth/oidc/back-channel-logout}"
+if [ -n "$LIMS_CID" ] && [ "$LIMS_CID" != "id" ]; then
+  cat > /tmp/lims-client-slo.json <<EOF
+{
+  "attributes": {
+    "backchannel.logout.url": "${LIMS_BACKCHANNEL}",
+    "backchannel.logout.session.required": "true",
+    "post.logout.redirect.uris": "+"
+  }
+}
+EOF
+  "$KCADM" update "clients/$LIMS_CID" -r "$REALM" -f /tmp/lims-client-slo.json
+  echo "[keycloak-config] lims back-channel logout ${LIMS_BACKCHANNEL}"
+else
+  echo "[keycloak-config] client lims was not found; skip LIMS back-channel logout"
+fi
