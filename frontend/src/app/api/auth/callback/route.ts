@@ -22,6 +22,13 @@ function idTokenClaims(idToken?: string): { sub?: string; email?: string } {
   }
 }
 
+function clearPkceCookies(res: NextResponse) {
+  const gone = { ...siteCookieOptions(0), maxAge: 0 };
+  res.cookies.set("tirdo_oidc_v", "", gone);
+  res.cookies.set("tirdo_oidc_s", "", gone);
+  res.cookies.set("tirdo_oidc_r", "", gone);
+}
+
 export async function GET(request: NextRequest) {
   const site = publicSiteUrl();
   const jar = cookies();
@@ -31,19 +38,17 @@ export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code") || "";
   const state = request.nextUrl.searchParams.get("state") || "";
 
-  jar.set("tirdo_oidc_v", "", { ...siteCookieOptions(0), maxAge: 0 });
-  jar.set("tirdo_oidc_s", "", { ...siteCookieOptions(0), maxAge: 0 });
-  jar.set("tirdo_oidc_r", "", { ...siteCookieOptions(0), maxAge: 0 });
-
   const fail = () => {
     const dest = new URL(returnTo);
     dest.searchParams.set("login_error", "1");
-    return NextResponse.redirect(dest);
+    const res = NextResponse.redirect(dest);
+    clearPkceCookies(res);
+    return res;
   };
   if (!code || !verifier || !expectedState || state !== expectedState) return fail();
 
   try {
-    const res = await fetch(oidcTokenUrl(), {
+    const tokenRes = await fetch(oidcTokenUrl(), {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
@@ -56,12 +61,12 @@ export async function GET(request: NextRequest) {
       cache: "no-store",
       signal: AbortSignal.timeout(15000),
     });
-    const json = (await res.json().catch(() => ({}))) as {
+    const json = (await tokenRes.json().catch(() => ({}))) as {
       access_token?: string;
       id_token?: string;
       expires_in?: number;
     };
-    if (!res.ok || !json.access_token) {
+    if (!tokenRes.ok || !json.access_token) {
       await ingestAuditEvent({
         action: "login_failed",
         eventType: "authentication",
@@ -75,7 +80,16 @@ export async function GET(request: NextRequest) {
       return fail();
     }
     const maxAge = Math.max(60, Number(json.expires_in) || 3600);
+    jar.set("tirdo_oidc_v", "", { ...siteCookieOptions(0), maxAge: 0 });
+    jar.set("tirdo_oidc_s", "", { ...siteCookieOptions(0), maxAge: 0 });
+    jar.set("tirdo_oidc_r", "", { ...siteCookieOptions(0), maxAge: 0 });
     writeOidcBrowserCookies(jar, {
+      accessToken: json.access_token,
+      idToken: json.id_token,
+      maxAge,
+    });
+    const res = NextResponse.redirect(returnTo);
+    writeOidcBrowserCookies(res.cookies, {
       accessToken: json.access_token,
       idToken: json.id_token,
       maxAge,
@@ -92,7 +106,7 @@ export async function GET(request: NextRequest) {
       sourceService: "frontend",
       changeSummary: "Keycloak sign-in succeeded (application observed)",
     });
-    return NextResponse.redirect(returnTo);
+    return res;
   } catch {
     return fail();
   }

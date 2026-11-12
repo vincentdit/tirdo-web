@@ -79,6 +79,18 @@ export async function kcJson<T>(path: string, init?: RequestInit): Promise<T> {
   return stripSecrets(res.json) as T;
 }
 
+/** Ends every Keycloak SSO session for this user (website, LIMS, and other realm clients). */
+export async function endKeycloakUserSessions(userId: string) {
+  const id = String(userId || "").trim();
+  if (!id) return false;
+  try {
+    const res = await kcAdmin(`/users/${encodeURIComponent(id)}/logout`, { method: "POST", body: "{}" });
+    return res.ok || res.status === 204;
+  } catch {
+    return false;
+  }
+}
+
 export async function keycloakHealth(): Promise<{ ok: boolean; version?: string }> {
   try {
     const res = await fetch(`${keycloakInternalUrl()}/realms/${encodeURIComponent(oidcRealm())}`, {

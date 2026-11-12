@@ -9,7 +9,7 @@ import {
   safeReturnTo,
   siteCookieOptions,
 } from "@/lib/oidc";
-import { OIDC_ACCESS_COOKIE, readOidcBrowserSession } from "@/lib/oidc-session-cookie";
+import { readOidcAccessToken, readOidcBrowserSession } from "@/lib/oidc-session-cookie";
 import { oidcPayloadActive } from "@/lib/oidc-session-revoke";
 import { publicSiteUrl } from "@/lib/public-url";
 
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   const returnTo = safeReturnTo(request.nextUrl.searchParams.get("returnTo"), site);
   const jar = cookies();
   const session = readOidcBrowserSession(jar);
-  const access = jar.get(OIDC_ACCESS_COOKIE)?.value || "";
+  const access = readOidcAccessToken(jar);
   const accessOk = Boolean(access && oidcPayloadActive(parseJwtPayload(access)));
   const needsFreshAccess = returnTo.includes("/api/portal/from-sso");
   if (session && (!needsFreshAccess || accessOk)) {
@@ -32,9 +32,10 @@ export async function GET(request: NextRequest) {
   const verifier = b64url(randomBytes(32));
   const challenge = b64url(createHash("sha256").update(verifier).digest());
   const state = b64url(randomBytes(16));
-  jar.set("tirdo_oidc_v", verifier, siteCookieOptions(600));
-  jar.set("tirdo_oidc_s", state, siteCookieOptions(600));
-  jar.set("tirdo_oidc_r", returnTo, siteCookieOptions(600));
+  const pkce = siteCookieOptions(600);
+  jar.set("tirdo_oidc_v", verifier, pkce);
+  jar.set("tirdo_oidc_s", state, pkce);
+  jar.set("tirdo_oidc_r", returnTo, pkce);
 
   const params = new URLSearchParams({
     client_id: oidcClientId(),
@@ -45,5 +46,9 @@ export async function GET(request: NextRequest) {
     code_challenge: challenge,
     code_challenge_method: "S256",
   });
-  return NextResponse.redirect(`${oidcAuthorizeUrl()}?${params.toString()}`);
+  const res = NextResponse.redirect(`${oidcAuthorizeUrl()}?${params.toString()}`, 307);
+  res.cookies.set("tirdo_oidc_v", verifier, pkce);
+  res.cookies.set("tirdo_oidc_s", state, pkce);
+  res.cookies.set("tirdo_oidc_r", returnTo, pkce);
+  return res;
 }

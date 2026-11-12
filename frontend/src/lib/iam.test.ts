@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { formatDuration, hoursMinutesToSeconds, normalizeSessionPolicy } from "@/lib/session-policy";
 import {
   IAM_CATALOG,
   isDuplicateClient,
@@ -71,5 +72,18 @@ describe("institutional IAM helpers", () => {
     expect(integrationStatus("tirdo-web", true, true)).toBe("integrated");
     expect(integrationStatus("niims", true, true)).toBe("client_ready");
     expect(integrationStatus("lims", false, false)).toBe("not_registered");
+  });
+
+  it("turns hours and minutes into safe Keycloak session seconds", () => {
+    expect(hoursMinutesToSeconds(1, 30)).toBe(5400);
+    expect(formatDuration(5400)).toBe("1 h 30 min");
+    const policy = normalizeSessionPolicy({
+      ssoSessionIdleTimeout: 60,
+      ssoSessionMaxLifespan: 120,
+      rememberMe: true,
+    });
+    expect(policy.ssoSessionIdleTimeout).toBe(300);
+    expect(policy.ssoSessionMaxLifespan).toBeGreaterThanOrEqual(policy.ssoSessionIdleTimeout);
+    expect(policy.rememberMe).toBe(true);
   });
 });

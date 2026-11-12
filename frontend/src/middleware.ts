@@ -5,8 +5,6 @@ import { isSameOriginRequest } from "@/lib/security-http";
 
 const PUBLIC_PORTAL = [PORTAL_LOGIN_PATH, "/portal/forgot-password"];
 const PUBLIC_PORTAL_API = ["/api/portal/login", "/api/portal/forgot-password", "/api/portal/from-sso"];
-const OIDC_COOKIE = "tirdo_oidc_at";
-const OIDC_SESS_COOKIE = "tirdo_oidc_sess";
 
 function portalApiGuard(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -32,32 +30,11 @@ export function middleware(request: NextRequest) {
   if (pathname.startsWith("/api/portal")) return portalApiGuard(request);
   if (!pathname.startsWith("/portal")) return NextResponse.next();
   const portalSignedIn = Boolean(request.cookies.get(PORTAL_COOKIE)?.value);
-  const oidcSignedIn = Boolean(
-    request.cookies.get(OIDC_COOKIE)?.value || request.cookies.get(OIDC_SESS_COOKIE)?.value
-  );
   if (PUBLIC_PORTAL.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
-    if (
-      pathname === PORTAL_LOGIN_PATH &&
-      oidcSignedIn &&
-      !portalSignedIn &&
-      !request.nextUrl.searchParams.get("login_error")
-    ) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/api/portal/from-sso";
-      url.search = "";
-      url.searchParams.set("next", request.nextUrl.searchParams.get("next") || PORTAL_HOME_PATH);
-      return NextResponse.redirect(url);
-    }
     return NextResponse.next();
   }
   if (!portalSignedIn) {
     const url = request.nextUrl.clone();
-    if (oidcSignedIn) {
-      url.pathname = "/api/portal/from-sso";
-      url.search = "";
-      url.searchParams.set("next", pathname.startsWith("/portal") ? pathname : "/portal");
-      return NextResponse.redirect(url);
-    }
     url.pathname = PORTAL_LOGIN_PATH;
     url.searchParams.set("next", pathname.startsWith("/portal") ? pathname : "/portal");
     return NextResponse.redirect(url);

@@ -1,5 +1,7 @@
 "use strict";
 
+const { randomBytes } = require("crypto");
+
 /**
  * Ensure a Keycloak staff account also exists as a Super Admin in Content Manager,
  * using the same email and password so /portal login can use Keycloak credentials.
@@ -115,13 +117,17 @@ async function issueCmsSessionFromKeycloak(strapi, ctx) {
 
   const email = String(info.email || "").trim().toLowerCase();
   const username = String(info.preferred_username || "").trim();
-  const user =
+  let user =
     (email
       ? await strapi.db.query("admin::user").findOne({ where: { email }, populate: ["roles"] })
       : null) ||
     (username
       ? await strapi.db.query("admin::user").findOne({ where: { username }, populate: ["roles"] })
       : null);
+
+  if (!user) {
+    user = await createCmsUserFromKeycloak(strapi, info, token);
+  }
 
   if (!user || user.isActive === false) {
     ctx.status = 403;
@@ -156,6 +162,47 @@ async function issueCmsSessionFromKeycloak(strapi, ctx) {
       },
     },
   };
+}
+
+function rolesFromAccessToken(token) {
+  try {
+    const payload = JSON.parse(Buffer.from(String(token).split(".")[1], "base64url").toString("utf8"));
+    const realm = payload && payload.realm_access && Array.isArray(payload.realm_access.roles) ? payload.realm_access.roles : [];
+    return realm.map(String);
+  } catch {
+    return [];
+  }
+}
+
+async function createCmsUserFromKeycloak(strapi, info, token) {
+  const roles = rolesFromAccessToken(token);
+  if (!roles.includes("tirdo-admin") && !roles.includes("content-editor")) return null;
+  const email = String(info.email || "").trim().toLowerCase();
+  const username = String(info.preferred_username || email.split("@")[0] || "").trim();
+  if (!email || !username) return null;
+  const superAdmin = await strapi.service("admin::role").getSuperAdmin();
+  const editor =
+    (await strapi.db.query("admin::role").findOne({ where: { code: "strapi-editor" } })) ||
+    (await strapi.db.query("admin::role").findOne({ where: { name: "Editor" } }));
+  const roleId = roles.includes("tirdo-admin") ? superAdmin && superAdmin.id : editor && editor.id;
+  if (!roleId) return null;
+  const password = `${randomBytes(18).toString("base64url")}Aa1!`;
+  try {
+    const created = await strapi.service("admin::user").create({
+      email,
+      username,
+      firstname: String(info.given_name || info.name || username).trim().slice(0, 40) || username,
+      lastname: String(info.family_name || "User").trim().slice(0, 40) || "User",
+      password,
+      isActive: true,
+      roles: [roleId],
+    });
+    strapi.log.info("[cms-sso] created Content Manager account for " + email);
+    return created;
+  } catch (e) {
+    strapi.log.warn("[cms-sso] could not create Content Manager account: " + e.message);
+    return null;
+  }
 }
 
 module.exports = { ensureKeycloakCmsSuperAdmin, registerCmsOidcSessionRoute };

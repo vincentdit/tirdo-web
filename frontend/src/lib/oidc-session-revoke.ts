@@ -17,8 +17,14 @@ export function revokeOidcSession(payload: Record<string, unknown> | null | unde
   const sid = String(payload.sid || "").trim();
   const sub = String(payload.sub || "").trim();
   if (sid) revokedSids.set(sid, now + TTL_MS);
-  if (sub) revokedSubs.set(sub, now + TTL_MS);
+  else if (sub) revokedSubs.set(sub, now + TTL_MS);
   prune(now);
+}
+
+/** A fresh Keycloak login must not stay blocked by the previous sign-out. */
+export function allowOidcSubject(sub: string) {
+  const id = String(sub || "").trim();
+  if (id) revokedSubs.delete(id);
 }
 
 export function isOidcSessionRevoked(payload: Record<string, unknown> | null | undefined) {

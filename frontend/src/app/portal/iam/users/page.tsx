@@ -118,7 +118,16 @@ export default function IamUsersPage() {
                     <button type="button" className="hover:underline" onClick={() => act(u.id, "", { enabled: !u.enabled })}>
                       {u.enabled ? "Disable" : "Enable"}
                     </button>
-                    <button type="button" className="hover:underline" onClick={() => act(u.id, "/logout", {})}>Revoke sessions</button>
+                    <button
+                      type="button"
+                      className="hover:underline"
+                      onClick={() =>
+                        window.confirm("End every SSO session for this person on the website, LIMS, and all other systems?") &&
+                        act(u.id, "/logout", {})
+                      }
+                    >
+                      End all sessions
+                    </button>
                     <button
                       type="button"
                       className="hover:underline"

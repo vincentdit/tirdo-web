@@ -30,7 +30,7 @@ function StaffDashboard() {
   const tiles = [
     { icon: FileText, title: "Service Requests", desc: "Review and action incoming client requests.", href: "#", show: true },
     { icon: Inbox, title: "Contact Messages", desc: "Messages submitted via the website.", href: `${cmsUrl}/contact-messages`, external: false, show: isEditor },
-    { icon: FolderKanban, title: "Content Management", desc: "Manage news, publications, projects and pages.", href: cmsUrl, external: false, show: isEditor },
+    { icon: FolderKanban, title: "Content Management", desc: "Manage news, publications, projects and pages.", href: "/api/portal/from-sso", external: false, show: isEditor },
     { icon: BarChart3, title: "Web Analytics", desc: "TIRDO Analytics traffic and engagement reports.", href: matomoUrl, external: true, show: true },
     { icon: Settings, title: "Users & access", desc: "Create CMS users and manage access in the management portal.", href: `${cmsUrl}/users`, external: false, show: isAdmin },
   ].filter((t) => t.show);

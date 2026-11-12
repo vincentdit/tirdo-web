@@ -2,9 +2,10 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { ingestAuditEvent } from "@/lib/audit-ingest";
 import { clientIp } from "@/lib/audit";
-import { canOpenContentManagement, oidcRolesFromPayload } from "@/lib/e-service-access";
+import { canOpenContentManagement } from "@/lib/e-service-access";
 import { parseJwtPayload } from "@/lib/oidc";
 import { oidcPayloadActive } from "@/lib/oidc-session-revoke";
+import { readOidcAccessToken, readOidcBrowserSession } from "@/lib/oidc-session-cookie";
 import { cmsBase, PORTAL_COOKIE } from "@/lib/portal";
 import { publicSiteUrl } from "@/lib/public-url";
 import { isSafePortalNext } from "@/lib/security-http";
@@ -27,19 +28,30 @@ function loginRedirect(next: string, error?: string) {
   return NextResponse.redirect(url);
 }
 
+function websiteSsoLogin(returnTo: string) {
+  const login = sitePath("/api/auth/login");
+  login.searchParams.set("returnTo", returnTo);
+  return NextResponse.redirect(login);
+}
+
 export async function GET(request: NextRequest) {
   const next = portalNext(request.nextUrl.searchParams.get("next"));
-  const token = cookies().get("tirdo_oidc_at")?.value || "";
+  const jar = cookies();
+  const session = readOidcBrowserSession(jar);
+  const token = readOidcAccessToken(jar);
   const payload = token ? parseJwtPayload(token) : null;
+  const fromSsoPath = `/api/portal/from-sso?next=${encodeURIComponent(next)}`;
+
+  if (!session) {
+    return websiteSsoLogin(fromSsoPath);
+  }
   if (!token || !oidcPayloadActive(payload)) {
-    const login = sitePath("/api/auth/login");
-    login.searchParams.set("returnTo", `/api/portal/from-sso?next=${encodeURIComponent(next)}`);
-    return NextResponse.redirect(login);
+    return websiteSsoLogin(fromSsoPath);
   }
 
-  const roles = oidcRolesFromPayload(payload as Record<string, unknown>);
+  const roles = session.roles;
   if (!canOpenContentManagement(roles)) {
-    return loginRedirect(next, "cms_disabled");
+    return NextResponse.redirect(sitePath("/e-services"));
   }
 
   let cmsRes: Response;
@@ -58,17 +70,20 @@ export async function GET(request: NextRequest) {
     data?: { token?: string; user?: { email?: string; id?: unknown } };
     error?: string;
   };
+  if (cmsRes.status === 401) {
+    return websiteSsoLogin(fromSsoPath);
+  }
   const cmsToken = json?.data?.token;
   if (!cmsRes.ok || !cmsToken) {
-    return loginRedirect(next, "cms_disabled");
+    return loginRedirect(next, cmsRes.status === 503 ? "cms_unreachable" : "cms_disabled");
   }
 
   await ingestAuditEvent({
     action: "login",
     eventType: "authentication",
     outcome: "success",
-    actor: String(json.data?.user?.email || payload?.email || payload?.preferred_username || ""),
-    actorId: json.data?.user?.id != null ? String(json.data.user.id) : String(payload?.sub || ""),
+    actor: String(json.data?.user?.email || payload?.email || payload?.preferred_username || session.email || ""),
+    actorId: json.data?.user?.id != null ? String(json.data.user.id) : String(payload?.sub || session.sub || ""),
     actorType: "user",
     identityProvider: "keycloak",
     sourceService: "portal",
