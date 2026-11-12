@@ -10,6 +10,7 @@ import {
 } from "@/lib/iam";
 import { iamRateLimit, kcAdmin, kcJson, keycloakHealth } from "@/lib/iam-keycloak";
 import { oidcCallbackUrl, oidcClientId, oidcRealm } from "@/lib/oidc";
+import { normalizeSessionPolicy } from "@/lib/session-policy";
 import { resolveKeycloakPublicUrl } from "@/lib/public-url";
 import { iamAudit, iamFail, requireIam } from "../../_iam";
 
@@ -227,7 +228,14 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
     }
     if (resource === "sessions") {
       const stats = await kcJson<Record<string, unknown>[]>("/client-session-stats").catch(() => []);
-      return NextResponse.json({ results: stats });
+      const realm = await kcJson<Record<string, unknown>>("").catch(() => ({} as Record<string, unknown>));
+      return NextResponse.json({
+        results: stats,
+        timeouts: {
+          idleSeconds: realm.ssoSessionIdleTimeout,
+          maxSeconds: realm.ssoSessionMaxLifespan,
+        },
+      });
     }
     if (resource === "events") {
       const type = request.nextUrl.searchParams.get("type") || "";
@@ -247,6 +255,9 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
           ssoSessionMaxLifespan: realm.ssoSessionMaxLifespan,
           clientSessionIdleTimeout: realm.clientSessionIdleTimeout,
           clientSessionMaxLifespan: realm.clientSessionMaxLifespan,
+          ssoSessionIdleTimeoutRememberMe: realm.ssoSessionIdleTimeoutRememberMe,
+          ssoSessionMaxLifespanRememberMe: realm.ssoSessionMaxLifespanRememberMe,
+          accessTokenLifespan: realm.accessTokenLifespan,
           rememberMe: realm.rememberMe,
           resetPasswordAllowed: realm.resetPasswordAllowed,
           bruteForceProtected: realm.bruteForceProtected,
@@ -486,17 +497,20 @@ export async function PUT(request: NextRequest, { params }: { params: { path: st
     if (resource === "policies" || resource === "realm") {
       if (body.confirm !== true) return NextResponse.json({ error: "Confirm authentication policy changes." }, { status: 400 });
       const realm = await kcJson<Record<string, unknown>>("");
-      const next = {
-        ...realm,
+      const policy = normalizeSessionPolicy({
         ssoSessionIdleTimeout: Number(body.ssoSessionIdleTimeout ?? realm.ssoSessionIdleTimeout),
         ssoSessionMaxLifespan: Number(body.ssoSessionMaxLifespan ?? realm.ssoSessionMaxLifespan),
         clientSessionIdleTimeout: Number(body.clientSessionIdleTimeout ?? realm.clientSessionIdleTimeout),
         clientSessionMaxLifespan: Number(body.clientSessionMaxLifespan ?? realm.clientSessionMaxLifespan),
-        rememberMe: body.rememberMe !== false,
-      };
+        ssoSessionIdleTimeoutRememberMe: Number(body.ssoSessionIdleTimeoutRememberMe ?? realm.ssoSessionIdleTimeoutRememberMe),
+        ssoSessionMaxLifespanRememberMe: Number(body.ssoSessionMaxLifespanRememberMe ?? realm.ssoSessionMaxLifespanRememberMe),
+        accessTokenLifespan: Number(body.accessTokenLifespan ?? realm.accessTokenLifespan),
+        rememberMe: body.rememberMe === true,
+      });
+      const next = { ...realm, ...policy };
       await kcAdmin("", { method: "PUT", body: JSON.stringify(next) });
       await iamAudit(gate.access, "iam_realm_policy", "Updated realm SSO session policies");
-      return NextResponse.json({ ok: true });
+      return NextResponse.json({ ok: true, data: policy });
     }
     return NextResponse.json({ error: "Unknown IAM update." }, { status: 404 });
   } catch (err) {

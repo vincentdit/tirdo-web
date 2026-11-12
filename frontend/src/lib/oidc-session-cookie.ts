@@ -1,12 +1,14 @@
 import { oidcRolesFromPayload } from "@/lib/e-service-access";
 import { parseJwtPayload, siteCookieOptions } from "@/lib/oidc";
-import { oidcPayloadActive } from "@/lib/oidc-session-revoke";
+import { allowOidcSubject, oidcPayloadActive } from "@/lib/oidc-session-revoke";
 
 export const OIDC_SESS_COOKIE = "tirdo_oidc_sess";
 export const OIDC_ACCESS_COOKIE = "tirdo_oidc_at";
 export const OIDC_ID_COOKIE = "tirdo_oidc_it";
-/** Keep the access-token cookie small enough for browsers and nginx. */
+/** Browsers often drop cookies above ~4 KiB; keep Set-Cookie well under that. */
 export const MAX_ACCESS_TOKEN_COOKIE = 3000;
+/** Website SSO stays signed in after the short Keycloak access token expires. */
+export const BROWSER_SESSION_MAX_AGE = 8 * 60 * 60;
 
 export type CompactOidcSession = {
   sub: string;
@@ -66,6 +68,42 @@ export function clientFacingRoles(roles: string[]) {
   return roles.filter((role) => !HIDDEN_CLIENT_ROLES.test(role));
 }
 
+type CachedOidcTokens = { accessToken: string; idToken?: string; exp: number };
+const oidcTokenCache = new Map<string, CachedOidcTokens>();
+
+function cacheKey(session: Pick<CompactOidcSession, "sub" | "sid">) {
+  return session.sid ? `${session.sub}:${session.sid}` : session.sub;
+}
+
+function pruneOidcTokenCache(now = Date.now()) {
+  for (const [key, value] of oidcTokenCache) {
+    if (value.exp * 1000 <= now) oidcTokenCache.delete(key);
+  }
+}
+
+export function cacheOidcTokens(
+  session: CompactOidcSession,
+  tokens: { accessToken: string; idToken?: string },
+  accessExp = session.exp
+) {
+  pruneOidcTokenCache();
+  oidcTokenCache.set(cacheKey(session), {
+    accessToken: tokens.accessToken,
+    idToken: tokens.idToken,
+    exp: accessExp,
+  });
+}
+
+export function clearCachedOidcTokens(session: CompactOidcSession | null) {
+  if (session) oidcTokenCache.delete(cacheKey(session));
+}
+
+export function readCachedOidcTokens(session: CompactOidcSession | null): CachedOidcTokens | null {
+  if (!session) return null;
+  pruneOidcTokenCache();
+  return oidcTokenCache.get(cacheKey(session)) || null;
+}
+
 export function readOidcBrowserSession(jar: CookieJar): CompactOidcSession | null {
   const access = jar.get(OIDC_ACCESS_COOKIE)?.value || "";
   const fromAccess = access ? compactSessionFromPayload(parseJwtPayload(access) || {}) : null;
@@ -73,6 +111,12 @@ export function readOidcBrowserSession(jar: CookieJar): CompactOidcSession | nul
   const compact = decodeCompactSession(jar.get(OIDC_SESS_COOKIE)?.value);
   if (compact && oidcPayloadActive(compact as unknown as Record<string, unknown>)) return compact;
   return null;
+}
+
+export function readOidcAccessToken(jar: CookieJar): string {
+  const cookie = jar.get(OIDC_ACCESS_COOKIE)?.value || "";
+  if (cookie) return cookie;
+  return readCachedOidcTokens(readOidcBrowserSession(jar))?.accessToken || "";
 }
 
 type CookieSetter = {
@@ -86,19 +130,25 @@ export function writeOidcBrowserCookies(
   const payload =
     parseJwtPayload(tokens.accessToken) || (tokens.idToken ? parseJwtPayload(tokens.idToken) : null) || {};
   const session = compactSessionFromPayload(payload);
-  const opts = siteCookieOptions(tokens.maxAge);
-  if (session) jar.set(OIDC_SESS_COOKIE, encodeCompactSession(session), opts);
-  if (tokens.accessToken.length <= MAX_ACCESS_TOKEN_COOKIE) {
-    jar.set(OIDC_ACCESS_COOKIE, tokens.accessToken, opts);
-  }
-  if (tokens.idToken && tokens.idToken.length <= MAX_ACCESS_TOKEN_COOKIE) {
-    jar.set(OIDC_ID_COOKIE, tokens.idToken, opts);
-  }
+  if (!session) return;
+  const accessExp = session.exp;
+  const maxAge = Math.max(BROWSER_SESSION_MAX_AGE, tokens.maxAge || 0);
+  session.exp = Math.floor(Date.now() / 1000) + maxAge;
+  allowOidcSubject(session.sub);
+  jar.set(OIDC_SESS_COOKIE, encodeCompactSession(session), siteCookieOptions(maxAge));
+  cacheOidcTokens(session, tokens, accessExp);
 }
 
 export function clearOidcBrowserCookies(jar: CookieSetter) {
   const gone = { ...siteCookieOptions(0), maxAge: 0 };
-  jar.set(OIDC_ACCESS_COOKIE, "", gone);
-  jar.set(OIDC_ID_COOKIE, "", gone);
-  jar.set(OIDC_SESS_COOKIE, "", gone);
+  for (const name of [
+    OIDC_ACCESS_COOKIE,
+    OIDC_ID_COOKIE,
+    OIDC_SESS_COOKIE,
+    "tirdo_oidc_v",
+    "tirdo_oidc_s",
+    "tirdo_oidc_r",
+  ]) {
+    jar.set(name, "", gone);
+  }
 }

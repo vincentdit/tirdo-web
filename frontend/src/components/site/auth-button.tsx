@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { LogIn, LogOut, User, ChevronDown } from "lucide-react";
 import { useAuth } from "@/components/site/auth-provider";
-import { canOpenContentManagement, CONTENT_MANAGEMENT_LAUNCH } from "@/lib/e-service-access";
 import { loginHref } from "@/lib/keycloak";
 import { cn } from "@/lib/utils";
 
@@ -44,7 +43,6 @@ export function AuthButton({ className, onDark }: { className?: string; onDark?:
 
   const label = auth.name || auth.username || "Account";
   const showStaff = auth.hasRole("staff") || auth.hasRole("content-editor") || auth.hasRole("tirdo-admin");
-  const showCms = canOpenContentManagement(auth.roles);
   return (
     <div className={cn("relative", className)} ref={root}>
       <button
@@ -83,11 +81,6 @@ export function AuthButton({ className, onDark }: { className?: string; onDark?:
           {showStaff && (
             <a href="/staff" className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
               Staff portal
-            </a>
-          )}
-          {showCms && (
-            <a href={CONTENT_MANAGEMENT_LAUNCH} className="block rounded-md px-3 py-2 text-sm text-foreground/80 hover:bg-secondary hover:text-primary">
-              Content management
             </a>
           )}
           <button

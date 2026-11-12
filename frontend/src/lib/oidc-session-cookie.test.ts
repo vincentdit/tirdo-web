@@ -4,7 +4,10 @@ import {
   compactSessionFromPayload,
   decodeCompactSession,
   encodeCompactSession,
+  MAX_ACCESS_TOKEN_COOKIE,
+  readOidcAccessToken,
   readOidcBrowserSession,
+  writeOidcBrowserCookies,
 } from "@/lib/oidc-session-cookie";
 
 describe("compact OIDC session cookie", () => {
@@ -35,6 +38,33 @@ describe("compact OIDC session cookie", () => {
     });
     expect(session?.name).toBe("Mabele Demo");
     expect(session?.roles).toEqual(["staff"]);
+  });
+
+  it("keeps a large access token off the browser cookie and still serves it in-process", () => {
+    const header = Buffer.from(JSON.stringify({ alg: "none" })).toString("base64url");
+    const payload = Buffer.from(
+      JSON.stringify({
+        sub: "abc",
+        preferred_username: "mabele",
+        exp: Math.floor(Date.now() / 1000) + 3600,
+        realm_access: { roles: ["staff"] },
+      })
+    ).toString("base64url");
+    const accessToken = `${header}.${payload}.${"x".repeat(MAX_ACCESS_TOKEN_COOKIE)}`;
+    const set: Record<string, string> = {};
+    writeOidcBrowserCookies(
+      { set: (name, value) => { set[name] = value; } },
+      { accessToken, maxAge: 3600 }
+    );
+    expect(set.tirdo_oidc_sess).toBeTruthy();
+    expect(set.tirdo_oidc_at).toBeUndefined();
+    const stored = decodeCompactSession(set.tirdo_oidc_sess);
+    expect(stored?.exp || 0).toBeGreaterThan(Math.floor(Date.now() / 1000) + 7 * 60 * 60);
+    expect(
+      readOidcAccessToken({
+        get: (name) => (set[name] ? { value: set[name] } : undefined),
+      })
+    ).toBe(accessToken);
   });
 
   it("hides Keycloak account-console role names from the browser", () => {

@@ -6,7 +6,6 @@ import { PageBanner } from "@/components/site/page-banner";
 import { RequireAuth } from "@/components/site/require-auth";
 import { useAuth } from "@/components/site/auth-provider";
 import { Button } from "@/components/ui/button";
-import { canOpenContentManagement, CONTENT_MANAGEMENT_LAUNCH } from "@/lib/e-service-access";
 
 export default function AccountPage() {
   return (
@@ -26,7 +25,6 @@ export default function AccountPage() {
 function AccountCard() {
   const auth = useAuth();
   const staff = auth.hasRole("staff") || auth.hasRole("tirdo-admin");
-  const cms = canOpenContentManagement(auth.roles);
 
   return (
     <div className="rounded-xl border bg-card p-6 shadow-sm">
@@ -51,11 +49,6 @@ function AccountCard() {
           <Link href="/staff" className="rounded-lg border px-4 py-3 text-sm font-semibold text-primary hover:bg-secondary/40">
             Staff portal
           </Link>
-        )}
-        {cms && (
-          <a href={CONTENT_MANAGEMENT_LAUNCH} className="rounded-lg border px-4 py-3 text-sm font-semibold text-primary hover:bg-secondary/40">
-            Content management
-          </a>
         )}
       </div>
 
