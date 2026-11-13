@@ -39,7 +39,7 @@ export function NewsRibbon({ items }: { items: NewsItem[] }) {
 export function NewsBadge({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`inline-flex rounded bg-[#c8102e] px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wide text-white shadow-sm ${className}`}
+      className={`motion-safe:animate-pulse inline-flex rounded bg-[#c8102e] px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-wide text-white shadow-sm ${className}`}
     >
       News
     </span>

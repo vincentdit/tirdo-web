@@ -286,8 +286,13 @@ export async function getDepartments(locale = activeLocale()): Promise<Departmen
       head: String(d.headName || fb?.head || "") || undefined,
       headTitle: String(d.headTitle || fb?.headTitle || "") || undefined,
       photo: mediaUrl(d.headPhoto) || fb?.photo,
+      headRole: String(d.headRole || fb?.headRole || "") || undefined,
+      headPhoto: mediaUrl(d.headPhoto) || fb?.headPhoto,
       body: paragraphs(d.body) ?? fb?.body ?? [],
       sections: mapDepartmentUnits(d, fb),
+      focus: fb?.focus,
+      panels: fb?.panels,
+      achievements: fb?.achievements,
     };
   });
 }

@@ -71,8 +71,8 @@ const researchCol = {
   heading: "Industrial Research",
   headingKey: "headings.industrialResearch",
   items: [
-    { title: "Environmental Technology & Occupational Safety Division", key: "divisions.environment", href: "/departments/environment" },
-    { title: "Food Processing & Biotechnology Division", key: "divisions.foodBiotech", href: "/departments/food-biotechnology" },
+    { title: "Environmental Technologies and Occupational Safety Division", key: "divisions.environment", href: "/departments/environment" },
+    { title: "Food and Biotechnology Division", key: "divisions.foodBiotech", href: "/departments/food-biotechnology" },
     { title: "Agro processing Industrial Chemistry Division", key: "divisions.industrialChemistry", href: "/departments/industrial-chemistry" },
   ],
 };
@@ -80,9 +80,9 @@ const engineeringCol = {
   heading: "Engineering Development",
   headingKey: "headings.engineeringDevelopment",
   items: [
-    { title: "Energy Technology Division", key: "divisions.energy", href: "/departments/energy" },
-    { title: "Engineering Material Technology Division", key: "divisions.materials", href: "/departments/materials" },
-    { title: "Textile & Leather Technologies Division", key: "divisions.textileLeather", href: "/departments/textile-leather" },
+    { title: "Energy Technologies Division", key: "divisions.energy", href: "/departments/energy" },
+    { title: "Material Science and Technologies Division", key: "divisions.materials", href: "/departments/materials" },
+    { title: "Textile and Leather Technologies Division", key: "divisions.textileLeather", href: "/departments/textile-leather" },
   ],
 };
 const ictCol = {
@@ -91,7 +91,7 @@ const ictCol = {
   items: [
     { title: "Information & Communication Technologies Division", key: "divisions.ict", href: "/departments/ict" },
     { title: "Electronics & Instrumentation Technologies Division", key: "divisions.instrumentation", href: "/departments/instrumentation" },
-    { title: "Technology Transfer & Pilot Plants Division", key: "divisions.techTransfer", href: "/departments/technology-transfer" },
+    { title: "Technology Transfer and Pilot Plants Division", key: "divisions.techTransfer", href: "/departments/technology-transfer" },
   ],
 };
 
