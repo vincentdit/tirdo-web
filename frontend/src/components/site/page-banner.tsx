@@ -15,20 +15,24 @@ export function PageBanner({
       <div className="pointer-events-none absolute inset-0 opacity-20">
         <div className="absolute -right-16 top-0 h-64 w-64 rounded-full bg-accent blur-3xl" />
       </div>
-      <div className="container-tirdo relative py-12">
-        <nav className="mb-3 flex flex-wrap items-center gap-1 text-xs text-white/90">
+      <div className="container-tirdo relative py-3 sm:py-4">
+        <nav className="mb-2 flex flex-wrap items-center gap-1 text-sm text-white/90">
           <Link href="/" className="inline-flex items-center gap-1 hover:text-brand-gold">
-            <Home className="h-3.5 w-3.5" /> Home
+            <Home className="h-4 w-4" /> Home
           </Link>
           {crumbs.map((c) => (
             <span key={c.label} className="inline-flex items-center gap-1">
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight className="h-4 w-4" />
               {c.href ? <Link href={c.href} className="hover:text-brand-gold">{c.label}</Link> : <span className="text-white">{c.label}</span>}
             </span>
           ))}
         </nav>
-        <h1 className="text-3xl font-extrabold sm:text-4xl">{title}</h1>
-        {subtitle && <p className="mt-2 max-w-2xl text-white/90">{subtitle}</p>}
+        <h1 className="max-w-5xl text-2xl font-extrabold leading-tight sm:text-3xl">{title}</h1>
+        {subtitle && (
+          <p className="mt-2 max-w-3xl text-sm text-white/90 sm:text-base">
+            {subtitle}
+          </p>
+        )}
       </div>
     </section>
   );

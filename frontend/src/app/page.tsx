@@ -23,7 +23,7 @@ export default async function HomePage() {
       {latest && (
         <section className="border-b border-brand-pale">
           <div className="container-tirdo flex min-h-[75px] flex-wrap items-center gap-x-5 gap-y-2 py-4 text-sm">
-            <span className="bg-brand-gold px-2 py-1 text-[0.68rem] font-bold tracking-wide text-brand-ink">LATEST</span>
+            <span className="motion-safe:animate-pulse bg-brand-gold px-2 py-1 text-[0.68rem] font-bold tracking-wide text-brand-ink">LATEST</span>
             <strong className="text-brand-ink">{latest.title}</strong>
             <Link href={latest.sourceUrl || `/news/${latest.slug}`} target={latest.sourceUrl ? "_blank" : undefined} rel={latest.sourceUrl ? "noreferrer" : undefined} className="ml-auto inline-flex shrink-0 items-center gap-1 font-bold text-brand-teal hover:gap-2">
               Read announcement <ArrowRight className="h-4 w-4 transition-all" />
@@ -81,46 +81,59 @@ export default async function HomePage() {
       </section>
 
       {/* Industrial services */}
-      <section className="container-tirdo py-20 md:py-24">
-        <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-          <div>
-            <p className="eyebrow mb-2 text-brand-teal">Digital access</p>
-            <h2 className="font-display text-[2rem] text-brand-ink md:text-[2.6rem]">Industrial services</h2>
-          </div>
-          <Link href="/services" className="inline-flex items-center gap-2 border border-brand-teal px-4 py-3 text-[0.78rem] font-bold uppercase tracking-wide text-brand-teal hover:bg-brand-teal hover:text-white">
-            View all services <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((s) => (
-            <Link key={s.slug} href={`/services/${s.slug}`} className="group flex min-h-[210px] flex-col border p-6 transition-all hover:-translate-y-1 hover:border-brand-teal hover:shadow-[0_9px_20px_rgba(6,48,68,0.08)]">
-              <span className="mb-4 text-brand-teal"><Icon name={s.icon} className="h-7 w-7" /></span>
-              <h3 className="mb-2 text-lg font-semibold text-brand-ink">{s.title}</h3>
-              <p className="flex-1 text-sm text-brand-muted">{s.description}</p>
-              <span className="mt-3 inline-flex items-center gap-1 text-[0.75rem] font-bold uppercase tracking-wide text-brand-teal">
-                Access service <ArrowRight className="h-4 w-4" />
-              </span>
+      <section className="bg-white py-12 md:py-14">
+        <div className="container-tirdo">
+          <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <div>
+              <p className="eyebrow mb-2 text-brand-teal">Digital access</p>
+              <h2 className="font-display text-[2rem] text-brand-ink md:text-[2.6rem]">Industrial services</h2>
+              <p className="mt-2 max-w-2xl text-sm text-brand-muted md:text-base">
+                Practical research, testing and technical support to help industry grow.
+              </p>
+            </div>
+            <Link href="/services" className="inline-flex w-fit items-center gap-2 rounded-lg border border-brand-teal/40 px-4 py-2.5 text-[0.78rem] font-bold uppercase tracking-wide text-brand-teal transition hover:bg-brand-teal hover:text-white">
+              View all services <ArrowRight className="h-4 w-4" />
             </Link>
-          ))}
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((s) => (
+              <Link
+                key={s.slug}
+                href={`/services/${s.slug}`}
+                className="group flex min-h-[235px] flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_12px_30px_rgba(15,23,42,0.07)] transition hover:-translate-y-1 hover:border-brand-teal/40 hover:shadow-[0_18px_36px_rgba(15,23,42,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:ring-offset-2"
+              >
+                <span className="mb-4 grid h-14 w-14 place-items-center rounded-xl border-2 border-brand-gold bg-brand-blue text-white shadow-[0_10px_20px_rgba(0,163,221,0.25)]">
+                  <Icon name={s.icon} className="h-7 w-7" />
+                </span>
+                <h3 className="mb-2 text-lg font-semibold text-brand-ink group-hover:text-brand-teal">{s.title}</h3>
+                <p className="flex-1 text-sm leading-relaxed text-brand-muted">{s.description}</p>
+                <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-lg border border-brand-teal/30 bg-brand-teal/5 px-3 py-2 text-[0.72rem] font-bold uppercase tracking-wide text-brand-teal transition group-hover:bg-brand-teal group-hover:text-white">
+                  Access service <ArrowRight className="h-4 w-4" />
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Leadership message */}
-      <section className="bg-brand-blue text-white">
-        <div className="container-tirdo grid items-center gap-10 md:grid-cols-[38%_1fr] md:gap-16">
-          <div className="h-[360px] overflow-hidden md:h-[460px]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img loading="lazy" decoding="async" src={directorMessage.photo} alt={directorMessage.name} className="h-full w-full object-cover object-top" />
+      <section className="bg-brand-blue py-6 text-white md:py-8">
+        <div className="container-tirdo grid items-center gap-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-12">
+          <div className="mx-auto w-full max-w-[13rem] border-4 border-brand-gold p-2 shadow-xl md:max-w-[16rem]">
+            <div className="aspect-[4/5] overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img loading="lazy" decoding="async" src={directorMessage.photo} alt={directorMessage.name} className="h-full w-full object-cover object-top" />
+            </div>
           </div>
-          <div className="py-12 md:py-14">
-            <p className="eyebrow mb-3 text-brand-gold">Leadership message</p>
-            <h2 className="max-w-2xl font-display text-[1.9rem] leading-tight md:text-[2.5rem]">
+          <div className="py-2">
+            <p className="eyebrow mb-2 text-brand-gold">Leadership message</p>
+            <h2 className="max-w-2xl font-display text-[1.65rem] leading-tight md:text-[1.875rem]">
               Working together for a capable, competitive industrial economy.
             </h2>
-            <p className="mt-5 max-w-2xl text-[1.05rem] text-[#dce8f2]">&ldquo;{directorMessage.quote}&rdquo;</p>
-            <strong className="mt-6 block">{directorMessage.name}</strong>
-            <small className="mb-6 block text-[#b8cce3]">{directorMessage.role}</small>
-            <Link href="/about/administration" className="inline-flex items-center gap-4 bg-white px-5 py-3.5 text-[0.78rem] font-bold uppercase tracking-wide text-brand-blue hover:bg-brand-pale">
+            <p className="mt-3 max-w-2xl text-[0.95rem] leading-5 text-[#dce8f2]">&ldquo;{directorMessage.quote}&rdquo;</p>
+            <strong className="mt-4 block">{directorMessage.name}</strong>
+            <small className="mb-4 block text-[#b8cce3]">{directorMessage.role}</small>
+            <Link href="/about/administration" className="inline-flex items-center gap-3 bg-white px-4 py-3 text-[0.78rem] font-bold uppercase tracking-wide text-brand-blue hover:bg-brand-pale">
               Read the full message <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
