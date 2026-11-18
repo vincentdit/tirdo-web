@@ -2,7 +2,19 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci || npm install
+RUN npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000 \
+    && npm config set fetch-timeout 600000 \
+    && i=1 \
+    && while [ "$i" -le 5 ]; do \
+      npm ci && exit 0; \
+      npm install && exit 0; \
+      echo "npm install failed, attempt ${i}"; \
+      i=$((i + 1)); \
+      sleep 20; \
+    done \
+    && exit 1
 
 # ---- builder -------------------------------------------------------------
 FROM node:20-alpine AS builder
