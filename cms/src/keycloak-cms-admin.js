@@ -115,18 +115,22 @@ async function issueCmsSessionFromKeycloak(strapi, ctx) {
     return;
   }
 
-  const email = String(info.email || "").trim().toLowerCase();
-  const username = String(info.preferred_username || "").trim();
+  const claims = claimsFromAccessToken(token);
+  const email = String(info.email || claims.email || "").trim().toLowerCase();
+  const username = String(info.preferred_username || claims.preferred_username || "").trim();
   let user =
     (email
       ? await strapi.db.query("admin::user").findOne({ where: { email }, populate: ["roles"] })
       : null) ||
     (username
       ? await strapi.db.query("admin::user").findOne({ where: { username }, populate: ["roles"] })
+      : null) ||
+    (email
+      ? await strapi.db.query("admin::user").findOne({ where: { username: email }, populate: ["roles"] })
       : null);
 
   if (!user) {
-    user = await createCmsUserFromKeycloak(strapi, info, token);
+    user = await createCmsUserFromKeycloak(strapi, { ...info, email, preferred_username: username }, token);
   }
 
   if (!user || user.isActive === false) {
@@ -164,44 +168,76 @@ async function issueCmsSessionFromKeycloak(strapi, ctx) {
   };
 }
 
-function rolesFromAccessToken(token) {
+function claimsFromAccessToken(token) {
   try {
-    const payload = JSON.parse(Buffer.from(String(token).split(".")[1], "base64url").toString("utf8"));
-    const realm = payload && payload.realm_access && Array.isArray(payload.realm_access.roles) ? payload.realm_access.roles : [];
-    return realm.map(String);
+    return JSON.parse(Buffer.from(String(token).split(".")[1], "base64url").toString("utf8"));
   } catch {
-    return [];
+    return {};
   }
+}
+
+function rolesFromAccessToken(token) {
+  const payload = claimsFromAccessToken(token);
+  const realm = payload.realm_access && Array.isArray(payload.realm_access.roles) ? payload.realm_access.roles : [];
+  const names = realm.map(String);
+  const resource = payload.resource_access && typeof payload.resource_access === "object" ? payload.resource_access : {};
+  for (const value of Object.values(resource)) {
+    const roles = value && Array.isArray(value.roles) ? value.roles : [];
+    names.push(...roles.map(String));
+  }
+  return Array.from(new Set(names.map((r) => r.trim()).filter(Boolean)));
+}
+
+function canProvisionCmsAccount(roles) {
+  return roles.includes("tirdo-admin") || roles.includes("content-editor") || roles.includes("staff");
+}
+
+async function cmsRoleIdForKeycloak(strapi, roles) {
+  if (roles.includes("tirdo-admin")) {
+    const superAdmin = await strapi.service("admin::role").getSuperAdmin();
+    return superAdmin && superAdmin.id;
+  }
+  const editor =
+    (await strapi.db.query("admin::role").findOne({ where: { code: "strapi-editor" } })) ||
+    (await strapi.db.query("admin::role").findOne({ where: { name: "Editor" } }));
+  if (roles.includes("content-editor") && editor) return editor.id;
+  const author =
+    (await strapi.db.query("admin::role").findOne({ where: { code: "strapi-author" } })) ||
+    (await strapi.db.query("admin::role").findOne({ where: { name: "Author" } }));
+  if (roles.includes("staff")) return (author && author.id) || (editor && editor.id);
+  return editor && editor.id;
 }
 
 async function createCmsUserFromKeycloak(strapi, info, token) {
   const roles = rolesFromAccessToken(token);
-  if (!roles.includes("tirdo-admin") && !roles.includes("content-editor")) return null;
+  if (!canProvisionCmsAccount(roles)) return null;
   const email = String(info.email || "").trim().toLowerCase();
   const username = String(info.preferred_username || email.split("@")[0] || "").trim();
   if (!email || !username) return null;
-  const superAdmin = await strapi.service("admin::role").getSuperAdmin();
-  const editor =
-    (await strapi.db.query("admin::role").findOne({ where: { code: "strapi-editor" } })) ||
-    (await strapi.db.query("admin::role").findOne({ where: { name: "Editor" } }));
-  const roleId = roles.includes("tirdo-admin") ? superAdmin && superAdmin.id : editor && editor.id;
+  const roleId = await cmsRoleIdForKeycloak(strapi, roles);
   if (!roleId) return null;
   const password = `${randomBytes(18).toString("base64url")}Aa1!`;
+  const profile = {
+    email,
+    firstname: String(info.given_name || info.name || username).trim().slice(0, 40) || username,
+    lastname: String(info.family_name || "User").trim().slice(0, 40) || "User",
+    password,
+    isActive: true,
+    roles: [roleId],
+  };
   try {
-    const created = await strapi.service("admin::user").create({
-      email,
-      username,
-      firstname: String(info.given_name || info.name || username).trim().slice(0, 40) || username,
-      lastname: String(info.family_name || "User").trim().slice(0, 40) || "User",
-      password,
-      isActive: true,
-      roles: [roleId],
-    });
+    const created = await strapi.service("admin::user").create({ ...profile, username });
     strapi.log.info("[cms-sso] created Content Manager account for " + email);
     return created;
   } catch (e) {
-    strapi.log.warn("[cms-sso] could not create Content Manager account: " + e.message);
-    return null;
+    try {
+      const created = await strapi.service("admin::user").create({ ...profile, username: email });
+      strapi.log.info("[cms-sso] created Content Manager account for " + email);
+      return created;
+    } catch (err) {
+      strapi.log.warn("[cms-sso] could not create Content Manager account: " + (err.message || e.message));
+      return null;
+    }
   }
 }
 

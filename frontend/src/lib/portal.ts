@@ -536,7 +536,9 @@ export function cmsBase(): string {
 }
 
 export function friendlyAuthError(status: number, message?: string): string {
-  const raw = String(message || "").toLowerCase();
+  const text = String(message || "").trim();
+  const raw = text.toLowerCase();
+  if (status === 403 && text) return text;
   if (status === 400 || status === 401 || raw.includes("invalid") || raw.includes("identifier")) {
     return "The email or password is not correct. Check your details and try again.";
   }

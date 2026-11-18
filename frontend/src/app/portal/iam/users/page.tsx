@@ -56,7 +56,7 @@ export default function IamUsersPage() {
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) return setError(json.error || "Could not create user.");
-    setNotice("User created in Keycloak. No application access is granted until roles are assigned.");
+    setNotice("User created in Keycloak with the staff role. Grant Content editor if they should manage the website.");
     setEmail("");
     load();
   }
@@ -137,6 +137,9 @@ export default function IamUsersPage() {
                     </button>
                     <button type="button" className="hover:underline" onClick={() => act(u.id, "/roles", { role: "staff" })}>
                       Grant staff
+                    </button>
+                    <button type="button" className="hover:underline" onClick={() => act(u.id, "/roles", { role: "content-editor" })}>
+                      Grant content editor
                     </button>
                     <button
                       type="button"

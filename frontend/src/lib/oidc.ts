@@ -30,7 +30,7 @@ export async function verifyKeycloakPassword(
   username: string,
   password: string,
   env: NodeJS.Dict<string> = process.env
-): Promise<{ ok: true; email: string; username: string } | { ok: false }> {
+): Promise<{ ok: true; email: string; username: string; accessToken: string } | { ok: false }> {
   const id = username.trim();
   if (!id || !password) return { ok: false };
   try {
@@ -42,7 +42,7 @@ export async function verifyKeycloakPassword(
         client_id: oidcClientId(env),
         username: id,
         password,
-        scope: "openid",
+        scope: "openid profile email",
       }),
       cache: "no-store",
       signal: AbortSignal.timeout(15000),
@@ -52,7 +52,12 @@ export async function verifyKeycloakPassword(
     const claims = parseJwtPayload(json.access_token) || {};
     const email = String(claims.email || "").trim().toLowerCase();
     const preferred = String(claims.preferred_username || id).trim();
-    return { ok: true, email: email || (id.includes("@") ? id.toLowerCase() : ""), username: preferred };
+    return {
+      ok: true,
+      email: email || (id.includes("@") ? id.toLowerCase() : ""),
+      username: preferred,
+      accessToken: json.access_token,
+    };
   } catch {
     return { ok: false };
   }

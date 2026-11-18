@@ -56,6 +56,9 @@ describe("portal helpers", () => {
   it("does not leak backend error text for bad credentials", () => {
     expect(friendlyAuthError(400, "Invalid identifier or password")).toMatch(/not correct/i);
     expect(friendlyAuthError(401, "invalid credentials")).toMatch(/not correct/i);
+    expect(friendlyAuthError(403, "Your TIRDO account is signed in, but it is not enabled for Content management.")).toMatch(
+      /Content management/i
+    );
   });
 
   it("whitelists known CMS collections", () => {

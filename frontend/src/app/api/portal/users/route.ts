@@ -12,6 +12,7 @@ import {
   portalPasswordIssue,
   PR_COLLECTION_SLUGS,
 } from "@/lib/portal";
+import { ensureRealmUser } from "@/lib/iam-keycloak";
 import { forbidden, loadAccess, loadPortalDepartments, type PortalAccess } from "../_access";
 import { cmsAdmin, portalToken, unauthorized } from "../_cms";
 
@@ -230,6 +231,21 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    try {
+      await ensureRealmUser({
+        email,
+        firstName: firstname,
+        lastName: lastname,
+        password,
+        cmsRoleName: chosen?.name,
+      });
+    } catch (err) {
+      const status = Number((err as { status?: number }).status);
+      return NextResponse.json(
+        { error: err instanceof Error ? err.message : "Could not add this user to the sign-in realm." },
+        { status: status >= 400 && status < 600 ? status : 502 }
+      );
+    }
     const createdRes = await cmsAdmin("/admin/users", token, {
       method: "POST",
       body: JSON.stringify({
@@ -305,6 +321,23 @@ export async function POST(request: NextRequest) {
       }
       const passwordIssue = portalPasswordIssue(password);
       if (passwordIssue) return NextResponse.json({ error: passwordIssue }, { status: 400 });
+    }
+    if (password) {
+      try {
+        await ensureRealmUser({
+          email: emailKey(current.email),
+          firstName: String(body.firstname || current.firstname || "").trim(),
+          lastName: String(body.lastname || "").trim(),
+          password,
+          cmsRoleName: chosen ? String(chosen.name || "") : "",
+        });
+      } catch (err) {
+        const status = Number((err as { status?: number }).status);
+        return NextResponse.json(
+          { error: err instanceof Error ? err.message : "Could not update the sign-in password." },
+          { status: status >= 400 && status < 600 ? status : 502 }
+        );
+      }
     }
     const res = await saveUser(token, current, {
       firstname: String(body.firstname || current.firstname || "").trim(),
