@@ -367,6 +367,17 @@ export async function POST(request: NextRequest, { params }: { params: { path: s
         }),
       });
       if (!created.ok) return NextResponse.json({ error: "Could not create this user in Keycloak." }, { status: 502 });
+      const location = created.headers.get("location") || "";
+      const newUserId = location.split("/").filter(Boolean).pop() || "";
+      if (newUserId) {
+        const staffRole = await kcJson<Record<string, unknown>>("/roles/staff").catch(() => null);
+        if (staffRole && staffRole.name) {
+          await kcAdmin(`/users/${encodeURIComponent(newUserId)}/role-mappings/realm`, {
+            method: "POST",
+            body: JSON.stringify([staffRole]),
+          }).catch(() => undefined);
+        }
+      }
       await iamAudit(gate.access, "iam_user_create", `Created Keycloak user ${username}`, { type: "user", name: username });
       return NextResponse.json({ ok: true });
     }

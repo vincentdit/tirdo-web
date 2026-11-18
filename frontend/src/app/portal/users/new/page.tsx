@@ -78,7 +78,9 @@ export default function PortalCreateUserPage() {
       {notice && <p className="mt-3 text-sm text-emerald-800">{notice}</p>}
       <form className="mt-6 max-w-xl rounded-lg border bg-white p-5" onSubmit={saveUser}>
         <h2 className="font-semibold text-[#0A192F]">Create CMS user</h2>
-        <p className="mt-1 text-xs text-slate-500">Each email can be created only once. Password needs 8+ characters with uppercase, lowercase and a number.</p>
+        <p className="mt-1 text-xs text-slate-500">
+          One account is created here and in the sign-in realm. Do not create the same person again under Identity &amp; Access. Password needs 8+ characters with uppercase, lowercase and a number.
+        </p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <input className="rounded-md border px-3 py-2 text-sm" placeholder="First name" value={newFirst} onChange={(e) => setNewFirst(e.target.value)} required />
           <input className="rounded-md border px-3 py-2 text-sm" placeholder="Last name" value={newLast} onChange={(e) => setNewLast(e.target.value)} required />
