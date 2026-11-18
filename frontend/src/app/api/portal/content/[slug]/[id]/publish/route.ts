@@ -88,23 +88,30 @@ export async function POST(_request: NextRequest, { params }: { params: { slug: 
   const path = reviewPublishPath(pending);
 
   if (path === "hod") {
+    const reviewDepartment = pending.departmentSlug || departmentSlug;
     if (
       !canApproveHod({
         email: access.email,
         isHod: access.isHod,
         isSectionHead: access.isSectionHead,
         departments: access.departments,
-        departmentSlug: pending.departmentSlug || departmentSlug,
+        departmentSlug: reviewDepartment,
         requestedBy: pending.requestedBy,
         sectionSlugs: access.sectionSlugs,
       })
     ) {
+      const samePerson = access.email.trim().toLowerCase() === String(pending.requestedBy || "").trim().toLowerCase();
+      const error = samePerson
+        ? "You cannot approve an item you submitted. Another head for this department must approve it."
+        : !String(reviewDepartment || "").trim()
+          ? "This item has no owning department. Set the owning department, then the head of that department can approve it."
+          : "Waiting for the Head of Department to approve and publish this information.";
       return NextResponse.json(
         {
           pending: true,
           stage: "hod",
           requestedBy: pending.requestedBy,
-          error: "Waiting for the Head of Department to approve and publish this information.",
+          error,
         },
         { status: 409 }
       );

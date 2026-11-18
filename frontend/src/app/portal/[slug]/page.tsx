@@ -446,7 +446,12 @@ export default function PortalCollectionPage() {
                                 isSuperAdmin,
                                 requestedBy: row.pendingPublishBy,
                                 hodApprovedBy: row.hodApprovedBy,
-                              })
+                              }),
+                              {
+                                email: accountEmail,
+                                requestedBy: row.pendingPublishBy,
+                                departmentSlug: String(row.departmentSlug || ""),
+                              }
                             )}
                       </button>
                     )}

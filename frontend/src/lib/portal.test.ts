@@ -18,6 +18,7 @@ import {
   canApproveDg,
   requesterIsDeptHead,
   publishPathForRequester,
+  publishActionLabel,
   sanitizeDepartmentUnits,
   parseCollectionList,
   allowedPageSlugsFromGrants,
@@ -213,6 +214,11 @@ describe("portal helpers", () => {
         requestedBy: "pr@tirdo.or.tz",
       })
     ).toBe(true);
+    expect(publishActionLabel("Waiting for HOD", false, false, { email: "hod@tirdo.or.tz", requestedBy: "hod@tirdo.or.tz", departmentSlug: "ict" })).toBe(
+      "Needs a different approver"
+    );
+    expect(publishActionLabel("Waiting for HOD", true, false, { departmentSlug: "ict" })).toBe("Approve and publish");
+    expect(publishActionLabel("Waiting for HOD", false, false, { departmentSlug: "" })).toBe("Set owning department");
     expect(publishPathForRequester(false)).toBe("hod");
     expect(publishPathForRequester(true)).toBe("dg");
     expect(

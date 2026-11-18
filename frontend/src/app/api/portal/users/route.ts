@@ -401,5 +401,41 @@ export async function POST(request: NextRequest) {
   if (!res.ok) {
     return NextResponse.json({ error: cmsAdminErrorMessage(json, "Could not save this access assignment.") }, { status: 400 });
   }
+  if (duty === "hod" || duty === "section-head" || duty === "director-general") {
+    const promoted = await promoteApproverRole(token, staffEmail);
+    if (!promoted.ok) {
+      return NextResponse.json(
+        { error: promoted.error || "Access was saved, but this person could not be given approval rights." },
+        { status: 400 }
+      );
+    }
+  }
   return NextResponse.json({ data: json.data || json });
+}
+
+async function promoteApproverRole(token: string, email: string) {
+  const user = (await loadUsers(token)).find((row) => emailKey(row.email) === email);
+  if (!user) return { ok: true };
+  const current = await loadUser(token, Number(user.id));
+  if (!current) return { ok: false, error: "Access was saved, but the user account could not be updated." };
+  if (isSuperAdminRole(roleNames(current))) return { ok: true };
+  const rolesJson = await (await cmsAdmin("/admin/roles", token)).json().catch(() => ({}));
+  const editor = asList(rolesJson).find((role) => String(role.name || "").trim().toLowerCase() === "editor");
+  const editorId = Number(editor?.id);
+  if (!editorId) return { ok: false, error: "Access was saved, but the Editor role is missing." };
+  if (!roleNames(current).some((name) => name.trim().toLowerCase() === "editor")) {
+    const saved = await saveUser(token, current, { roles: [editorId] });
+    if (!saved.ok) return { ok: false, error: "Access was saved, but this person could not be given the Editor role needed to approve." };
+  }
+  try {
+    await ensureRealmUser({
+      email,
+      firstName: String(current.firstname || ""),
+      lastName: String(current.lastname || ""),
+      cmsRoleName: "Editor",
+    });
+  } catch {
+    return { ok: true };
+  }
+  return { ok: true };
 }
