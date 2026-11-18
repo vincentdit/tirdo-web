@@ -767,8 +767,18 @@ export function canApprovePublish(reviewerEmail: string, requestedBy?: string): 
   return Boolean(a && b && a !== b);
 }
 
-export function publishActionLabel(status: string, canHod: boolean, canDg: boolean) {
-  if (status === "Waiting for HOD") return canHod ? "Approve and publish" : "Waiting for HOD";
+export function publishActionLabel(
+  status: string,
+  canHod: boolean,
+  canDg: boolean,
+  detail?: { email?: string; requestedBy?: string; departmentSlug?: string }
+) {
+  if (status === "Waiting for HOD") {
+    if (canHod) return "Approve and publish";
+    if (sameAccountEmail(detail?.email, detail?.requestedBy)) return "Needs a different approver";
+    if (!String(detail?.departmentSlug || "").trim()) return "Set owning department";
+    return "Waiting for HOD";
+  }
   if (status === "Waiting for DG" || status === "Pending approval") {
     return canDg ? "Approve as Director General" : "Waiting for DG";
   }

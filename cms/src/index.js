@@ -38,6 +38,8 @@ module.exports = {
     // 1) Open up the public REST API for read access + contact submissions.
     await setPublicPermissions(strapi);
     await grantContentReviewAdminAccess(strapi);
+    await grantEditorPublishAccess(strapi);
+    await promoteDepartmentApprovers(strapi);
     try {
       await ensureKeycloakCmsSuperAdmin(strapi);
     } catch (e) {
@@ -179,6 +181,74 @@ async function grantContentReviewAdminAccess(strapi) {
     strapi.log.info('[bootstrap] content-review admin access ensured');
   } catch (e) {
     strapi.log.warn('[bootstrap] content-review admin access skipped: ' + e.message);
+  }
+}
+
+async function grantEditorPublishAccess(strapi) {
+  const editor =
+    (await strapi.db.query('admin::role').findOne({ where: { code: 'strapi-editor' } })) ||
+    (await strapi.db.query('admin::role').findOne({ where: { name: 'Editor' } }));
+  if (!editor) return;
+  const subjects = Object.values(strapi.contentTypes)
+    .filter((ct) => ct.uid && String(ct.uid).startsWith('api::') && ct.options && ct.options.draftAndPublish)
+    .map((ct) => ct.uid);
+  let added = 0;
+  try {
+    for (const subject of subjects) {
+      const action = 'plugin::content-manager.explorer.publish';
+      const existing = await strapi.db.query('admin::permission').findOne({
+        where: { action, subject, role: editor.id },
+      });
+      if (existing) continue;
+      await strapi.db.query('admin::permission').create({
+        data: {
+          action,
+          subject,
+          properties: {},
+          conditions: [],
+          role: editor.id,
+        },
+      });
+      added += 1;
+    }
+    strapi.log.info(`[bootstrap] editor publish permissions ensured (${added} added)`);
+  } catch (e) {
+    strapi.log.warn('[bootstrap] editor publish permissions skipped: ' + e.message);
+  }
+}
+
+async function promoteDepartmentApprovers(strapi) {
+  const editor =
+    (await strapi.db.query('admin::role').findOne({ where: { code: 'strapi-editor' } })) ||
+    (await strapi.db.query('admin::role').findOne({ where: { name: 'Editor' } }));
+  if (!editor) return;
+  let grants = [];
+  try {
+    grants = await strapi.db.query('api::portal-grant.portal-grant').findMany({ where: { active: true } });
+  } catch (e) {
+    strapi.log.warn('[bootstrap] approver role sync skipped: ' + e.message);
+    return;
+  }
+  for (const grant of grants || []) {
+    const duty = String(grant.duty || '');
+    if (duty !== 'hod' && duty !== 'section-head' && duty !== 'director-general') continue;
+    const email = String(grant.staffEmail || '').trim().toLowerCase();
+    if (!email) continue;
+    const user = await strapi.db.query('admin::user').findOne({
+      where: { email: { $eqi: email } },
+      populate: ['roles'],
+    });
+    if (!user) continue;
+    const roles = Array.isArray(user.roles) ? user.roles : [];
+    if (roles.some((role) => role.code === 'strapi-super-admin' || role.name === 'Super Admin' || role.id === editor.id)) continue;
+    await strapi.db.connection('admin_users_roles_lnk').where({ user_id: user.id }).delete();
+    await strapi.db.connection('admin_users_roles_lnk').insert({
+      user_id: user.id,
+      role_id: editor.id,
+      role_ord: 1,
+      user_ord: 1,
+    });
+    strapi.log.info('[bootstrap] department approver set to Editor: ' + email);
   }
 }
 

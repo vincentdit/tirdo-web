@@ -327,7 +327,11 @@ export default function PortalEntryPage() {
                 onClick={(e) => onSubmit(e as unknown as FormEvent, "publish")}
                 className="rounded-md bg-[#059669] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
               >
-                {saving ? "Working…" : publishActionLabel(status, canHod, canDg)}
+                {saving ? "Working…" : publishActionLabel(status, canHod, canDg, {
+                  email: accountEmail,
+                  requestedBy: pendingPublishBy,
+                  departmentSlug: String(values.departmentSlug || ""),
+                })}
               </button>
             )}
             {col.draftAndPublish && canPublish && published && (

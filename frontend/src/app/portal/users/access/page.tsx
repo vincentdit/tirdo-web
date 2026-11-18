@@ -128,7 +128,12 @@ function EditAccessForm() {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Could not save this assignment.");
-      setNotice("Access saved. The same person is updated, not duplicated.");
+      const approver = duty === "hod" || duty === "section-head" || duty === "director-general";
+      setNotice(
+        approver
+          ? "Access saved. This person can approve items submitted by someone else in their department. They should sign out and sign in once. They cannot approve an item they submitted themselves."
+          : "Access saved. The same person is updated, not duplicated."
+      );
       const j = await fetchPortalUsers();
       setGrants(j.grants ?? []);
       setUsers(j.users ?? []);
